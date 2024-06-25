@@ -1,0 +1,52 @@
+.MuiPickersCalendarHeader-root {
+  justify-content: flex-end;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.MuiPickersCalendarHeader-label {
+  text-transform: capitalize;
+}
+
+.MuiDayCalendar-root {
+  height: 235px !important;
+  overflow: hidden;
+}
+
+.MuiDayCalendar-header, .MuiDayCalendar-weekContainer {
+  justify-content: space-between;
+}
+
+.MuiTypography-root {
+  color: #D3D3D3;
+  font-size: 14px;
+}
+
+.MuiPickersDay-root {
+  color: #22242B;
+  font-weight: 600;
+  font-size: 15px;
+
+  &.Mui-selected {
+    background-color: #23262D !important;
+  }
+
+  &.MuiPickersDay-today {
+    border: none;
+    background-color: #D4D4D4;
+    color: #fff;
+  }
+}
+
+.MuiPickersSlideTransition-root {
+  min-height: unset;
+  height: fit-content;
+}
+
+.MuiDayCalendar-monthContainer {
+  position: relative;
+}
+
+.MuiPickersCalendarHeader-labelContainer {
+  display: none;
+}

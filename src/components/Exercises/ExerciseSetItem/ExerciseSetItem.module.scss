@@ -1,0 +1,40 @@
+.exercisesSet {
+  display: flex;
+  align-content: center;
+  margin-bottom: 8px;
+  column-gap: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.exercisesSetLabel {
+  display: block;
+  color: #c6c6c6;
+  font-size: 16px;
+  font-weight: 600;
+  padding-left: 6px;
+  padding-right: 6px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.exercisesSetFields {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  width: 100%;
+
+  div {
+    width: 100%;
+    background: #F3F3F3;
+    border-radius: 8px;
+    height: 40px;
+    padding-left: 14px;
+    padding-right: 14px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 22px;
+  }
+}

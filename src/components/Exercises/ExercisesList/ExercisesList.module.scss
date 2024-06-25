@@ -1,0 +1,23 @@
+.exerciseList {
+  padding: 0 16px;
+  margin-bottom: 24px;
+  height: 100%;
+}
+
+.emptyBlock {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+
+  img {
+    width: 100%;
+  }
+
+  p {
+    font-size: 17px;
+    font-weight: 600;
+    color: #D4D4D4;
+    text-align: center;
+  }
+}

@@ -1,0 +1,43 @@
+.calendar {
+  padding: 16px;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 1px 2px 20px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+}
+
+.calendarTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.currentDate {
+  color: #21262B;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.calendarButton {
+
+}
+
+.calendarBottom {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition-duration: .4s;
+}
+
+.calendarBottomActive {
+  transition-duration: .4s;
+  grid-template-rows: 1fr;
+}
+
+.calendarBottomContent {
+  overflow: hidden;
+  transition-duration: .2s;
+}
+
+.dateCalendar {
+  width: 100%;
+  height: fit-content;
+}

@@ -1,0 +1,30 @@
+.exercisesItem {
+
+}
+
+.exercisesItemTop {
+  align-items: center;
+  display: flex;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.content {
+  overflow: hidden;
+  transition-duration: .2s;
+}
+
+.exercisesItemName {
+  font-weight: 700;
+  font-size: 20px;
+  max-width: 70%;
+}
+
+.arrowIcon {
+  margin-left: auto;
+}
+
+.arrowIconActive {
+  transform: rotate(180deg);
+}
+

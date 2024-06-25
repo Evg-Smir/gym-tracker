@@ -1,0 +1,32 @@
+.page {
+  position: relative;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 60px;
+
+  .pageButtonWrapper {
+    margin-left: 16px;
+    margin-right: 16px;
+
+    .pageButton {
+      background: #292C33;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      color: white;
+      font-weight: 700;
+      width: 100%;
+      padding: 14px 18px;
+    }
+  }
+}
+
+.loading {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+}
