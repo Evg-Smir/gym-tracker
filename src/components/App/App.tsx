@@ -14,10 +14,12 @@ dayjs.locale('ru')
 
 export const App = () => {
   const [isClient, setIsClient] = useState(false);
-  const [menuIsOpen, setMenuVisible] = useState(true)
+  const [menuIsOpen, setMenuVisible] = useState(false)
   const exercisesOfCurrentDay = useExercisesStore((state) => state.exercisesOfCurrentDay);
+  const setExercisesOfCurrentDay = useExercisesStore((state) => state.setExercisesOfCurrentDay);
 
   useEffect(() => {
+    setExercisesOfCurrentDay(new Date())
     setIsClient(true);
   }, []);
 

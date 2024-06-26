@@ -1,0 +1,46 @@
+.categoryPopup {
+  position: absolute;
+  inset: 0;
+  padding: 32px 14px 32px;
+  background: #ffffff;
+}
+
+.categoryName {
+  font-size: 32px;
+  font-weight: 600;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-bottom: 20px;
+}
+
+.categoryExercises {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.exercise {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 600;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.categoryPopupBack {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  left: 24px;
+  bottom: 32px;
+  width: 60px;
+  height: 60px;
+  background: #e6e6e6;
+  border-radius: 50%;
+
+  img {
+    width: 40px;
+    height: 40px;
+  }
+}

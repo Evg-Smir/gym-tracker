@@ -3,7 +3,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { useCategoryStore } from '@/stores/category';
 import { ExercisesCategoriesList } from '@/components/Exercises/ExercisesCategoriesList/ExersisesCategoriesList';
+import { MenuPopupInput } from "@/components/Popups/MenuPopupInput/MenuPopupInput";
 import { CategoryType } from '@/types/categoryTypes';
+import { CategoryPopup } from "@/components/Popups/CategoryPopup/CategoryPopup";
 
 interface MenuPopupType {
   isOpen: boolean;
@@ -12,12 +14,17 @@ interface MenuPopupType {
 
 export const MenuPopup = ({ isOpen, setMenuVisible }: MenuPopupType) => {
   const categoriesList = useCategoryStore((state) => state.categories);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState<string>('');
   const [filteredCategoriesList, setFilteredCategoriesList] = useState<CategoryType[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
 
   const closeMenuPopup = useCallback((): void => {
     setMenuVisible(false);
   }, [setMenuVisible]);
+
+  const unsetCategory = () => {
+    setSelectedCategory(null);
+  }
 
   const filterCategories = useCallback((list: CategoryType[]): CategoryType[] => {
     const lowercasedFilter = inputValue.toLowerCase();
@@ -49,27 +56,16 @@ export const MenuPopup = ({ isOpen, setMenuVisible }: MenuPopupType) => {
     trackMouse: true,
   });
 
-  const renderClearButton = useCallback(() => {
-    return (
-      <button onClick={() => setInputValue('')}>
-        <img src="/ui/close.svg" alt="clear"/>
-      </button>
-    );
-  }, []);
+  const selectCategory = (categoryId: number): void => {
+    const category = categoriesList.find(categoryItem => categoryItem.id === categoryId) || null
+    setSelectedCategory(category)
+  }
 
   return (
     <div className={`${styles.menuPopup} ${isOpen ? styles.menuActive : ''}`} {...handlers}>
-      <div className={styles.menuPopupInputWrapper}>
-        <img src="/ui/search.svg" alt="search"/>
-        <input
-          type="text"
-          value={inputValue}
-          placeholder="Искать"
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-        {inputValue && renderClearButton()}
-      </div>
-      <ExercisesCategoriesList categoriesList={filteredCategoriesList}/>
+      <MenuPopupInput updateValue={setInputValue}/>
+      <ExercisesCategoriesList categoriesList={filteredCategoriesList} selectCategory={selectCategory}/>
+      {selectedCategory && <CategoryPopup category={selectedCategory} unsetCategory={unsetCategory}/>}
     </div>
   );
 };

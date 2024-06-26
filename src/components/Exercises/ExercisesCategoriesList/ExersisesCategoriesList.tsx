@@ -3,15 +3,16 @@ import { CategoryType } from "@/types/categoryTypes";
 
 interface ExercisesCategoriesListType {
   categoriesList: CategoryType[]
+  selectCategory: (categoryId: number) => void
 }
 
-export const ExercisesCategoriesList = ({ categoriesList }: ExercisesCategoriesListType) => {
+export const ExercisesCategoriesList = ({ categoriesList, selectCategory }: ExercisesCategoriesListType) => {
   return (
     <div className={styles.categoriesList}>
       {
         categoriesList.map(category => (
-          <div className={styles.category} key={category.id}>
-            <img src={category.icon} alt="icon"/>
+          <div className={styles.category} key={category.id} onClick={() => {selectCategory(category.id)}}>
+            <img className={styles.categoryImage} src={category.icon} alt="icon"/>
             <div className={styles.categoryContent}>
               <span className={styles.categoryName}>{category.name}</span>
               <span className={styles.categoryCount}>{category.exercises.length}</span>

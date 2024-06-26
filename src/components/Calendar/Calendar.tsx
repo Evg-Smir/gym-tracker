@@ -11,6 +11,7 @@ import useClickOutside from "@/hooks/useClickOutside";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { useExercisesStore } from "@/stores/exercises";
+import { useSwipeable } from 'react-swipeable';
 
 const theme = createTheme(
   {
@@ -23,12 +24,18 @@ const theme = createTheme(
 
 export const Calendar = () => {
   const setExercisesOfCurrentDay = useExercisesStore((state) => state.setExercisesOfCurrentDay)
+  const exercisesOfCurrentDay = useExercisesStore((state) => state.exercisesOfCurrentDay)
   const [calendarIsOpened, setCalendarIsOpened] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
   const toggleCalendar = useCallback(() => {
     setCalendarIsOpened(prev => !prev);
   }, []);
+
+  const handlers = useSwipeable({
+    onSwipedDown: toggleCalendar,
+    trackMouse: true,
+  });
 
   const setDay = (date: Date): Date => {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate())
@@ -64,22 +71,24 @@ export const Calendar = () => {
   const ref = useClickOutside<HTMLDivElement>(handleCloseCalendar);
 
   return (
-    <div className={styles.calendar} ref={ref}>
-      <div className={styles.calendarTop}>
-        <div className={styles.currentDate}>{getDate(currentDate)}</div>
-        <button className={styles.calendarButton} onClick={toggleCalendar}>
-          <Image src="/ui/calendar.svg" alt="Calendar" width={28} height={28}/>
-        </button>
-      </div>
-      <div
-        className={`${styles.calendarBottom} ${calendarIsOpened ? styles.calendarBottomActive : ''}`}
-      >
-        <div className={styles.calendarBottomContent}>
-          <ThemeProvider theme={theme}>
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
-              <DateCalendar className={styles.dateCalendar} views={['day']} onChange={onChangeDay}/>
-            </LocalizationProvider>
-          </ThemeProvider>
+    <div {...handlers}>
+      <div className={styles.calendar} ref={ref}>
+        <div className={styles.calendarTop}>
+          <div className={styles.currentDate}>{getDate(currentDate)}</div>
+          <button className={styles.calendarButton} onClick={toggleCalendar}>
+            <Image src="/ui/calendar.svg" alt="Calendar" width={28} height={28}/>
+          </button>
+        </div>
+        <div
+          className={`${styles.calendarBottom} ${calendarIsOpened ? styles.calendarBottomActive : ''}`}
+        >
+          <div className={styles.calendarBottomContent}>
+            <ThemeProvider theme={theme}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
+                <DateCalendar className={styles.dateCalendar} views={['day']} onChange={onChangeDay}/>
+              </LocalizationProvider>
+            </ThemeProvider>
+          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { CategoryStoreType } from "@/types/categoryTypes";
 
 export const useCategoryStore = create<CategoryStoreType>((set) => ({

@@ -13,13 +13,13 @@ export interface ExerciseType {
 }
 
 export interface DayOfExercisesType {
-  time?: number;
-  exercises?: ExerciseType[]
+  time: number;
+  exercises: ExerciseType[]
 }
 
 export interface ExercisesStateType {
   exercises: DayOfExercisesType[];
-  exercisesOfCurrentDay: DayOfExercisesType | {};
+  exercisesOfCurrentDay: DayOfExercisesType;
   setExercise: (exercise: DayOfExercisesType) => void;
   setExercisesOfCurrentDay: (time: Date) => void;
 }

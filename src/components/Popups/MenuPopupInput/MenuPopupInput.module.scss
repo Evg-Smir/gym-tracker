@@ -1,0 +1,31 @@
+.menuPopupInputWrapper {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  border-radius: 12px;
+  background: #e6e6e6;
+  height: 50px;
+  overflow: hidden;
+  padding-left: 12px;
+  padding-right: 12px;
+
+  input {
+    height: 100%;
+    width: 100%;
+    background: #e6e6e6;
+    outline: none;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  button {
+    outline: none;
+    border: none;
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}

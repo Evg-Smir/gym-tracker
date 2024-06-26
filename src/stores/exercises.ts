@@ -1,10 +1,10 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { ExerciseRepsType, ExercisesStateType, ExerciseType } from "@/types/exerciseTypes";
 
 export const useExercisesStore = create<ExercisesStateType>((set) => ({
   exercises: [
     {
-      time: 1719687600000,
+      time: 1719342000001,
       exercises: [
         {
           id: 1,
@@ -21,7 +21,10 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
       ]
     },
   ],
-  exercisesOfCurrentDay: {},
+  exercisesOfCurrentDay: {
+    time: 0,
+    exercises: []
+  },
 
   setExercise: (exercise) => set((state) => {
     const indexOfExercise = state.exercises.findIndex((item) => item.time === exercise.time);
@@ -38,5 +41,4 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
     const currentDay = state.exercises.find(item => item.time === updatedTime)
     return { exercisesOfCurrentDay: currentDay || { time: updatedTime, exercises: [] } }
   }),
-
 }));
