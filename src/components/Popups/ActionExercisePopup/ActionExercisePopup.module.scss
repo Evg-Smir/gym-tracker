@@ -1,0 +1,145 @@
+.actionExercisePopup {
+  position: absolute;
+  width: 100vw;
+  height: 100dvh;
+  max-height: 100vh;
+  inset: 0;
+  padding: 12px 12px 32px;
+  background: var(--system-dark-gray-6);
+  z-index: 5;
+}
+
+.actionExercisePopupWrapper {
+  padding-left: 12px;
+  padding-right: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: calc(100% - 51px);
+}
+
+.actionExercisePopupName {
+  color: var(--system-gray-6);
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.actionExercisePopupInput {
+  margin-bottom: 42px;
+
+  input {
+    color: var(--system-gray-6);
+    background: transparent;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-top: 1px solid var(--system-dark-gray-4);
+    border-bottom: 1px solid var(--system-dark-gray-4);
+    transition: border-color .2s linear;
+
+    &:focus {
+      border-color: var(--system-dark-gray-2);
+      transition: border-color .2s linear;
+    }
+  }
+}
+
+.createExerciseName {
+  display: flex;
+  align-items: center;
+  column-gap: 12px;
+}
+
+.actionExercisePopupSelect {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--system-dark-gray-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  span {
+    color: var(--system-gray-6);
+    font-weight: 500;
+    font-size: 20px;
+  }
+}
+
+.tooltip {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--system-dark-gray-3);
+  justify-content: center;
+  align-items: center;
+  color: var(--system-gray-6) !important;
+  font-size: 14px !important;
+}
+
+.actionExercisePopupCheckbox {
+  input {
+    position: relative;
+    appearance: none;
+    width: 50px;
+    height: 30px;
+    background: var(--system-dark-gray-3);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.4s;
+
+    &:checked[type="checkbox"] {
+      background: var(--green);
+
+      &::after {
+        left: 50%;
+      }
+    }
+
+    &::after {
+      position: absolute;
+      content: "";
+      width: 25px;
+      height: 25px;
+      top: 50%;
+      left: 0;
+      background: var(--system-gray-6);
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      transform: translateY(-50%);
+      transition: 0.4s;
+    }
+  }
+}
+
+.actionExercisePopupButtons {
+  margin-top: auto;
+  display: flex;
+  align-items: stretch;
+  column-gap: 32px;
+
+  button {
+    position: relative !important;
+    inset: unset;
+  }
+}
+
+.saveButton {
+  background: var(--system-gray-6);
+  width: 100%;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 12px;
+}
+
+.removeButton {
+  text-align: left;
+  color: var(--red);
+  margin-top: 32px;
+  font-size: 18px;
+  padding: 12px;
+}

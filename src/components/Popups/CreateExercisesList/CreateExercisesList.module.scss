@@ -1,0 +1,19 @@
+.createExercisesList {
+  position: absolute;
+  width: 100vw;
+  height: 100dvh;
+  inset: 0;
+  padding: 12px 14px 32px;
+  background: var(--system-gray-6);
+}
+
+.title {
+  font-size: 22px;
+  margin-bottom: 32px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 28px;
+  font-weight: 600;
+}

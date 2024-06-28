@@ -4,7 +4,7 @@ import { ExerciseRepsType, ExercisesStateType, ExerciseType } from "@/types/exer
 export const useExercisesStore = create<ExercisesStateType>((set) => ({
   exercises: [
     {
-      time: 1719342000001,
+      time: 1719514800001,
       exercises: [
         {
           id: 1,

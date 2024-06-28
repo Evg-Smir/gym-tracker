@@ -1,22 +1,23 @@
 .page {
   position: relative;
-  height: 100vh;
+  height: 100dvh;
   max-height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   padding-bottom: 60px;
+  background: var(--system-gray-6);
 
   .pageButtonWrapper {
     margin-left: 16px;
     margin-right: 16px;
 
     .pageButton {
-      background: #292C33;
+      background: var(--system-dark-gray-5);
       border-radius: 10px;
       border: none;
       outline: none;
-      color: white;
+      color: var(--system-gray-6);
       font-weight: 700;
       width: 100%;
       padding: 14px 18px;
@@ -26,7 +27,7 @@
 
 .loading {
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   display: grid;
   place-items: center;
 }

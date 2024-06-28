@@ -18,23 +18,23 @@
 }
 
 .MuiTypography-root {
-  color: #D3D3D3;
+  color: var(--system-dark-gray-5);
   font-size: 14px;
 }
 
 .MuiPickersDay-root {
-  color: #22242B;
+  color: var(--system-dark-gray-5);
   font-weight: 600;
   font-size: 15px;
 
   &.Mui-selected {
-    background-color: #23262D !important;
+    background: var(--system-dark-gray-5) !important;
   }
 
   &.MuiPickersDay-today {
     border: none;
-    background-color: #D4D4D4;
-    color: #fff;
+    background-color: var(--system-gray-2);
+    color: var(--system-gray-6);
   }
 }
 

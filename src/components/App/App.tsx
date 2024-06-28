@@ -3,7 +3,7 @@
 import styles from './App.module.scss';
 import { Calendar } from "@/components/Calendar/Calendar";
 import { ExercisesList } from "@/components/Exercises/ExercisesList/ExercisesList";
-import { MenuPopup } from "@/components/Popups/MenuPopup/MenuPopup";
+import { MainPopup } from "@/components/Popups/MainPopup/MainPopup";
 import { useEffect, useState } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
 import dayjs from "dayjs";
@@ -43,7 +43,7 @@ export const App = () => {
               Добавить упражнение
             </button>
           </div>
-          <MenuPopup isOpen={menuIsOpen} setMenuVisible={setMenuVisible}/>
+          <MainPopup isOpen={menuIsOpen} setMenuVisible={setMenuVisible}/>
         </div>
       }
     </>

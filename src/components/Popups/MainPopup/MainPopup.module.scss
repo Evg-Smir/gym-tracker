@@ -1,0 +1,19 @@
+.menuPopup {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  transform: translateY(110%);
+  transition: transform .3s ease;
+  background: var(--system-gray-6);
+  padding: 12px 14px 32px;
+
+  .input-wrapper {
+    margin-bottom: 32px;
+  }
+}
+
+.menuActive {
+  transform: translateY(0);
+  transition: transform .3s ease;
+}

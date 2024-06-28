@@ -1,0 +1,12 @@
+.popupButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  background: var(--system-gray-5);
+  width: 100%;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--system-dark-gray-6);
+}

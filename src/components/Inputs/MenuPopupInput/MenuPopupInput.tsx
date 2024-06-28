@@ -22,7 +22,7 @@ export const MenuPopupInput = ({ updateValue }: MenuPopupInputType) => {
 
   return (
     <div className={styles.menuPopupInputWrapper}>
-      <img src="/ui/search.svg" alt="search"/>
+      <img className={styles.iconSearch} src="/ui/search.svg" alt="search"/>
       <input
         type="text"
         value={inputValue}
