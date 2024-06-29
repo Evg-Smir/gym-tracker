@@ -130,6 +130,11 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
     } else if (action === 'remove') {
       const updatedExercises = category.exercises.filter(ex => ex.id !== exercise.id);
 
+      console.log({...state,
+        categories: state.categories.map(cat =>
+          cat.id === categoryId ? { ...cat, exercises: updatedExercises } : cat
+        )})
+
       return {
         ...state,
         categories: state.categories.map(cat =>

@@ -1,0 +1,40 @@
+.inputsWrapper {
+  display: flex;
+  align-items: center;
+  column-gap: 12px;
+  margin-bottom: 12px;
+
+  input {
+    text-align: center;
+    background: var(--system-gray-5);
+    border-radius: 8px;
+    height: 40px;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.7;
+    width: calc((100% - 6px) / 2);
+    border: none;
+
+
+    &:focus {
+
+    }
+  }
+}
+
+.label {
+  color: var(--system-gray-4);
+  font-size: 16px;
+  font-weight: 600;
+  padding-left: 6px;
+  padding-right: 6px;
+  min-width: 40px;
+  text-align: center;
+  line-height: 2.5;
+}
+
+.inputsRow {
+  display: flex;
+  align-items: center;
+  column-gap: 12px;
+}

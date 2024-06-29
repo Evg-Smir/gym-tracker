@@ -1,33 +1,41 @@
 import styles from './MenuPopupInput.module.scss';
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-interface MenuPopupInputType {
+interface MenuPopupInputProps {
   updateValue: (value: string) => void;
 }
 
-export const MenuPopupInput = ({ updateValue }: MenuPopupInputType) => {
+export const MenuPopupInput = ({ updateValue }: MenuPopupInputProps) => {
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
     updateValue(inputValue);
   }, [inputValue, updateValue]);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleClearInput = useCallback(() => {
+    setInputValue('');
+  }, []);
+
   const renderClearButton = useCallback(() => {
     return (
-      <button onClick={() => setInputValue('')}>
-        <img src="/ui/close.svg" alt="clear"/>
+      <button className={styles.clearButton} onClick={handleClearInput}>
+        <img src="/ui/close.svg" alt="Очистить"/>
       </button>
     );
-  }, []);
+  }, [handleClearInput]);
 
   return (
     <div className={styles.menuPopupInputWrapper}>
-      <img className={styles.iconSearch} src="/ui/search.svg" alt="search"/>
+      <img className={styles.iconSearch} src="/ui/search.svg" alt="Поиск"/>
       <input
         type="text"
         value={inputValue}
         placeholder="Искать"
-        onChange={(e) => setInputValue(e.target.value)}
+        onChange={handleInputChange}
       />
       {inputValue && renderClearButton()}
     </div>

@@ -1,23 +1,33 @@
 import styles from './CategoriesPopup.module.scss';
-
 import { useExercisesStore } from "@/stores/exercises";
-
 import { AddExerciseButton } from "@/components/Buttons/AddExerciseButton/AddExerciseButton";
 import { BackButton } from "@/components/Buttons/BackButton/BackButton";
-import { useState, useCallback, useMemo } from "react";
-
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { CategoryType, ExercisesOfCategoryType, SelectedExerciseType } from "@/types/categoryTypes";
+import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
 
-interface CategoryPopupType {
+interface CategoriesPopupProps {
   category: CategoryType | null;
   unsetCategory: () => void;
+  closeAllPopups: () => void;
   changeExercise: (value: SelectedExerciseType) => void;
   createExercise: (category: CategoryType | null) => void;
 }
 
-export const CategoriesPopup = ({ category, changeExercise, unsetCategory, createExercise }: CategoryPopupType) => {
+export const CategoriesPopup = ({
+                                  category,
+                                  changeExercise,
+                                  unsetCategory,
+                                  createExercise,
+                                  closeAllPopups
+                                }: CategoriesPopupProps) => {
   const [selectedExercises, setSelectedExercises] = useState<SelectedExerciseType[]>([]);
-  const exercisesOfCurrentDay = useExercisesStore(state => state.exercisesOfCurrentDay);
+  const setCurrentExercise = useExercisesStore(state => state.setExercise);
+  const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
+
+  useEffect(() => {
+    show();
+  }, [show]);
 
   const selectExercise = useCallback((exerciseId: number, categoryId: number): void => {
     setSelectedExercises((prevState) => {
@@ -34,34 +44,55 @@ export const CategoriesPopup = ({ category, changeExercise, unsetCategory, creat
   }, []);
 
   const checkMark = useCallback((category: CategoryType, exercise: ExercisesOfCategoryType) => {
-    return (
-      selectedExercises.some(
-        (selected) =>
-          selected.exerciseId === exercise.id &&
-          selected.categoryId === category.id
-      ) && <img src="/ui/check-mark.svg" alt="icon"/>
-    );
+    return selectedExercises.some(
+      (selected) =>
+        selected.exerciseId === exercise.id &&
+        selected.categoryId === category.id
+    ) ? <img src="/ui/check-mark.svg" alt="icon" /> : null;
   }, [selectedExercises]);
 
-  const renderSelectButton = useMemo(() => (
-    <button className={styles.selectButton}>Выбрать</button>
-  ), []);
+  const setExercise = useCallback(() => {
+    const [{ categoryId, exerciseId }] = selectedExercises;
+    setCurrentExercise(categoryId, exerciseId);
+    closeAllPopups();
+  }, [selectedExercises, setCurrentExercise, closeAllPopups]);
 
-  const renderChangeButton = useMemo(() => (
-    <button onClick={() => changeExercise(selectedExercises[0])} className={styles.changeButton}>Изменить</button>
-  ), [changeExercise, selectedExercises]);
+  const closePopup = useCallback(() => {
+    hide();
+    setTimeout(unsetCategory, 300);
+  }, [hide, unsetCategory]);
+
+  const renderSelectButton = useMemo(() => {
+    if (selectedExercises.length > 0) {
+      return <button className={styles.selectButton} onClick={setExercise}>Выбрать</button>;
+    }
+    return null;
+  }, [selectedExercises.length, setExercise]);
+
+  const renderChangeButton = useMemo(() => {
+    if (selectedExercises.length === 1) {
+      return (
+        <button onClick={() => changeExercise(selectedExercises[0])} className={styles.changeButton}>
+          Изменить
+        </button>
+      );
+    }
+    return null;
+  }, [selectedExercises, changeExercise]);
+
+  if (!shouldRender || !category) return null;
 
   return (
-    <div className={styles.categoriesPopup}>
-      <BackButton clickButton={unsetCategory}/>
-      <h2 className={styles.categoryName}>{category?.name}</h2>
+    <div className={`${styles.categoriesPopup} ${isVisible ? styles.visible : ''}`}>
+      <BackButton clickButton={closePopup}/>
+      <h2 className={styles.categoryName}>{category.name}</h2>
       <AddExerciseButton clickButton={() => createExercise(category)}/>
       <div className={styles.categoryExercises}>
-        {category?.exercises.map(exercise => (
+        {category.exercises.map(exercise => (
           <div
-            className={styles.exercise}
+            className={`${styles.exercise} ${selectedExercises.some(se => se.exerciseId === exercise.id) ? styles.selected : ''}`}
             key={exercise.id}
-            onClick={() => selectExercise(exercise.id, category?.id)}
+            onClick={() => selectExercise(exercise.id, category!.id)}
           >
             <span>{exercise.name}</span>
             {checkMark(category, exercise)}
@@ -69,12 +100,8 @@ export const CategoriesPopup = ({ category, changeExercise, unsetCategory, creat
         ))}
       </div>
       <div className={styles.categoriesPopupButtons}>
-        {selectedExercises.length > 0 && (
-          <>
-            {renderSelectButton}
-            {selectedExercises.length < 2 && renderChangeButton}
-          </>
-        )}
+        {renderSelectButton}
+        {renderChangeButton}
       </div>
     </div>
   );

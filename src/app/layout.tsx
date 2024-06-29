@@ -1,6 +1,8 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
+
 import { Inter } from "next/font/google";
 import { ReactNode } from "react";
+
 import "../styles/globals.scss";
 import "../styles/different.scss";
 
@@ -18,7 +20,7 @@ interface RootLayoutType {
 export default function RootLayout({ children }: RootLayoutType) {
   return (
     <html lang="en">
-    <body className={InterFont.className}>
+    <body className={`${InterFont.className}`}>
     <main>{children}</main>
     </body>
     </html>

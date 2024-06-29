@@ -1,6 +1,6 @@
 export interface ExerciseRepsType {
-  weight: number,
-  reps: number,
+  weight: number | string,
+  reps: number | string,
 }
 
 export interface ExerciseType {
@@ -20,6 +20,7 @@ export interface DayOfExercisesType {
 export interface ExercisesStateType {
   exercises: DayOfExercisesType[];
   exercisesOfCurrentDay: DayOfExercisesType;
-  setExercise: (exercise: DayOfExercisesType) => void;
+  setExercise: (categoryId: number, exerciseId: number) => void;
+  updateExercise: (exercise: ExerciseType) => void;
   setExercisesOfCurrentDay: (time: Date) => void;
 }

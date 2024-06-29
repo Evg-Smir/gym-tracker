@@ -4,17 +4,19 @@ import styles from './App.module.scss';
 import { Calendar } from "@/components/Calendar/Calendar";
 import { ExercisesList } from "@/components/Exercises/ExercisesList/ExercisesList";
 import { MainPopup } from "@/components/Popups/MainPopup/MainPopup";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
 import dayjs from "dayjs";
 import 'dayjs/locale/ru';
 import { useExercisesStore } from "@/stores/exercises";
+import { ActionSetsPopup } from "@/components/Popups/ActionSetsPopup/ActionSetsPopup";
 
 dayjs.locale('ru')
 
 export const App = () => {
   const [isClient, setIsClient] = useState(false);
   const [menuIsOpen, setMenuVisible] = useState(false)
+  const [actionSetId, setActionSetId] = useState<number | null>(null)
   const exercisesOfCurrentDay = useExercisesStore((state) => state.exercisesOfCurrentDay);
   const setExercisesOfCurrentDay = useExercisesStore((state) => state.setExercisesOfCurrentDay);
 
@@ -27,6 +29,14 @@ export const App = () => {
     setMenuVisible(true)
   }
 
+  const setActionSet = useCallback((setId: number) => {
+    setActionSetId(setId)
+  }, [])
+
+  const unsetValue = useCallback(() => {
+    setActionSetId(null);
+  }, [])
+
   return (
     <>
       {!isClient ?
@@ -34,7 +44,7 @@ export const App = () => {
         :
         <div className={styles.page}>
           <Calendar/>
-          <ExercisesList {...exercisesOfCurrentDay}/>
+          <ExercisesList {...exercisesOfCurrentDay} setActionSetId={setActionSet}/>
           <div className={styles.pageButtonWrapper}>
             <button
               onClick={openMenu}
@@ -43,7 +53,8 @@ export const App = () => {
               Добавить упражнение
             </button>
           </div>
-          <MainPopup isOpen={menuIsOpen} setMenuVisible={setMenuVisible}/>
+          {menuIsOpen && <MainPopup setMenuVisible={setMenuVisible}/>}
+          {actionSetId && <ActionSetsPopup unsetValue={unsetValue} setId={actionSetId}/>}
         </div>
       }
     </>

@@ -1,10 +1,11 @@
 import styles from './ActionExercisePopup.module.scss';
 import { CategoryType } from "@/types/categoryTypes";
+import { useCategoryStore } from "@/stores/category";
+import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
 import { BackButton } from "@/components/Buttons/BackButton/BackButton";
 import { useEffect, useState, useCallback } from "react";
-import { useCategoryStore } from "@/stores/category";
 
-interface ActionExercisePopupType {
+interface ActionExercisePopupProps {
   category: CategoryType;
   unsetCreateCategory: () => void;
   changeExerciseId: number | null;
@@ -17,13 +18,15 @@ interface ParamExerciseType {
   ownWeight: boolean;
 }
 
-export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerciseId }: ActionExercisePopupType) => {
+export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerciseId }: ActionExercisePopupProps) => {
   const actionExerciseOfCategory = useCategoryStore(state => state.actionExerciseOfCategory);
   const [paramExercise, setParamExercise] = useState<ParamExerciseType>({
     name: '',
     doubleWeight: false,
     ownWeight: false,
   });
+
+  const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
 
   useEffect(() => {
     if (changeExerciseId) {
@@ -33,7 +36,8 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
         setParamExercise({ name, doubleWeight, ownWeight });
       }
     }
-  }, [changeExerciseId, category.exercises]);
+    show();
+  }, [changeExerciseId, category.exercises, show]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
@@ -43,17 +47,24 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
     }));
   }, []);
 
+  const closePopup = useCallback(() => {
+    hide();
+    unsetCreateCategory();
+  }, [hide, unsetCreateCategory]);
+
   const handleActionExercise = useCallback((action: 'create' | 'update' | 'remove') => {
     actionExerciseOfCategory(category.id, {
       ...paramExercise,
       id: action === 'create' ? -1 : Number(changeExerciseId),
     }, action);
-    unsetCreateCategory();
-  }, [actionExerciseOfCategory, category.id, changeExerciseId, paramExercise, unsetCreateCategory]);
+    closePopup();
+  }, [actionExerciseOfCategory, category.id, changeExerciseId, paramExercise, closePopup]);
+
+  if (!shouldRender) return null;
 
   return (
-    <div className={styles.actionExercisePopup}>
-      <BackButton clickButton={unsetCreateCategory}/>
+    <div className={`${styles.actionExercisePopup} ${isVisible ? styles.visible : ''}`}>
+      <BackButton clickButton={closePopup}/>
       <div className={styles.actionExercisePopupWrapper}>
         <h1 className={styles.actionExercisePopupName}>{category.name}</h1>
         <div className={styles.actionExercisePopupInput}>
@@ -93,11 +104,6 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
             />
           </div>
         </div>
-        {changeExerciseId && (
-          <button className={styles.removeButton} onClick={() => handleActionExercise('remove')}>
-            Удалить упражнение
-          </button>
-        )}
         <div className={styles.actionExercisePopupButtons}>
           {!changeExerciseId && paramExercise.name && (
             <button className={styles.saveButton} onClick={() => handleActionExercise('create')}>
@@ -107,6 +113,11 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
           {changeExerciseId && (
             <button className={styles.saveButton} onClick={() => handleActionExercise('update')}>
               Изменить упражнение
+            </button>
+          )}
+          {changeExerciseId && (
+            <button className={styles.removeButton} onClick={() => handleActionExercise('remove')}>
+              Удалить упражнение
             </button>
           )}
         </div>

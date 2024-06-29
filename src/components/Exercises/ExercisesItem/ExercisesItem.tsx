@@ -3,45 +3,53 @@ import { ExerciseType } from "@/types/exerciseTypes";
 import { ExerciseSetItem } from "@/components/Exercises/ExerciseSetItem/ExerciseSetItem";
 import { useState } from "react";
 
-interface ExercisePropType {
-  exercise: ExerciseType
+interface ExercisesItemProps {
+  exercise: ExerciseType;
+  setActionSetId: (id: number) => void;
 }
 
-export const ExercisesItem = ({ exercise: { category_icon, exercise_name, sets } }: ExercisePropType) => {
-  const [contentIsVisible, setContentIsVisible] = useState(false)
+export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) => {
+  const { category_icon, exercise_name, sets, id } = exercise;
+  const [contentIsVisible, setContentIsVisible] = useState(false);
 
-  const toggleVisible = () => {
-    setContentIsVisible(!contentIsVisible)
-  }
+  const toggleContentVisibility = () => {
+    setContentIsVisible(!contentIsVisible);
+  };
+
+  const handleActionSetClick = () => {
+    setActionSetId(id);
+  };
 
   return (
     <div className={styles.exercisesItem}>
-      <div
-        className={styles.exercisesItemTop}
-        onClick={toggleVisible}
-      >
-        {/*<img src={category_icon} alt="Icon"/>*/}
-        <p className={styles.exercisesItemName}>{exercise_name}</p>
-        <img
-          className={`${styles.arrowIcon} ${contentIsVisible ? styles.arrowIconActive : ''}`}
-          src="/ui/arrow.svg"
-          alt="Arrow"
-        />
+      <div className={styles.exercisesItemTop} onClick={toggleContentVisibility}>
+        <img src={category_icon} alt="Иконка"/>
+        <div className={styles.nameWrapper}>
+          <p className={styles.exercisesItemName}>{exercise_name}</p>
+          <img
+            className={`${styles.arrowIcon} ${contentIsVisible ? styles.arrowIconActive : ''}`}
+            src="/ui/arrow.svg"
+            alt="Стрелка"
+          />
+        </div>
       </div>
-      <div className={styles.exercisesItemBottom}>
-        {
-          contentIsVisible &&
-          <div className={styles.exercisesItemBottomContent}>
-            {sets.map((set, index) => (
+      <div className={styles.exercisesItemBottom} onClick={handleActionSetClick}>
+        {contentIsVisible && (
+          sets.length > 0 ? (
+            sets.map((set, index) => (
               <ExerciseSetItem
                 key={index}
                 index={index}
                 {...set}
               />
-            ))}
-          </div>
-        }
+            ))
+          ) : (
+            <ExerciseSetItem
+              index={0}
+            />
+          )
+        )}
       </div>
     </div>
-  )
-}
+  );
+};
