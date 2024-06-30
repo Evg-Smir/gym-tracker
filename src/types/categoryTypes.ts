@@ -5,7 +5,6 @@ export interface ExercisesOfCategoryType {
   ownWeight: boolean,
 }
 
-
 export interface CategoryType {
   id: number;
   name: string;

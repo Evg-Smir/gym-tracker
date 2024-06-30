@@ -54,8 +54,9 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
 
   const saveChanges = () => {
     if (!currentSet) return;
-    const updatedSet = { ...currentSet };
-    updateExercise(updatedSet);
+    const updatedSet = currentSet.sets.filter((set) => !!set.weight.trim().length || !!set.reps.trim().length);
+    const updatedExercise = { ...currentSet, sets: [...updatedSet] };
+    updateExercise(updatedExercise);
     setTimeout(() => {
       closePopup();
     }, 0);

@@ -1,6 +1,6 @@
 export interface ExerciseRepsType {
-  weight: number | string,
-  reps: number | string,
+  weight: string,
+  reps: string,
 }
 
 export interface ExerciseType {

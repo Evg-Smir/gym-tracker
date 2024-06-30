@@ -14,9 +14,9 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
           exercise_id: 1,
           exercise_name: 'Отжимания на брусьях',
           sets: [
-            { weight: 15, reps: 4 },
-            { weight: 15, reps: 12 },
-            { weight: 15, reps: 12 },
+            { weight: '15', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
           ]
         },
         {

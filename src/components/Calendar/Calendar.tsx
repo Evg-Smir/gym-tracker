@@ -1,17 +1,16 @@
-"use client"
-
 import styles from './Calendar.module.scss';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { ruRU } from '@mui/x-date-pickers/locales';
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import useClickOutside from "@/hooks/useClickOutside";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import Image from "next/image";
 import { useExercisesStore } from "@/stores/exercisesStore";
 import { useSwipeable } from 'react-swipeable';
+import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 
 const theme = createTheme(
   {
@@ -22,9 +21,25 @@ const theme = createTheme(
   ruRU,
 );
 
+interface ServerDayProps extends PickersDayProps<Dayjs> {
+  highlightedDays?: number[];
+}
+
+const ServerDay = (props: ServerDayProps) => {
+  const exercisesList = useExercisesStore((state) => state.exercises);
+  const { day, outsideCurrentMonth, ...other } = props;
+
+  const isSelected = exercisesList.some(exercise => exercise.time === day.valueOf());
+
+  return (
+    <div className={isSelected ? 'busyDay' : ''}>
+      <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day}/>
+    </div>
+  );
+};
+
 export const Calendar = () => {
   const setExercisesOfCurrentDay = useExercisesStore((state) => state.setExercisesOfCurrentDay)
-  const exercisesOfCurrentDay = useExercisesStore((state) => state.exercisesOfCurrentDay)
   const [calendarIsOpened, setCalendarIsOpened] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
@@ -85,7 +100,11 @@ export const Calendar = () => {
           <div className={styles.calendarBottomContent}>
             <ThemeProvider theme={theme}>
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
-                <DateCalendar className={styles.dateCalendar} views={['day']} onChange={onChangeDay}/>
+                <DateCalendar
+                  className={styles.dateCalendar}
+                  views={['day']}
+                  onChange={onChangeDay} slots={{ day: ServerDay }}
+                />
               </LocalizationProvider>
             </ThemeProvider>
           </div>
