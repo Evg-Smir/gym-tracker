@@ -8,55 +8,58 @@ import { useCallback, useEffect, useState } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
 import dayjs from "dayjs";
 import 'dayjs/locale/ru';
-import { useExercisesStore } from "@/stores/exercises";
+import { useExercisesStore } from "@/stores/exercisesStore";
 import { ActionSetsPopup } from "@/components/Popups/ActionSetsPopup/ActionSetsPopup";
+import { AddNewButton } from "@/components/Buttons/AddNewButton/AddNewButton";
 
-dayjs.locale('ru')
+dayjs.locale('ru');
+
+interface AppState {
+  isClient: boolean;
+  menuIsOpen: boolean;
+  actionSetId: number | null;
+}
 
 export const App = () => {
-  const [isClient, setIsClient] = useState(false);
-  const [menuIsOpen, setMenuVisible] = useState(false)
-  const [actionSetId, setActionSetId] = useState<number | null>(null)
+  const [appState, setAppState] = useState<AppState>({
+    isClient: false,
+    menuIsOpen: false,
+    actionSetId: null
+  });
+
   const exercisesOfCurrentDay = useExercisesStore((state) => state.exercisesOfCurrentDay);
   const setExercisesOfCurrentDay = useExercisesStore((state) => state.setExercisesOfCurrentDay);
 
   useEffect(() => {
-    setExercisesOfCurrentDay(new Date())
-    setIsClient(true);
+    setExercisesOfCurrentDay(new Date());
+    setAppState(prevState => ({ ...prevState, isClient: true }));
+  }, [setExercisesOfCurrentDay]);
+
+  const openMenu = useCallback(() => {
+    setAppState(prevState => ({ ...prevState, menuIsOpen: true }));
   }, []);
 
-  const openMenu = () => {
-    setMenuVisible(true)
-  }
-
   const setActionSet = useCallback((setId: number) => {
-    setActionSetId(setId)
-  }, [])
+    setAppState(prevState => ({ ...prevState, actionSetId: setId }));
+  }, []);
 
   const unsetValue = useCallback(() => {
-    setActionSetId(null);
-  }, [])
+    setAppState(prevState => ({ ...prevState, actionSetId: null }));
+  }, []);
 
   return (
     <>
-      {!isClient ?
+      {!appState.isClient ?
         <div className={styles.loading}><CircularProgress/></div>
         :
         <div className={styles.page}>
           <Calendar/>
           <ExercisesList {...exercisesOfCurrentDay} setActionSetId={setActionSet}/>
-          <div className={styles.pageButtonWrapper}>
-            <button
-              onClick={openMenu}
-              className={styles.pageButton}
-            >
-              Добавить упражнение
-            </button>
-          </div>
-          {menuIsOpen && <MainPopup setMenuVisible={setMenuVisible}/>}
-          {actionSetId && <ActionSetsPopup unsetValue={unsetValue} setId={actionSetId}/>}
+          <AddNewButton openMenu={openMenu}/>
+          {appState.menuIsOpen && <MainPopup setMenuVisible={openMenu}/>}
+          {appState.actionSetId && <ActionSetsPopup unsetValue={unsetValue} setId={appState.actionSetId}/>}
         </div>
       }
     </>
-  )
-}
+  );
+};

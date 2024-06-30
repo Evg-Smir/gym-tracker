@@ -1,16 +1,14 @@
 import styles from './MainPopup.module.scss';
 import { useCallback, useEffect, useState, useMemo } from 'react';
-import { useCategoryStore } from '@/stores/category';
+import { useCategoryStore } from '@/stores/categoriesStore';
 import { ExercisesCategoriesList } from "@/components/Exercises/ExercisesCategoriesList/ExercisesCategoriesList";
-import { CreateExercisesList } from "@/components/Popups/CreateExercisesList/CreateExercisesList";
-import { ActionExercisePopup } from "@/components/Popups/ActionExercisePopup/ActionExercisePopup";
 import { AddExerciseButton } from "@/components/Buttons/AddExerciseButton/AddExerciseButton";
-import { CategoriesPopup } from "@/components/Popups/CategoriesPopup/CategoriesPopup";
 import { MenuPopupInput } from "@/components/Inputs/MenuPopupInput/MenuPopupInput";
 import { BackButton } from "@/components/Buttons/BackButton/BackButton";
-import { CategoryType, SelectedExerciseType } from '@/types/categoryTypes';
+import { WrapperPopup } from "@/components/Popups/WrapperPopups/WrapperPopup";
 import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
 import useFilteredCategories from "@/hooks/useFilteredCategories";
+import { CategoryType } from "@/types/categoryTypes";
 
 interface MenuPopupProps {
   setMenuVisible: (value: boolean) => void;
@@ -18,13 +16,26 @@ interface MenuPopupProps {
 
 export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
   const categoriesList = useCategoryStore((state) => state.categories);
-  const [inputValue, setInputValue] = useState<string>('');
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
-  const [exerciseForAction, setExerciseForAction] = useState<CategoryType | null>(null);
-  const [exerciseForChange, setExerciseForChange] = useState<number | null>(null);
-  const [exercisesListForCreate, setExercisesListForCreate] = useState<boolean>(false);
+  const [state, setState] = useState({
+    inputValue: '' as string,
+    exercisesListForCreate: false as boolean,
+    selectedCategory: null as CategoryType | null,
+  });
+
   const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
-  const filteredCategoriesList = useFilteredCategories(categoriesList, inputValue);
+  const filteredCategoriesList = useFilteredCategories(categoriesList, state.inputValue);
+
+  const setInputValue = useCallback((value: string): void => {
+    setState((prevState) => ({ ...prevState, inputValue: value }));
+  }, []);
+
+  const setExercisesListForCreate = useCallback((value: boolean): void => {
+    setState((prevState) => ({ ...prevState, exercisesListForCreate: value }));
+  }, []);
+
+  const setSelectedCategory = useCallback((value: CategoryType | null): void => {
+    setState((prevState) => ({ ...prevState, selectedCategory: value }));
+  }, []);
 
   useEffect(() => {
     show();
@@ -35,10 +46,6 @@ export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
     setMenuVisible(false);
   }, [hide, setMenuVisible]);
 
-  const unsetCategory = useCallback(() => {
-    setSelectedCategory(null);
-  }, []);
-
   const selectCategory = useCallback((categoryId: number): void => {
     const category = categoriesList.find(categoryItem => categoryItem.id === categoryId) || null;
     setSelectedCategory(category);
@@ -48,39 +55,8 @@ export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
     setExercisesListForCreate(true);
   }, []);
 
-  const createExercise = useCallback((category: CategoryType | null): void => {
-    setExerciseForAction(category);
-  }, []);
-
-  const createNewExercise = useCallback((categoryId: number) => {
-    const category = categoriesList.find(categoryItem => categoryItem.id === categoryId) || null;
-    createExercise(category);
-  }, [categoriesList, createExercise]);
-
-  const closePopups = useCallback(() => {
-    setSelectedCategory(null);
-    setExercisesListForCreate(false);
-    setExerciseForChange(null);
-    setExerciseForAction(null);
-  }, []);
-
-  const changeExercise = useCallback((value: SelectedExerciseType) => {
-    const category = categoriesList.find(categoryItem => categoryItem.id === value.categoryId);
-    setExerciseForAction(category || null);
-    setExerciseForChange(value.exerciseId);
-  }, [categoriesList]);
-
-  const closeAllPopups = useCallback(() => {
-    closePopups();
-    closeMenuPopup();
-  }, [closePopups, closeMenuPopup]);
-
-  const memoizedSelectCategory = useCallback(selectCategory, [selectCategory]);
-  const memoizedCreateExercise = useCallback(createExercise, [createExercise]);
-  const memoizedCreateNewExercise = useCallback(createNewExercise, [createNewExercise]);
-  const memoizedChangeExercise = useCallback(changeExercise, [changeExercise]);
-
   const memoizedFilteredCategoriesList = useMemo(() => filteredCategoriesList, [filteredCategoriesList]);
+  const memoizedSelectCategory = useCallback(selectCategory, [selectCategory]);
 
   if (!shouldRender) return null;
 
@@ -93,29 +69,11 @@ export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
         categoriesList={memoizedFilteredCategoriesList}
         selectCategory={memoizedSelectCategory}
       />
-      {selectedCategory && (
-        <CategoriesPopup
-          closeAllPopups={closeAllPopups}
-          createExercise={memoizedCreateExercise}
-          category={selectedCategory}
-          unsetCategory={unsetCategory}
-          changeExercise={memoizedChangeExercise}
-        />
-      )}
-      {exercisesListForCreate && (
-        <CreateExercisesList
-          categoriesList={categoriesList}
-          unsetValue={() => setExercisesListForCreate(false)}
-          selectCategory={memoizedCreateNewExercise}
-        />
-      )}
-      {exerciseForAction && (
-        <ActionExercisePopup
-          category={exerciseForAction}
-          changeExerciseId={exerciseForChange}
-          unsetCreateCategory={closePopups}
-        />
-      )}
+      <WrapperPopup
+        closeMenuPopup={closeMenuPopup}
+        setListForCreate={state.exercisesListForCreate}
+        selectedCategoryProp={state.selectedCategory}
+      />
     </div>
   );
 };

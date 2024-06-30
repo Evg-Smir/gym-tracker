@@ -11,7 +11,7 @@ const useFilteredCategories = (categories: CategoryType[], filter: string) => {
         const filteredExercises = category.exercises.filter(exercise =>
           exercise.name.toLowerCase().includes(lowercasedFilter)
         );
-        return filteredExercises.length > 0 ? { ...category, exercises: filteredExercises } : null;
+        return { ...category, exercises: filteredExercises };
       })
       .filter(category => category !== null) as CategoryType[];
   }, []);

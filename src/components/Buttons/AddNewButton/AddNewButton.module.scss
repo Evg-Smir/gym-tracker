@@ -1,0 +1,15 @@
+.pageButtonWrapper {
+  margin-left: 16px;
+  margin-right: 16px;
+
+  .pageButton {
+    background: var(--system-dark-gray-5);
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    color: var(--system-gray-6);
+    font-weight: 700;
+    width: 100%;
+    padding: 14px 18px;
+  }
+}

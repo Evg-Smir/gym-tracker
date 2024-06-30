@@ -2,7 +2,7 @@ import styles from './ActionSetsPopup.module.scss';
 import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
 import React, { useEffect, useState, useMemo } from "react";
 import { BackButton } from "@/components/Buttons/BackButton/BackButton";
-import { useExercisesStore } from "@/stores/exercises";
+import { useExercisesStore } from "@/stores/exercisesStore";
 import { ExerciseRepsType, ExerciseType } from "@/types/exerciseTypes";
 import { SetItem } from "@/components/Sets/SetItem/SetItem";
 
@@ -25,7 +25,7 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
 
   const closePopup = () => {
     hide();
-    setTimeout(unsetValue, 300);
+    setTimeout(unsetValue, 300)
   };
 
   const updateValue = (value: ExerciseRepsType, index: number) => {
@@ -54,8 +54,11 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
 
   const saveChanges = () => {
     if (!currentSet) return;
-    closePopup();
-    updateExercise(currentSet);
+    const updatedSet = { ...currentSet };
+    updateExercise(updatedSet);
+    setTimeout(() => {
+      closePopup();
+    }, 0);
   };
 
   const memoizedCurrentSet = useMemo(() => currentSet, [currentSet]);

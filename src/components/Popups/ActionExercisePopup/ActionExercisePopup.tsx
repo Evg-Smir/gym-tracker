@@ -1,9 +1,9 @@
 import styles from './ActionExercisePopup.module.scss';
 import { CategoryType } from "@/types/categoryTypes";
-import { useCategoryStore } from "@/stores/category";
+import { useCategoryStore } from "@/stores/categoriesStore";
 import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
 import { BackButton } from "@/components/Buttons/BackButton/BackButton";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 
 interface ActionExercisePopupProps {
   category: CategoryType;
@@ -39,6 +39,8 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
     show();
   }, [changeExerciseId, category.exercises, show]);
 
+  const memoizedParamExercise = useMemo(() => paramExercise, [paramExercise]);
+
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
     setParamExercise(prevState => ({
@@ -54,11 +56,11 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
 
   const handleActionExercise = useCallback((action: 'create' | 'update' | 'remove') => {
     actionExerciseOfCategory(category.id, {
-      ...paramExercise,
+      ...memoizedParamExercise,
       id: action === 'create' ? -1 : Number(changeExerciseId),
     }, action);
     closePopup();
-  }, [actionExerciseOfCategory, category.id, changeExerciseId, paramExercise, closePopup]);
+  }, [actionExerciseOfCategory, category.id, changeExerciseId, memoizedParamExercise, closePopup]);
 
   if (!shouldRender) return null;
 

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { ExercisesStateType, ExerciseType } from "@/types/exerciseTypes";
-import { useCategoryStore } from "@/stores/category";
+import { useCategoryStore } from "@/stores/categoriesStore";
 
 export const useExercisesStore = create<ExercisesStateType>((set) => ({
   exercises: [

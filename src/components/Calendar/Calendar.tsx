@@ -10,7 +10,7 @@ import { useState, useCallback, useEffect } from "react";
 import useClickOutside from "@/hooks/useClickOutside";
 import dayjs from "dayjs";
 import Image from "next/image";
-import { useExercisesStore } from "@/stores/exercises";
+import { useExercisesStore } from "@/stores/exercisesStore";
 import { useSwipeable } from 'react-swipeable';
 
 const theme = createTheme(

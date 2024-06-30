@@ -13,15 +13,16 @@ const EmptyBlock = () => (
   </div>
 );
 
+
 export const ExercisesList = ({ exercises, setActionSetId }: ExercisesListProps) => {
   return (
     <div className={styles.exerciseList}>
       {exercises?.length ? (
-        exercises.map(exercise => (
-          <ExercisesItem key={exercise.id} exercise={exercise} setActionSetId={setActionSetId} />
+        exercises.map((exercise) => (
+          <ExercisesItem key={exercise.id} exercise={exercise} setActionSetId={setActionSetId}/>
         ))
       ) : (
-        <EmptyBlock />
+        <EmptyBlock/>
       )}
     </div>
   );

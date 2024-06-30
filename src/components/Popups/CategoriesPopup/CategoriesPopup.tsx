@@ -1,5 +1,5 @@
 import styles from './CategoriesPopup.module.scss';
-import { useExercisesStore } from "@/stores/exercises";
+import { useExercisesStore } from "@/stores/exercisesStore";
 import { AddExerciseButton } from "@/components/Buttons/AddExerciseButton/AddExerciseButton";
 import { BackButton } from "@/components/Buttons/BackButton/BackButton";
 import { useState, useCallback, useMemo, useEffect } from "react";

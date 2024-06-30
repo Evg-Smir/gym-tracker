@@ -1,7 +1,7 @@
 import styles from './ExercisesItem.module.scss';
 import { ExerciseType } from "@/types/exerciseTypes";
 import { ExerciseSetItem } from "@/components/Exercises/ExerciseSetItem/ExerciseSetItem";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 interface ExercisesItemProps {
   exercise: ExerciseType;
@@ -12,12 +12,28 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
   const { category_icon, exercise_name, sets, id } = exercise;
   const [contentIsVisible, setContentIsVisible] = useState(false);
 
-  const toggleContentVisibility = () => {
-    setContentIsVisible(!contentIsVisible);
-  };
+  const toggleContentVisibility = useCallback(() => {
+    setContentIsVisible(prevState => !prevState);
+  }, []);
 
-  const handleActionSetClick = () => {
+  const handleActionSetClick = useCallback(() => {
     setActionSetId(id);
+  }, [id, setActionSetId]);
+
+  const renderSets = () => {
+    if (!contentIsVisible) return null;
+
+    if (sets.length > 0) {
+      return sets.map((set, index) => (
+        <ExerciseSetItem
+          key={index}
+          index={index}
+          {...set}
+        />
+      ));
+    } else {
+      return <ExerciseSetItem index={0}/>;
+    }
   };
 
   return (
@@ -34,21 +50,7 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
         </div>
       </div>
       <div className={styles.exercisesItemBottom} onClick={handleActionSetClick}>
-        {contentIsVisible && (
-          sets.length > 0 ? (
-            sets.map((set, index) => (
-              <ExerciseSetItem
-                key={index}
-                index={index}
-                {...set}
-              />
-            ))
-          ) : (
-            <ExerciseSetItem
-              index={0}
-            />
-          )
-        )}
+        {renderSets()}
       </div>
     </div>
   );
