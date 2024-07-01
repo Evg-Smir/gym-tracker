@@ -5,7 +5,7 @@ interface MenuPopupInputProps {
   updateValue: (value: string) => void;
 }
 
-export const MenuPopupInput = ({ updateValue }: MenuPopupInputProps) => {
+export const SearchInput = ({ updateValue }: MenuPopupInputProps) => {
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export const MenuPopupInput = ({ updateValue }: MenuPopupInputProps) => {
   }, [handleClearInput]);
 
   return (
-    <div className={styles.menuPopupInputWrapper}>
+    <div className={styles.searchInputInputWrapper}>
       <img className={styles.iconSearch} src="/ui/search.svg" alt="Поиск"/>
       <input
         type="text"

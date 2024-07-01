@@ -6,7 +6,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
     {
       id: 1,
       name: 'Руки',
-      icon: '/categories/bicep2.svg',
+      icon: '/categories/bicep.svg',
       exercises: [
         {
           id: 1,
@@ -64,7 +64,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
     {
       id: 5,
       name: 'Пресс',
-      icon: '/categories/abs2.svg',
+      icon: '/categories/abs.svg',
       exercises: [
         {
           id: 1,

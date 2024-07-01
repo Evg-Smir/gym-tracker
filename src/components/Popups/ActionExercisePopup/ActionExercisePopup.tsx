@@ -51,7 +51,7 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
 
   const closePopup = useCallback(() => {
     hide();
-    unsetCreateCategory();
+    unsetCreateCategory()
   }, [hide, unsetCreateCategory]);
 
   const handleActionExercise = useCallback((action: 'create' | 'update' | 'remove') => {

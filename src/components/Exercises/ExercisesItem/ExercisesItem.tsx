@@ -2,6 +2,7 @@ import styles from './ExercisesItem.module.scss';
 import { ExerciseType } from "@/types/exerciseTypes";
 import { ExerciseSetItem } from "@/components/Exercises/ExerciseSetItem/ExerciseSetItem";
 import { useCallback, useState } from "react";
+import { ExerciseDialog } from "@/components/Dialogs/ExerciseDialog/ExerciseDialog";
 
 interface ExercisesItemProps {
   exercise: ExerciseType;
@@ -11,6 +12,7 @@ interface ExercisesItemProps {
 export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) => {
   const { category_icon, exercise_name, sets, id } = exercise;
   const [contentIsVisible, setContentIsVisible] = useState(false);
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
 
   const toggleContentVisibility = useCallback(() => {
     setContentIsVisible(prevState => !prevState);
@@ -19,6 +21,10 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
   const handleActionSetClick = useCallback(() => {
     setActionSetId(id);
   }, [id, setActionSetId]);
+
+  const openDialog = () => {
+    setDialogIsOpen(true)
+  }
 
   const renderSets = () => {
     if (!contentIsVisible) return null;
@@ -38,20 +44,29 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
 
   return (
     <div className={styles.exercisesItem}>
-      <div className={styles.exercisesItemTop} onClick={toggleContentVisibility}>
-        <img src={category_icon} alt="Иконка"/>
-        <div className={styles.nameWrapper}>
-          <p className={styles.exercisesItemName}>{exercise_name}</p>
-          <img
-            className={`${styles.arrowIcon} ${contentIsVisible ? styles.arrowIconActive : ''}`}
-            src="/ui/arrow.svg"
-            alt="Стрелка"
-          />
+      <div className={styles.exercisesItemTop}>
+        <div className={styles.exercisesItemTopContent} onClick={toggleContentVisibility}>
+          <img className={styles.icon} src={category_icon} alt="Иконка"/>
+          <div className={styles.nameWrapper}>
+            <p className={styles.exercisesItemName}>{exercise_name}</p>
+            <img
+              className={`${styles.arrowIcon} ${contentIsVisible ? styles.arrowIconActive : ''}`}
+              src="/ui/arrow.svg"
+              alt="Стрелка"
+            />
+          </div>
         </div>
+        <button onClick={openDialog}>
+          <img src="/ui/ellipsis.svg" alt=""/>
+        </button>
       </div>
       <div className={styles.exercisesItemBottom} onClick={handleActionSetClick}>
         {renderSets()}
       </div>
+      <ExerciseDialog
+        open={dialogIsOpen}
+        onClose={() => setDialogIsOpen(false)}
+      />
     </div>
   );
 };

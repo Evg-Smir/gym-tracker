@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState, useMemo } from 'react';
 import { useCategoryStore } from '@/stores/categoriesStore';
 import { ExercisesCategoriesList } from "@/components/Exercises/ExercisesCategoriesList/ExercisesCategoriesList";
 import { AddExerciseButton } from "@/components/Buttons/AddExerciseButton/AddExerciseButton";
-import { MenuPopupInput } from "@/components/Inputs/MenuPopupInput/MenuPopupInput";
+import { SearchInput } from "@/components/Inputs/MenuPopupInput/SearchInput";
 import { BackButton } from "@/components/Buttons/BackButton/BackButton";
 import { WrapperPopup } from "@/components/Popups/WrapperPopups/WrapperPopup";
 import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
@@ -43,7 +43,7 @@ export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
 
   const closeMenuPopup = useCallback(() => {
     hide();
-    setMenuVisible(false);
+    setTimeout(() => {setMenuVisible(false)}, 300)
   }, [hide, setMenuVisible]);
 
   const selectCategory = useCallback((categoryId: number): void => {
@@ -55,15 +55,19 @@ export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
     setExercisesListForCreate(true);
   }, []);
 
+  const unsetSelectedCategory = useCallback(() => {
+    setSelectedCategory(null);
+  }, []);
+
   const memoizedFilteredCategoriesList = useMemo(() => filteredCategoriesList, [filteredCategoriesList]);
   const memoizedSelectCategory = useCallback(selectCategory, [selectCategory]);
 
   if (!shouldRender) return null;
 
   return (
-    <div className={`${styles.menuPopup} ${isVisible ? styles.menuActive : ''}`}>
+    <div className={`${styles.menuPopup} ${isVisible ? styles.visible : ''}`}>
       <BackButton clickButton={closeMenuPopup}/>
-      <MenuPopupInput updateValue={setInputValue}/>
+      <SearchInput updateValue={setInputValue}/>
       <AddExerciseButton clickButton={addExercise}/>
       <ExercisesCategoriesList
         categoriesList={memoizedFilteredCategoriesList}
@@ -73,6 +77,7 @@ export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
         closeMenuPopup={closeMenuPopup}
         setListForCreate={state.exercisesListForCreate}
         selectedCategoryProp={state.selectedCategory}
+        unsetSelectedCategory={unsetSelectedCategory}
       />
     </div>
   );

@@ -11,6 +11,11 @@
   .input-wrapper {
     margin-bottom: 32px;
   }
+
+  &.visible {
+    transform: translateY(0);
+    transition: transform 0.3s ease-in-out;
+  }
 }
 
 .menuActive {

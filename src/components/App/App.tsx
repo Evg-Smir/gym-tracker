@@ -11,12 +11,14 @@ import 'dayjs/locale/ru';
 import { useExercisesStore } from "@/stores/exercisesStore";
 import { ActionSetsPopup } from "@/components/Popups/ActionSetsPopup/ActionSetsPopup";
 import { AddNewButton } from "@/components/Buttons/AddNewButton/AddNewButton";
+import { StatisticsPopup } from "@/components/Popups/StatisticsPopup/StatisticsPopup";
 
 dayjs.locale('ru');
 
 interface AppState {
   isClient: boolean;
   menuIsOpen: boolean;
+  statIsOpen: boolean;
   actionSetId: number | null;
 }
 
@@ -24,7 +26,8 @@ export const App = () => {
   const [appState, setAppState] = useState<AppState>({
     isClient: false,
     menuIsOpen: false,
-    actionSetId: null
+    actionSetId: null,
+    statIsOpen: false,
   });
 
   const exercisesOfCurrentDay = useExercisesStore((state) => state.exercisesOfCurrentDay);
@@ -35,8 +38,12 @@ export const App = () => {
     setAppState(prevState => ({ ...prevState, isClient: true }));
   }, [setExercisesOfCurrentDay]);
 
-  const openMenu = useCallback(() => {
-    setAppState(prevState => ({ ...prevState, menuIsOpen: true }));
+  const toggleMenu = useCallback(() => {
+    setAppState(prevState => ({ ...prevState, menuIsOpen: !prevState.menuIsOpen }));
+  }, []);
+
+  const toggleStatPopup = useCallback(() => {
+    setAppState(prevState => ({ ...prevState, statIsOpen: !prevState.statIsOpen }));
   }, []);
 
   const setActionSet = useCallback((setId: number) => {
@@ -55,9 +62,11 @@ export const App = () => {
         <div className={styles.page}>
           <Calendar/>
           <ExercisesList {...exercisesOfCurrentDay} setActionSetId={setActionSet}/>
-          <AddNewButton openMenu={openMenu}/>
-          {appState.menuIsOpen && <MainPopup setMenuVisible={openMenu}/>}
+          <AddNewButton openMenu={toggleMenu}/>
+          {/*<button className={styles.statButton} onClick={toggleStatPopup}>Статистика</button>*/}
+          {appState.menuIsOpen && <MainPopup setMenuVisible={toggleMenu}/>}
           {appState.actionSetId && <ActionSetsPopup unsetValue={unsetValue} setId={appState.actionSetId}/>}
+          {appState.statIsOpen && <StatisticsPopup closeStat={toggleStatPopup}/>}
         </div>
       }
     </>

@@ -7,11 +7,12 @@ import { useCategoryStore } from "@/stores/categoriesStore";
 
 interface WrapperPopupProps {
   closeMenuPopup: () => void;
+  unsetSelectedCategory: () => void;
   setListForCreate: boolean;
   selectedCategoryProp: CategoryType | null;
 }
 
-export const WrapperPopup = ({ closeMenuPopup, setListForCreate, selectedCategoryProp }: WrapperPopupProps) => {
+export const WrapperPopup = ({ closeMenuPopup, setListForCreate, selectedCategoryProp, unsetSelectedCategory }: WrapperPopupProps) => {
   const categoriesList = useCategoryStore((state) => state.categories);
   const [state, setState] = useState({
     selectedCategory: selectedCategoryProp,
@@ -47,21 +48,26 @@ export const WrapperPopup = ({ closeMenuPopup, setListForCreate, selectedCategor
   }, [categoriesList]);
 
   const unsetCategory = useCallback(() => {
+    unsetSelectedCategory()
     setState((prevState) => ({ ...prevState, selectedCategory: null }));
   }, []);
 
   const closePopups = useCallback(() => {
-    setState({
-      selectedCategory: null,
-      exerciseForAction: null,
-      exerciseForChange: null,
-      exercisesListForCreate: false
-    });
+    unsetCategory()
+    setTimeout(() => {
+      setState((prevState) => ({
+        ...prevState,
+        exerciseForAction: null,
+        exerciseForChange: null,
+        exercisesListForCreate: false
+      }));
+    }, 300)
   }, []);
 
   const closeAllPopups = useCallback(() => {
     closePopups();
     closeMenuPopup();
+    unsetSelectedCategory()
   }, [closePopups, closeMenuPopup]);
 
   return (

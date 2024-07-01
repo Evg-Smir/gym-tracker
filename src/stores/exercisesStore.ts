@@ -5,12 +5,12 @@ import { useCategoryStore } from "@/stores/categoriesStore";
 export const useExercisesStore = create<ExercisesStateType>((set) => ({
   exercises: [
     {
-      time: 1719687600000,
+      time: 1719774000000,
       exercises: [
         {
           id: 1,
           category_id: 1,
-          category_icon: '/categories/bicep2.svg',
+          category_icon: '/categories/bicep.svg',
           exercise_id: 1,
           exercise_name: 'Отжимания на брусьях',
           sets: [
@@ -22,7 +22,7 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
         {
           id: 2,
           category_id: 1,
-          category_icon: '/categories/bicep2.svg',
+          category_icon: '/categories/bicep.svg',
           exercise_id: 1,
           exercise_name: 'Отжимания на брусьях',
           sets: []
