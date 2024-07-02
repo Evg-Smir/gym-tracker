@@ -63,8 +63,8 @@ export const App = () => {
           <Calendar/>
           <ExercisesList {...exercisesOfCurrentDay} setActionSetId={setActionSet}/>
           <AddNewButton openMenu={toggleMenu}/>
-          {/*<button className={styles.statButton} onClick={toggleStatPopup}>Статистика</button>*/}
-          {appState.menuIsOpen && <MainPopup setMenuVisible={toggleMenu}/>}
+          <button className={styles.statButton} onClick={toggleStatPopup}>Статистика</button>
+          {appState.menuIsOpen && <MainPopup toggleMenuPopupVisible={toggleMenu}/>}
           {appState.actionSetId && <ActionSetsPopup unsetValue={unsetValue} setId={appState.actionSetId}/>}
           {appState.statIsOpen && <StatisticsPopup closeStat={toggleStatPopup}/>}
         </div>

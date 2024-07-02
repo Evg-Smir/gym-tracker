@@ -4,13 +4,13 @@ import React, { useEffect, useState } from "react";
 
 type UpdatedValue = (value: ExerciseRepsType) => void;
 
-interface SetItemType extends ExerciseRepsType {
+interface SetItemProps extends ExerciseRepsType {
   index: number;
   updateValue: UpdatedValue;
   removeSet: (index: number) => void;
 }
 
-export const SetItem = ({ weight, reps, updateValue, index, removeSet }: SetItemType) => {
+export const SetItem = ({ weight, reps, updateValue, index, removeSet }: SetItemProps) => {
   const [valueSets, setValueSets] = useState<ExerciseRepsType>({ weight, reps });
 
   useEffect(() => {

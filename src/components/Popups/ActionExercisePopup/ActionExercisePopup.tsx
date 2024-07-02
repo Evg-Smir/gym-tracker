@@ -20,7 +20,7 @@ interface ParamExerciseType {
 
 export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerciseId }: ActionExercisePopupProps) => {
   const actionExerciseOfCategory = useCategoryStore(state => state.actionExerciseOfCategory);
-  const [paramExercise, setParamExercise] = useState<ParamExerciseType>({
+  const [state, setState] = useState<ParamExerciseType>({
     name: '',
     doubleWeight: false,
     ownWeight: false,
@@ -33,17 +33,17 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
       const exercise = category.exercises.find(ex => ex.id === changeExerciseId);
       if (exercise) {
         const { name, doubleWeight, ownWeight } = exercise;
-        setParamExercise({ name, doubleWeight, ownWeight });
+        setState({ name, doubleWeight, ownWeight });
       }
     }
     show();
   }, [changeExerciseId, category.exercises, show]);
 
-  const memoizedParamExercise = useMemo(() => paramExercise, [paramExercise]);
+  const memoizedParamExercise = useMemo(() => state, [state]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
-    setParamExercise(prevState => ({
+    setState(prevState => ({
       ...prevState,
       [name]: type === 'checkbox' ? checked : value,
     }));
@@ -51,7 +51,7 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
 
   const closePopup = useCallback(() => {
     hide();
-    unsetCreateCategory()
+    setTimeout(unsetCreateCategory, 300)
   }, [hide, unsetCreateCategory]);
 
   const handleActionExercise = useCallback((action: 'create' | 'update' | 'remove') => {
@@ -74,7 +74,7 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
             type="text"
             placeholder="Название упражнения"
             name="name"
-            value={paramExercise.name}
+            value={state.name}
             onChange={handleInputChange}
           />
         </div>
@@ -87,7 +87,7 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
             <input
               type="checkbox"
               name="doubleWeight"
-              checked={paramExercise.doubleWeight}
+              checked={state.doubleWeight}
               onChange={handleInputChange}
             />
           </div>
@@ -101,13 +101,13 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
             <input
               type="checkbox"
               name="ownWeight"
-              checked={paramExercise.ownWeight}
+              checked={state.ownWeight}
               onChange={handleInputChange}
             />
           </div>
         </div>
         <div className={styles.actionExercisePopupButtons}>
-          {!changeExerciseId && paramExercise.name && (
+          {!changeExerciseId && state.name && (
             <button className={styles.saveButton} onClick={() => handleActionExercise('create')}>
               Создать упражнение
             </button>

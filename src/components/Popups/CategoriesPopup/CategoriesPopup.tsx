@@ -14,13 +14,14 @@ interface CategoriesPopupProps {
   createExercise: (category: CategoryType | null) => void;
 }
 
-export const CategoriesPopup = ({
-                                  category,
-                                  changeExercise,
-                                  unsetCategory,
-                                  createExercise,
-                                  closeAllPopups
-                                }: CategoriesPopupProps) => {
+export const CategoriesPopup = (
+  {
+    category,
+    changeExercise,
+    unsetCategory,
+    createExercise,
+    closeAllPopups
+  }: CategoriesPopupProps) => {
   const [selectedExercises, setSelectedExercises] = useState<SelectedExerciseType[]>([]);
   const setCurrentExercise = useExercisesStore(state => state.setExercise);
   const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
@@ -48,7 +49,7 @@ export const CategoriesPopup = ({
       (selected) =>
         selected.exerciseId === exercise.id &&
         selected.categoryId === category.id
-    ) ? <img src="/ui/check-mark.svg" alt="icon" /> : null;
+    ) ? <img src="/ui/check-mark.svg" alt="icon"/> : null;
   }, [selectedExercises]);
 
   const setExercise = useCallback(() => {
@@ -72,7 +73,10 @@ export const CategoriesPopup = ({
   const renderChangeButton = useMemo(() => {
     if (selectedExercises.length === 1) {
       return (
-        <button onClick={() => changeExercise(selectedExercises[0])} className={styles.changeButton}>
+        <button onClick={() => {
+          changeExercise(selectedExercises[0]);
+          setTimeout(() => setSelectedExercises([]), 300)
+        }} className={styles.changeButton}>
           Изменить
         </button>
       );

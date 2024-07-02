@@ -8,16 +8,31 @@ import { useCategoryStore } from "@/stores/categoriesStore";
 interface WrapperPopupProps {
   closeMenuPopup: () => void;
   unsetSelectedCategory: () => void;
+  unsetSetListForCreate: () => void;
   setListForCreate: boolean;
   selectedCategoryProp: CategoryType | null;
 }
 
-export const WrapperPopup = ({ closeMenuPopup, setListForCreate, selectedCategoryProp, unsetSelectedCategory }: WrapperPopupProps) => {
+interface WrapperPopupStateType {
+  selectedCategory: CategoryType | null,
+  exerciseForAction: CategoryType | null,
+  exerciseForChange: number | null,
+  exercisesListForCreate: boolean
+}
+
+export const WrapperPopup = (
+  {
+    closeMenuPopup,
+    setListForCreate,
+    selectedCategoryProp,
+    unsetSelectedCategory,
+    unsetSetListForCreate
+  }: WrapperPopupProps) => {
   const categoriesList = useCategoryStore((state) => state.categories);
-  const [state, setState] = useState({
+  const [state, setState] = useState<WrapperPopupStateType>({
     selectedCategory: selectedCategoryProp,
-    exerciseForAction: null as CategoryType | null,
-    exerciseForChange: null as number | null,
+    exerciseForAction: null,
+    exerciseForChange: null,
     exercisesListForCreate: setListForCreate
   });
 
@@ -47,28 +62,24 @@ export const WrapperPopup = ({ closeMenuPopup, setListForCreate, selectedCategor
     }));
   }, [categoriesList]);
 
-  const unsetCategory = useCallback(() => {
+  const closeAllPopups = useCallback(() => {
+    closeMenuPopup();
+  }, [closeMenuPopup]);
+
+  const closeCategoriesPopup = () => {
     unsetSelectedCategory()
     setState((prevState) => ({ ...prevState, selectedCategory: null }));
-  }, []);
+  }
 
-  const closePopups = useCallback(() => {
-    unsetCategory()
-    setTimeout(() => {
-      setState((prevState) => ({
-        ...prevState,
-        exerciseForAction: null,
-        exerciseForChange: null,
-        exercisesListForCreate: false
-      }));
-    }, 300)
-  }, []);
+  const closeCreateExercisesList = () => {
+    unsetSetListForCreate()
+    setState((prevState) => ({ ...prevState, exercisesListForCreate: false }));
+  }
 
-  const closeAllPopups = useCallback(() => {
-    closePopups();
-    closeMenuPopup();
-    unsetSelectedCategory()
-  }, [closePopups, closeMenuPopup]);
+  const closeActionExercisePopup = () => {
+    setState((prevState) => ({ ...prevState, exerciseForAction: null }));
+  }
+
 
   return (
     <>
@@ -77,14 +88,14 @@ export const WrapperPopup = ({ closeMenuPopup, setListForCreate, selectedCategor
           closeAllPopups={closeAllPopups}
           createExercise={createExercise}
           category={state.selectedCategory}
-          unsetCategory={unsetCategory}
+          unsetCategory={closeCategoriesPopup}
           changeExercise={changeExercise}
         />
       )}
       {state.exercisesListForCreate && (
         <CreateExercisesList
           categoriesList={categoriesList}
-          unsetValue={() => setState((prevState) => ({ ...prevState, exercisesListForCreate: false }))}
+          unsetValue={closeCreateExercisesList}
           selectCategory={createNewExercise}
         />
       )}
@@ -92,7 +103,7 @@ export const WrapperPopup = ({ closeMenuPopup, setListForCreate, selectedCategor
         <ActionExercisePopup
           category={state.exerciseForAction}
           changeExerciseId={state.exerciseForChange}
-          unsetCreateCategory={closePopups}
+          unsetCreateCategory={closeActionExercisePopup}
         />
       )}
     </>

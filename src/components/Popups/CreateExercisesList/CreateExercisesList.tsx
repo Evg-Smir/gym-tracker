@@ -22,7 +22,7 @@ export const CreateExercisesList = ({ categoriesList, unsetValue, selectCategory
 
   const closePopup = () => {
     hide();
-    unsetValue();
+    setTimeout(unsetValue, 300)
   };
 
   return (

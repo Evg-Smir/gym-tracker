@@ -11,15 +11,21 @@ import useFilteredCategories from "@/hooks/useFilteredCategories";
 import { CategoryType } from "@/types/categoryTypes";
 
 interface MenuPopupProps {
-  setMenuVisible: (value: boolean) => void;
+  toggleMenuPopupVisible: () => void;
 }
 
-export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
+interface MenuPopupStateType {
+  inputValue: string,
+  exercisesListForCreate: boolean,
+  selectedCategory: CategoryType | null
+}
+
+export const MainPopup = ({ toggleMenuPopupVisible }: MenuPopupProps) => {
   const categoriesList = useCategoryStore((state) => state.categories);
-  const [state, setState] = useState({
-    inputValue: '' as string,
-    exercisesListForCreate: false as boolean,
-    selectedCategory: null as CategoryType | null,
+  const [state, setState] = useState<MenuPopupStateType>({
+    inputValue: '',
+    exercisesListForCreate: false,
+    selectedCategory: null,
   });
 
   const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
@@ -27,10 +33,6 @@ export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
 
   const setInputValue = useCallback((value: string): void => {
     setState((prevState) => ({ ...prevState, inputValue: value }));
-  }, []);
-
-  const setExercisesListForCreate = useCallback((value: boolean): void => {
-    setState((prevState) => ({ ...prevState, exercisesListForCreate: value }));
   }, []);
 
   const setSelectedCategory = useCallback((value: CategoryType | null): void => {
@@ -43,17 +45,19 @@ export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
 
   const closeMenuPopup = useCallback(() => {
     hide();
-    setTimeout(() => {setMenuVisible(false)}, 300)
-  }, [hide, setMenuVisible]);
+    setTimeout(() => {
+      toggleMenuPopupVisible()
+    }, 300)
+  }, [hide, toggleMenuPopupVisible]);
 
   const selectCategory = useCallback((categoryId: number): void => {
     const category = categoriesList.find(categoryItem => categoryItem.id === categoryId) || null;
     setSelectedCategory(category);
   }, [categoriesList]);
 
-  const addExercise = useCallback(() => {
-    setExercisesListForCreate(true);
-  }, []);
+  const toggleStateListForCreate = useCallback(() => {
+    setState((prevState) => ({ ...prevState, exercisesListForCreate: !prevState.exercisesListForCreate }));
+  }, [])
 
   const unsetSelectedCategory = useCallback(() => {
     setSelectedCategory(null);
@@ -68,7 +72,7 @@ export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
     <div className={`${styles.menuPopup} ${isVisible ? styles.visible : ''}`}>
       <BackButton clickButton={closeMenuPopup}/>
       <SearchInput updateValue={setInputValue}/>
-      <AddExerciseButton clickButton={addExercise}/>
+      <AddExerciseButton clickButton={toggleStateListForCreate}/>
       <ExercisesCategoriesList
         categoriesList={memoizedFilteredCategoriesList}
         selectCategory={memoizedSelectCategory}
@@ -78,6 +82,7 @@ export const MainPopup = ({ setMenuVisible }: MenuPopupProps) => {
         setListForCreate={state.exercisesListForCreate}
         selectedCategoryProp={state.selectedCategory}
         unsetSelectedCategory={unsetSelectedCategory}
+        unsetSetListForCreate={toggleStateListForCreate}
       />
     </div>
   );

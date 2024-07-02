@@ -5,7 +5,24 @@ import { useCategoryStore } from "@/stores/categoriesStore";
 export const useExercisesStore = create<ExercisesStateType>((set) => ({
   exercises: [
     {
-      time: 1719774000000,
+      time: 1718132400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '6', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718218800000,
       exercises: [
         {
           id: 1,
@@ -19,16 +36,586 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
             { weight: '15', reps: '12' },
           ]
         },
+      ]
+    },
+    {
+      time: 1718305200000,
+      exercises: [
         {
-          id: 2,
+          id: 1,
           category_id: 1,
           category_icon: '/categories/bicep.svg',
           exercise_id: 1,
           exercise_name: 'Отжимания на брусьях',
-          sets: []
-        }
+          sets: [
+            { weight: '30', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
       ]
     },
+    {
+      time: 1719860400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '120', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718132400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '6', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718218800000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '15', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718305200000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '30', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1719860400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '120', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718132400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '6', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718218800000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '15', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718305200000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '30', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1719860400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '120', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718132400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '6', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718218800000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '15', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718305200000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '30', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1719860400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '120', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718132400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '6', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718218800000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '15', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718305200000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '30', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1719860400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '120', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718132400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '6', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718218800000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '15', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718305200000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '30', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1719860400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '120', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },{
+      time: 1718132400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '6', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718218800000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '15', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718305200000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '30', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1719860400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '120', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718132400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '6', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718218800000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '15', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718305200000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '30', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1719860400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '120', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718132400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '6', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718218800000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '15', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1718305200000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '30', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+    {
+      time: 1719860400000,
+      exercises: [
+        {
+          id: 1,
+          category_id: 1,
+          category_icon: '/categories/bicep.svg',
+          exercise_id: 1,
+          exercise_name: 'Отжимания на брусьях',
+          sets: [
+            { weight: '120', reps: '4' },
+            { weight: '15', reps: '12' },
+            { weight: '15', reps: '12' },
+          ]
+        },
+      ]
+    },
+
   ],
   exercisesOfCurrentDay: {
     time: 0,
@@ -112,6 +699,33 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
       ...currentDayExercises[exerciseIndex],
       ...exercise
     };
+
+    const newExercisesArray = [...state.exercises];
+    newExercisesArray[dayIndex] = {
+      ...state.exercises[dayIndex],
+      exercises: currentDayExercises
+    };
+
+    const newExercisesOfCurrentDay = {
+      ...state.exercisesOfCurrentDay,
+      exercises: currentDayExercises
+    };
+
+    return {
+      exercises: newExercisesArray,
+      exercisesOfCurrentDay: newExercisesOfCurrentDay
+    };
+  }),
+
+  removeExercise: (exercise) => set((state) => {
+    const currentDayTime = state.exercisesOfCurrentDay.time;
+    const dayIndex = state.exercises.findIndex(item => item.time === currentDayTime);
+
+    if (dayIndex === -1) {
+      return state;
+    }
+
+    const currentDayExercises = state.exercises[dayIndex].exercises.filter(ex => ex.id !== exercise.id);
 
     const newExercisesArray = [...state.exercises];
     newExercisesArray[dayIndex] = {

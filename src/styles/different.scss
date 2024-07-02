@@ -66,3 +66,15 @@
 .MuiPickersCalendarHeader-labelContainer {
   display: none;
 }
+
+.recharts-responsive-container {
+  min-height: 400px;
+
+  .recharts-wrapper {
+    width: 100% !important;
+  }
+
+  .recharts-cartesian-axis-ticks {
+    display: none;
+  }
+}
