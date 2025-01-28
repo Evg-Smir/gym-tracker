@@ -1,17 +1,17 @@
-"use client"
+'use client';
 
 import styles from './App.module.scss';
-import { Calendar } from "@/components/Calendar/Calendar";
-import { ExercisesList } from "@/components/Exercises/ExercisesList/ExercisesList";
-import { MainPopup } from "@/components/Popups/MainPopup/MainPopup";
-import { useCallback, useEffect, useState } from "react";
+import { Calendar } from '@/components/Calendar/Calendar';
+import { ExercisesList } from '@/components/Exercises/ExercisesList/ExercisesList';
+import { MainPopup } from '@/components/Popups/MainPopup/MainPopup';
+import { useCallback, useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
-import { useExercisesStore } from "@/stores/exercisesStore";
-import { ActionSetsPopup } from "@/components/Popups/ActionSetsPopup/ActionSetsPopup";
-import { AddNewButton } from "@/components/Buttons/AddNewButton/AddNewButton";
-import { StatisticsPopup } from "@/components/Popups/StatisticsPopup/StatisticsPopup";
+import { useExercisesStore } from '@/stores/exercisesStore';
+import { ActionSetsPopup } from '@/components/Popups/ActionSetsPopup/ActionSetsPopup';
+import { AddNewButton } from '@/components/Buttons/AddNewButton/AddNewButton';
+import { StatisticsPopup } from '@/components/Popups/StatisticsPopup/StatisticsPopup';
 
 dayjs.locale('ru');
 
@@ -57,16 +57,16 @@ export const App = () => {
   return (
     <>
       {!appState.isClient ?
-        <div className={styles.loading}><CircularProgress/></div>
+        <div className={styles.loading}><CircularProgress /></div>
         :
         <div className={styles.page}>
-          <Calendar/>
-          <ExercisesList {...exercisesOfCurrentDay} setActionSetId={setActionSet}/>
-          <AddNewButton openMenu={toggleMenu}/>
+          <Calendar />
+          <ExercisesList {...exercisesOfCurrentDay} setActionSetId={setActionSet} />
+          <AddNewButton openMenu={toggleMenu} />
           <button className={styles.statButton} onClick={toggleStatPopup}>Статистика</button>
-          {appState.menuIsOpen && <MainPopup toggleMenuPopupVisible={toggleMenu}/>}
-          {appState.actionSetId && <ActionSetsPopup unsetValue={unsetValue} setId={appState.actionSetId}/>}
-          {appState.statIsOpen && <StatisticsPopup closeStat={toggleStatPopup}/>}
+          {appState.menuIsOpen && <MainPopup toggleMenuPopupVisible={toggleMenu} />}
+          {appState.actionSetId && <ActionSetsPopup unsetValue={unsetValue} setId={appState.actionSetId} />}
+          {appState.statIsOpen && <StatisticsPopup closeStat={toggleStatPopup} />}
         </div>
       }
     </>

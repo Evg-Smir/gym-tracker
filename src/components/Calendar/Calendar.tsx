@@ -65,7 +65,7 @@ export const Calendar = () => {
 
     setExercisesOfCurrentDay(day)
     setCurrentDate(day);
-  }, []);
+  }, [currentDate, setExercisesOfCurrentDay]);
 
   const getDate = useCallback((date: Date) => {
     const now = new Date();

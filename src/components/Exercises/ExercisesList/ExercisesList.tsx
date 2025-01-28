@@ -9,7 +9,7 @@ interface ExercisesListProps extends DayOfExercisesType {
 const EmptyBlock = () => (
   <div className={styles.emptyBlock}>
     <img src="/ui/background.png" alt="Фон"/>
-    <p>Добавьте упражнение или тренировку, чтобы записать тренировку</p>
+    <p>Добавьте упражнение, чтобы записать тренировку</p>
   </div>
 );
 

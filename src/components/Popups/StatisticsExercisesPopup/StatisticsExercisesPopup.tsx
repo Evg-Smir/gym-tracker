@@ -34,6 +34,13 @@ export const StatisticsExercisesPopup = ({ category, unsetCategory }: Statistics
     exerciseList: [],
   })
 
+  const EmptyBlock = () => (
+    <div className={styles.emptyBlock}>
+      <img src="/ui/background.png" alt="Фон"/>
+      <p>Добавьте упражнение, чтобы записать показать статистику</p>
+    </div>
+  );
+
   const formatTimestampToDate = (timestamp: number): string => {
     const date = new Date(timestamp);
 
@@ -96,7 +103,7 @@ export const StatisticsExercisesPopup = ({ category, unsetCategory }: Statistics
         </Select>
       </FormControl>
 
-      {staticsState.exerciseList.length > 0 && (
+      {staticsState.exerciseList.length > 0 ? (
         <>
           <h3 className={styles.label}>Вес</h3>
           <div className={styles.graphWrapper}>
@@ -118,7 +125,9 @@ export const StatisticsExercisesPopup = ({ category, unsetCategory }: Statistics
             </ResponsiveContainer>
           </div>
         </>
-      )}
+      ) :
+        <EmptyBlock />
+      }
     </div>
   );
 };
