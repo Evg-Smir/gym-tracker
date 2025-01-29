@@ -12,6 +12,8 @@ import { useExercisesStore } from '@/stores/exercisesStore';
 import { ActionSetsPopup } from '@/components/Popups/ActionSetsPopup/ActionSetsPopup';
 import { AddNewButton } from '@/components/Buttons/AddNewButton/AddNewButton';
 import { StatisticsPopup } from '@/components/Popups/StatisticsPopup/StatisticsPopup';
+import { useCategoryStore } from '@/stores/categoriesStore';
+import { getLocalStorage, setLocalStorage } from '@/helpers/localStorage';
 
 dayjs.locale('ru');
 
@@ -32,6 +34,24 @@ export const App = () => {
 
   const exercisesOfCurrentDay = useExercisesStore((state) => state.exercisesOfCurrentDay);
   const setExercisesOfCurrentDay = useExercisesStore((state) => state.setExercisesOfCurrentDay);
+  const setExercisesLocalList = useExercisesStore((state) => state.setExercisesList);
+  const setCategoriesLocalList = useCategoryStore((state) => state.setCategories);
+  const categoriesList = useCategoryStore((state) => state.categories);
+
+  useEffect(() => {
+    const localCategories = getLocalStorage('categories');
+    const localExercises = getLocalStorage('exercises');
+
+    if (localCategories && localCategories?.length > 1) {
+      setCategoriesLocalList(localCategories);
+    } else {
+      setLocalStorage('categories', categoriesList);
+    }
+
+    if (localExercises && localExercises?.length > 0) {
+      setExercisesLocalList(localExercises);
+    }
+  }, []);
 
   useEffect(() => {
     setExercisesOfCurrentDay(new Date());

@@ -14,12 +14,13 @@ export interface ExerciseType {
 
 export interface DayOfExercisesType {
   time: number;
-  exercises: ExerciseType[]
+  exercises: ExerciseType[];
 }
 
 export interface ExercisesStateType {
   exercises: DayOfExercisesType[];
   exercisesOfCurrentDay: DayOfExercisesType;
+  setExercisesList: (exercisesList: ExerciseType[]) => void;
   setExercise: (categoryId: number, exerciseId: number) => void;
   updateExercise: (exercise: ExerciseType) => void;
   removeExercise: (exercise: ExerciseType) => void;
