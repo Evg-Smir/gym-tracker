@@ -43,6 +43,12 @@ export const MainPopup = ({ toggleMenuPopupVisible }: MenuPopupProps) => {
     show();
   }, [show]);
 
+  useEffect(() => {
+    if (state.selectedCategory) {
+      selectCategory(state.selectedCategory.id)
+    }
+  }, [categoriesList]);
+
   const closeMenuPopup = useCallback(() => {
     hide();
     setTimeout(() => {
