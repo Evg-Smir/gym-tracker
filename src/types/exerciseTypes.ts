@@ -20,7 +20,7 @@ export interface DayOfExercisesType {
 export interface ExercisesStateType {
   exercises: DayOfExercisesType[];
   exercisesOfCurrentDay: DayOfExercisesType;
-  setExercisesList: (exercisesList: ExerciseType[]) => void;
+  setExercisesList: (exercisesList: any) => void;
   setExercise: (categoryId: number, exerciseId: number) => void;
   updateExercise: (exercise: ExerciseType) => void;
   removeExercise: (exercise: ExerciseType) => void;

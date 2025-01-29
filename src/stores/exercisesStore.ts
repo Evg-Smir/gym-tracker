@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { ExercisesStateType, ExerciseType } from '@/types/exerciseTypes';
 import { useCategoryStore } from '@/stores/categoriesStore';
+import { setLocalStorage } from '@/helpers/localStorage';
 
 export const useExercisesStore = create<ExercisesStateType>((set) => ({
   exercises: [],
@@ -9,11 +10,12 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
     exercises: [],
   },
 
-  setExercisesList: (exercisesList) => {
+  setExercisesList: (exercisesList) => set((state) => {
     return {
+      ...state,
       exercises: exercisesList,
     };
-  },
+  }),
 
   setExercise: (categoryId, exerciseId) => set((state) => {
     const currentDayTime = state.exercisesOfCurrentDay.time;
@@ -67,6 +69,8 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
       };
     }
 
+    setLocalStorage('exercises', newExercisesArray);
+
     return {
       exercises: newExercisesArray,
       exercisesOfCurrentDay: updatedCurrentDayExercises,
@@ -104,6 +108,8 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
       exercises: currentDayExercises,
     };
 
+    setLocalStorage('exercises', newExercisesArray);
+
     return {
       exercises: newExercisesArray,
       exercisesOfCurrentDay: newExercisesOfCurrentDay,
@@ -130,6 +136,8 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
       ...state.exercisesOfCurrentDay,
       exercises: currentDayExercises,
     };
+
+    setLocalStorage('exercises', newExercisesArray);
 
     return {
       exercises: newExercisesArray,

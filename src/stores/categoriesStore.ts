@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { CategoryStoreType } from "@/types/categoryTypes";
+import { CategoryStoreType } from '@/types/categoryTypes';
+import { setLocalStorage } from '@/helpers/localStorage';
 
 export const useCategoryStore = create<CategoryStoreType>((set) => ({
   categories: [
@@ -20,7 +21,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
           doubleWeight: false,
           ownWeight: false,
         },
-      ]
+      ],
     },
     {
       id: 2,
@@ -33,7 +34,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
           doubleWeight: false,
           ownWeight: false,
         },
-      ]
+      ],
     },
     {
       id: 3,
@@ -46,7 +47,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
           doubleWeight: false,
           ownWeight: false,
         },
-      ]
+      ],
     },
     {
       id: 4,
@@ -59,7 +60,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
           doubleWeight: false,
           ownWeight: false,
         },
-      ]
+      ],
     },
     {
       id: 5,
@@ -72,7 +73,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
           doubleWeight: false,
           ownWeight: false,
         },
-      ]
+      ],
     },
     {
       id: 6,
@@ -85,7 +86,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
           doubleWeight: false,
           ownWeight: false,
         },
-      ]
+      ],
     },
   ],
 
@@ -104,13 +105,16 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
 
       const newExercise = { ...exercise, id: newExerciseId };
 
+      const newCategories = state.categories.map(cat =>
+        cat.id === categoryId ? {
+          ...cat, exercises: [...cat.exercises, newExercise],
+        } : cat);
+
+      setLocalStorage('categories', newCategories);
+
       return {
         ...state,
-        categories: state.categories.map(cat =>
-          cat.id === categoryId ? {
-            ...cat, exercises: [...cat.exercises, newExercise]
-          } : cat
-        )
+        categories: newCategories,
       };
     } else if (action === 'update') {
       const isExercise = category.exercises.find(ex => ex.id === exercise.id);
@@ -118,28 +122,31 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
       if (!isExercise) return state;
 
       const updatedExercises = category.exercises.map(ex =>
-        ex.id === exercise.id ? { ...ex, ...exercise } : ex
+        ex.id === exercise.id ? { ...ex, ...exercise } : ex,
       );
+
+      const newCategories = state.categories.map(cat =>
+        cat.id === categoryId ? { ...cat, exercises: updatedExercises } : cat,
+      );
+
+      setLocalStorage('categories', newCategories);
 
       return {
         ...state,
-        categories: state.categories.map(cat =>
-          cat.id === categoryId ? { ...cat, exercises: updatedExercises } : cat
-        )
+        categories: newCategories,
       };
     } else if (action === 'remove') {
       const updatedExercises = category.exercises.filter(ex => ex.id !== exercise.id);
 
-      console.log({...state,
-        categories: state.categories.map(cat =>
-          cat.id === categoryId ? { ...cat, exercises: updatedExercises } : cat
-        )})
+      const newCategories = state.categories.map(cat =>
+        cat.id === categoryId ? { ...cat, exercises: updatedExercises } : cat,
+      );
+
+      setLocalStorage('categories', newCategories);
 
       return {
         ...state,
-        categories: state.categories.map(cat =>
-          cat.id === categoryId ? { ...cat, exercises: updatedExercises } : cat
-        )
+        categories: newCategories,
       };
     }
 
