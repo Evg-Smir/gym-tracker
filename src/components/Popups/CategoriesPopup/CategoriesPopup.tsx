@@ -94,7 +94,7 @@ export const CategoriesPopup = (
       <div className={styles.categoryExercises}>
         {category.exercises.map(exercise => (
           <div
-            className={`${styles.exercise} ${selectedExercises.some(se => se.exerciseId === exercise.id) ? styles.selected : ''}`}
+            className={`${styles.exercise} ${selectedExercises.some(se => se.exerciseId === exercise.id) ? styles.exerciseSelected : ''}`}
             key={exercise.id}
             onClick={() => selectExercise(exercise.id, category!.id)}
           >
