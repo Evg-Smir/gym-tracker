@@ -68,7 +68,10 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
 
   return (
     <div className={`${styles.actionSetsPopup} ${isVisible ? styles.visible : ''}`}>
-      <BackButton clickButton={closePopup}/>
+      <BackButton clickButton={() => {
+        closePopup();
+        saveChanges();
+      }}/>
       {memoizedCurrentSet && (
         <>
           <div className={styles.name}>{memoizedCurrentSet.exercise_name}</div>

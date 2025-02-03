@@ -14,11 +14,7 @@
     line-height: 1.7;
     width: calc((100% - 6px) / 2);
     border: none;
-
-
-    &:focus {
-
-    }
+    outline: none;
   }
 }
 
