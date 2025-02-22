@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { CategoryStoreType } from '@/types/categoryTypes';
-import { setLocalStorage } from '@/helpers/localStorage';
+import { setStorage } from '@/helpers/IndexedDB';
 
 export const useCategoryStore = create<CategoryStoreType>((set) => ({
   categories: [
@@ -110,7 +110,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
           ...cat, exercises: [...cat.exercises, newExercise],
         } : cat);
 
-      setLocalStorage('categories', newCategories);
+      setStorage('categories', newCategories);
 
       return {
         ...state,
@@ -129,7 +129,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
         cat.id === categoryId ? { ...cat, exercises: updatedExercises } : cat,
       );
 
-      setLocalStorage('categories', newCategories);
+      setStorage('categories', newCategories);
 
       return {
         ...state,
@@ -142,7 +142,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
         cat.id === categoryId ? { ...cat, exercises: updatedExercises } : cat,
       );
 
-      setLocalStorage('categories', newCategories);
+      setStorage('categories', newCategories);
 
       return {
         ...state,

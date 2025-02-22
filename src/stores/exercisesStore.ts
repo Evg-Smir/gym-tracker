@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { ExercisesStateType, ExerciseType } from '@/types/exerciseTypes';
 import { useCategoryStore } from '@/stores/categoriesStore';
-import { setLocalStorage } from '@/helpers/localStorage';
+import { setStorage } from '@/helpers/IndexedDB';
 
 export const useExercisesStore = create<ExercisesStateType>((set) => ({
   exercises: [],
@@ -69,7 +69,7 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
       };
     }
 
-    setLocalStorage('exercises', newExercisesArray);
+    setStorage('exercises', newExercisesArray);
 
     return {
       exercises: newExercisesArray,
@@ -108,7 +108,7 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
       exercises: currentDayExercises,
     };
 
-    setLocalStorage('exercises', newExercisesArray);
+    setStorage('exercises', newExercisesArray);
 
     return {
       exercises: newExercisesArray,
@@ -137,7 +137,7 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
       exercises: currentDayExercises,
     };
 
-    setLocalStorage('exercises', newExercisesArray);
+    setStorage('exercises', newExercisesArray);
 
     return {
       exercises: newExercisesArray,

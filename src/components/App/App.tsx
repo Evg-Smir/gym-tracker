@@ -13,7 +13,9 @@ import { ActionSetsPopup } from '@/components/Popups/ActionSetsPopup/ActionSetsP
 import { AddNewButton } from '@/components/Buttons/AddNewButton/AddNewButton';
 import { StatisticsPopup } from '@/components/Popups/StatisticsPopup/StatisticsPopup';
 import { useCategoryStore } from '@/stores/categoriesStore';
-import { getLocalStorage, setLocalStorage } from '@/helpers/localStorage';
+import { getLocalStorage } from '@/helpers/localStorage';
+import { getStorage, setStorage } from '@/helpers/IndexedDB';
+import { useAppSettingStore } from '@/stores/appSettingStore';
 
 dayjs.locale('ru');
 
@@ -36,22 +38,45 @@ export const App = () => {
   const setExercisesOfCurrentDay = useExercisesStore((state) => state.setExercisesOfCurrentDay);
   const setExercisesLocalList = useExercisesStore((state) => state.setExercisesList);
   const setCategoriesLocalList = useCategoryStore((state) => state.setCategories);
+  const setStorageSupported = useAppSettingStore((state) => state.setStorageSettingState);
   const categoriesList = useCategoryStore((state) => state.categories);
+  const isStorageSupported = useAppSettingStore((state) => state.isStorageSupported);
 
   useEffect(() => {
-    const localCategories = getLocalStorage('categories');
-    const localExercises = getLocalStorage('exercises');
+    const fetchData = async () => {
+      let localCategories, localExercises;
 
-    if (localCategories && localCategories?.length > 1) {
-      setCategoriesLocalList(localCategories);
-    } else {
-      setLocalStorage('categories', categoriesList);
-    }
+      const isStorageSupportedData: Record<string, any>[] = await getStorage('isStorageSupported');
+      setStorageSupported(isStorageSupportedData)
 
-    if (localExercises && localExercises?.length > 0) {
-      setExercisesLocalList(localExercises);
-    }
+      if (isStorageSupported) {
+        localCategories = await getStorage('categories');
+        localExercises = await getStorage('exercises');
+      } else {
+        localCategories = getLocalStorage('categories');
+        localExercises = getLocalStorage('exercises');
+
+        await setStorage('categories', localCategories);
+        await setStorage('exercises', localExercises);
+        await setStorage('isStorageSupported', [{ 'isStorageSupported': '1' }]);
+        setStorageSupported(true)
+      }
+
+      if (localCategories && localCategories?.length > 1) {
+        setCategoriesLocalList(localCategories);
+      } else {
+        await setStorage('categories', categoriesList);
+      }
+
+      if (localExercises && localExercises?.length > 0) {
+        setExercisesLocalList(localExercises);
+      }
+    };
+
+
+    fetchData();
   }, []);
+
 
   useEffect(() => {
     setExercisesOfCurrentDay(new Date());
