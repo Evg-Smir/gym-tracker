@@ -40,12 +40,14 @@ export const SetItem = ({ weight, reps, updateValue, index, removeSet }: SetItem
           value={valueSets.weight}
           onChange={handleWeightChange}
           placeholder={"Вес"}
+          inputMode={"numeric"}
         />
         <input
           type="number"
           value={valueSets.reps}
           onChange={handleRepsChange}
           placeholder={"Повторения"}
+          inputMode={"numeric"}
         />
       </div>
       <button onClick={() => removeSet(index)}>

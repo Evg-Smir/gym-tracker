@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 192.168.0.6 -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -18,6 +18,7 @@
     "axios": "^1.7.9",
     "dayjs": "^1.11.11",
     "express": "^4.21.2",
+    "framer-motion": "^12.4.5",
     "fs": "^0.0.1-security",
     "jotai": "^2.8.3",
     "mobx": "^6.12.4",
