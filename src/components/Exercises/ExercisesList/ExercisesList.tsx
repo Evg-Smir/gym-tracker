@@ -1,6 +1,6 @@
-import styles from "@/components/Exercises/ExercisesList/ExercisesList.module.scss";
-import { ExercisesItem } from "@/components/Exercises/ExercisesItem/ExercisesItem";
-import { DayOfExercisesType } from "@/types/exerciseTypes";
+import styles from '@/components/Exercises/ExercisesList/ExercisesList.module.scss';
+import { ExercisesItem } from '@/components/Exercises/ExercisesItem/ExercisesItem';
+import { DayOfExercisesType } from '@/types/exerciseTypes';
 
 interface ExercisesListProps extends DayOfExercisesType {
   setActionSetId: (id: number) => void;
@@ -8,7 +8,7 @@ interface ExercisesListProps extends DayOfExercisesType {
 
 const EmptyBlock = () => (
   <div className={styles.emptyBlock}>
-    <img src="/ui/background.png" alt="Фон"/>
+    <img src="/ui/background.png" alt="Фон" />
     <p>Добавьте упражнение, чтобы записать тренировку</p>
   </div>
 );
@@ -19,10 +19,10 @@ export const ExercisesList = ({ exercises, setActionSetId }: ExercisesListProps)
     <div className={styles.exerciseList}>
       {exercises?.length ? (
         exercises.map((exercise) => (
-          <ExercisesItem key={exercise.id} exercise={exercise} setActionSetId={setActionSetId}/>
+          <ExercisesItem key={exercise.id} exercise={exercise} setActionSetId={setActionSetId} />
         ))
       ) : (
-        <EmptyBlock/>
+        <EmptyBlock />
       )}
     </div>
   );

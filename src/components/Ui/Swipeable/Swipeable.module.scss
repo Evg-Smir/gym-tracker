@@ -1,0 +1,25 @@
+.swipeable {
+  position: relative;
+}
+
+.swipeableWrapper {
+  position: relative;
+  background: var(--system-gray-6);
+}
+
+.swipeableInner {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+  background: var(--red);
+}
+
+.swipeableButton {
+  height: 100%;
+  color: var(--system-gray-6);
+  background: var(--red);
+}
