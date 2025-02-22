@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Helper for your workout',
     start_url: '/',
     scope: '/',
-    display: 'minimal-ui',
+    display: 'standalone',
     background_color: '#F2F2F7FF',
     theme_color: '#F2F2F7FF',
     icons: [
