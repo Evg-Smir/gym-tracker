@@ -40,16 +40,16 @@ export const App = () => {
   const setCategoriesLocalList = useCategoryStore((state) => state.setCategories);
   const setStorageSupported = useAppSettingStore((state) => state.setStorageSettingState);
   const categoriesList = useCategoryStore((state) => state.categories);
-  const isStorageSupported = useAppSettingStore((state) => state.isStorageSupported);
 
   useEffect(() => {
     const fetchData = async () => {
       let localCategories, localExercises;
 
       const isStorageSupportedData: Record<string, any>[] = await getStorage('isStorageSupported');
-      setStorageSupported(isStorageSupportedData)
+      const isStorageSupportedValue = isStorageSupportedData && isStorageSupportedData?.length > 0;
+      setStorageSupported(isStorageSupportedValue)
 
-      if (isStorageSupported) {
+      if (isStorageSupportedValue) {
         localCategories = await getStorage('categories');
         localExercises = await getStorage('exercises');
       } else {
