@@ -8,6 +8,11 @@ body {
   margin: 0;
   background: var(--system-gray-6);
   color: var(--system-dark-gray-6);
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  height: 100dvh;
+  width: 100dvw;
+  overflow: hidden;
 }
 
 *, *:before, *:after {

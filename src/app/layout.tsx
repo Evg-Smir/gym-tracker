@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 import { Inter } from "next/font/google";
 import { ReactNode } from "react";
@@ -12,6 +12,12 @@ export const metadata: Metadata = {
   title: "Gym tracker",
   description: "Helper for your workout",
 };
+
+export const viewport: Viewport = {
+  userScalable: false,
+  maximumScale: 1,
+  initialScale: 1,
+}
 
 interface RootLayoutType {
   readonly children: ReactNode;
