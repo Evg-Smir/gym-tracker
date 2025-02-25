@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { redirect } from 'next/navigation';
 
-import { getUserData, logoutUser } from '@/lib/firebase';
+import { logoutUser } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
 
 export default function ProfilePage() {
@@ -14,13 +14,19 @@ export default function ProfilePage() {
     !user && redirect(`/auth`);
   }, [user]);
 
+
+  const handleLogout = async () => {
+    await logoutUser();
+    alert('Вы вышли из аккаунта!');
+  };
+
   return (
     <>
       {user &&
         <>
           <span>Привет, {user.displayName}!</span>
           <br/>
-          <button onClick={logoutUser}>Выйти</button>
+          <button onClick={handleLogout}>Выйти</button>
         </>
       }
     </>

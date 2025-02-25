@@ -1,4 +1,4 @@
-.searchInputInputWrapper {
+.input {
   position: relative;
   display: flex;
   align-items: center;
@@ -9,7 +9,7 @@
   overflow: hidden;
   margin-bottom: 12px;
 
-  .searchInputInputWrapper__input {
+  &__native {
     height: 100%;
     width: 100%;
     background: var(--system-gray-5);
@@ -18,37 +18,11 @@
     font-size: 18px;
     font-weight: 500;
     transition: background .3s linear;
-    padding-left: 46px;
-    padding-right: 12px;
+    padding: 12px 24px;
 
     &:focus {
       background: var(--system-gray-4);
       transition: background .3s linear;
-    }
-  }
-
-  .iconSearch {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  input:focus ~ label {
-    background: red;
-  }
-
-  button {
-    outline: none;
-    border: none;
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-
-    img {
-      width: 20px;
-      height: 20px;
     }
   }
 }

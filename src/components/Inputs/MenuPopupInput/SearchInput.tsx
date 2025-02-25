@@ -32,6 +32,7 @@ export const SearchInput = ({ updateValue }: MenuPopupInputProps) => {
     <div className={styles.searchInputInputWrapper}>
       <img className={styles.iconSearch} src="/ui/search.svg" alt="Поиск"/>
       <input
+        className={styles.searchInputInputWrapper__input}
         type="text"
         value={inputValue}
         placeholder="Искать"

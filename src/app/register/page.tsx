@@ -1,11 +1,11 @@
 'use client';
 
-import { Authentication } from '@/components/Authentication/Authentication';
+import { Registration } from '@/components/Registration/Registration';
 import { useAuth } from '@/context/AuthContext';
 import { useEffect } from 'react';
 import { redirect } from 'next/navigation';
 
-export default function AuthenticationPage() {
+export default function RegistrationPage() {
   const { user } = useAuth();
 
   useEffect(() => {
@@ -13,6 +13,6 @@ export default function AuthenticationPage() {
   }, [user]);
 
   return (
-    <Authentication />
+    <Registration />
   );
 }
