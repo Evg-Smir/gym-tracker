@@ -11,17 +11,19 @@ export const Input = ({ type, placeholder, value, onChange }: {
   const [inputValue, setInputValue] = useState('');
   const inputOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
-    onChange(e.target.value)
+    onChange(e.target.value);
   };
 
   return (
     <div className={styles.input}>
       <input
         className={styles.input__native}
-        type="text"
+        type={type}
         placeholder={placeholder}
         value={inputValue}
         onChange={inputOnChange}
+        required={true}
+        minLength={5}
       />
     </div>
   );

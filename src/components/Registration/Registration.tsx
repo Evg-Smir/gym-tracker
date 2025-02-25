@@ -7,6 +7,7 @@ import { getUserData } from '@/db/client';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { errorCode } from '@/services/codeError';
 
 export const Registration = () => {
   const setUser = useUserStore((state) => state.setUserData);
@@ -26,13 +27,21 @@ export const Registration = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    if (passwordSecond !== error) {
+      setError(errorCode('password-not-match'));
+      return;
+    }
+
     try {
       const userData = await registerUser(email, password, firstName, lastName);
       // @ts-ignore
       await setUserData(userData.user.uid).then(() => {
         router.push('/');
+      }).catch((err: any) => {
+        console.log(err);
       });
     } catch (err) {
+      console.log(err);
       setError('Ошибка при регистрации. Попробуйте снова.');
     }
   };
@@ -45,15 +54,18 @@ export const Registration = () => {
         </div>
 
         <div className={styles.registrationBottom}>
-          <Input type={'text'} placeholder={'Имя'} value={'firstName'} onChange={setFirstName} />
-          <Input type={'text'} placeholder={'Фамилия'} value={'lastName'} onChange={setLastName} />
-          <Input type={'email'} placeholder={'Почта'} value={'email'} onChange={setEmail} />
-          <Input type={'password'} placeholder={'Пароль'} value={'password'} onChange={setPassword} />
-          <Input type={'password'} placeholder={'Повторите пароль'} value={'password_second'}
-                 onChange={setPasswordSecond} />
-          <Button label={'Зарегестрироваться'} onClick={handleSubmit} />
+          <form onSubmit={handleSubmit}>
+            <Input type={'text'} placeholder={'Имя'} value={'firstName'} onChange={setFirstName} />
+            <Input type={'text'} placeholder={'Фамилия'} value={'lastName'} onChange={setLastName} />
+            <Input type={'email'} placeholder={'Почта'} value={'email'} onChange={setEmail} />
+            <Input type={'password'} placeholder={'Пароль'} value={'password'} onChange={setPassword} />
+            <Input type={'password'} placeholder={'Повторите пароль'} value={'password_second'}
+                   onChange={setPasswordSecond} />
+            {error && <div className={styles.errorMessage}>{error}</div>}
+            <Button label={'Зарегестрироваться'} type={'submit'} />
+          </form>
           <div className={styles.registrationLink}>
-            <Link className={styles.registrationLink} href={'/auth'} >Или войдите</Link>
+            <Link className={styles.registrationLink} href={'/auth'}>Или войдите</Link>
           </div>
         </div>
       </div>

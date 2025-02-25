@@ -65,9 +65,14 @@ export const registerUser = async (email: string, password: string, firstName: s
 };
 
 export const loginUser = async (email: string, password: string) => {
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  await saveToken(userCredential.user);
-  return userCredential;
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    await saveToken(userCredential.user);
+    return userCredential;
+  } catch (err: any) {
+    console.error('Ошибка авторизации:', err);
+    throw { code: err.code || 'unknown_error' }
+  }
 };
 
 export const logoutUser = async () => {
