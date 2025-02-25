@@ -1,5 +1,5 @@
 import styles from './SetItem.module.scss';
-import { ExerciseRepsType } from "@/types/exerciseTypes";
+import { ExerciseRepsType } from "@/@types/exerciseTypes";
 import React, { useEffect, useState } from "react";
 
 type UpdatedValue = (value: ExerciseRepsType) => void;

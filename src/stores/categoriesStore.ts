@@ -1,12 +1,16 @@
 import { create } from 'zustand';
-import { CategoryStoreType } from '@/types/categoryTypes';
-import { setStorage } from '@/helpers/IndexedDB';
+import { CategoryStoreType } from '@/@types/categoryTypes';
+import { setStorage } from '@/services/IndexedDB';
+import { updateCategory } from '@/db/client';
+import { useUserStore } from '@/stores/userStore';
+import { useAuth } from '@/context/AuthContext';
 
 export const useCategoryStore = create<CategoryStoreType>((set) => ({
   categories: [
     {
       id: 1,
       name: 'Руки',
+      slug: 'arm',
       icon: '/categories/bicep.svg',
       exercises: [
         {
@@ -26,6 +30,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
     {
       id: 2,
       name: 'Спина',
+      slug: 'back',
       icon: '/categories/back.svg',
       exercises: [
         {
@@ -39,6 +44,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
     {
       id: 3,
       name: 'Плечи',
+      slug: 'shoulder',
       icon: '/categories/shoulders.svg',
       exercises: [
         {
@@ -52,6 +58,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
     {
       id: 4,
       name: 'Грудь',
+      slug: 'chest',
       icon: '/categories/chest.svg',
       exercises: [
         {
@@ -65,6 +72,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
     {
       id: 5,
       name: 'Пресс',
+      slug: 'abs',
       icon: '/categories/abs.svg',
       exercises: [
         {
@@ -78,6 +86,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
     {
       id: 6,
       name: 'Ноги',
+      slug: 'leg',
       icon: '/categories/leg.svg',
       exercises: [
         {
@@ -91,7 +100,7 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
   ],
 
   setCategories: (categories) => set((state) => ({ categories })),
-  actionExerciseOfCategory: (categoryId, exercise, action) => set((state) => {
+  actionExerciseOfCategory: (categoryId, exercise, action, uid) => set((state) => {
     const category = state.categories.find(cat => cat.id === categoryId);
 
     if (!category) {
@@ -105,11 +114,17 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
 
       const newExercise = { ...exercise, id: newExerciseId };
 
+      const updatedCategory = {
+        ...category,
+        exercises: [...category.exercises, newExercise]
+      }
+
       const newCategories = state.categories.map(cat =>
         cat.id === categoryId ? {
-          ...cat, exercises: [...cat.exercises, newExercise],
+          ...updatedCategory
         } : cat);
 
+      updateCategory(uid, updatedCategory)
       setStorage('categories', newCategories);
 
       return {
@@ -125,10 +140,16 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
         ex.id === exercise.id ? { ...ex, ...exercise } : ex,
       );
 
+      const updatedCategory = {
+        ...category,
+        exercises: updatedExercises
+      }
+
       const newCategories = state.categories.map(cat =>
-        cat.id === categoryId ? { ...cat, exercises: updatedExercises } : cat,
+        cat.id === categoryId ? { ...updatedCategory } : cat,
       );
 
+      updateCategory(uid, updatedCategory)
       setStorage('categories', newCategories);
 
       return {
@@ -138,10 +159,16 @@ export const useCategoryStore = create<CategoryStoreType>((set) => ({
     } else if (action === 'remove') {
       const updatedExercises = category.exercises.filter(ex => ex.id !== exercise.id);
 
+      const updatedCategory = {
+        ...category,
+        exercises: updatedExercises
+      }
+
       const newCategories = state.categories.map(cat =>
-        cat.id === categoryId ? { ...cat, exercises: updatedExercises } : cat,
+        cat.id === categoryId ? { ...updatedCategory } : cat,
       );
 
+      updateCategory(uid, updatedCategory)
       setStorage('categories', newCategories);
 
       return {

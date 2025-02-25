@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { AppSettingsType } from '@/types/appSettingsTypes';
+import { AppSettingsType } from '@/@types/appSettingsTypes';
 
 
 export const useAppSettingStore = create<AppSettingsType>((set) => ({

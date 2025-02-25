@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { CategoryType } from '@/types/categoryTypes';
+import { CategoryType } from '@/@types/categoryTypes';
 
 const useFilteredCategories = (categories: CategoryType[], filter: string) => {
   const [filteredCategories, setFilteredCategories] = useState<CategoryType[]>([]);

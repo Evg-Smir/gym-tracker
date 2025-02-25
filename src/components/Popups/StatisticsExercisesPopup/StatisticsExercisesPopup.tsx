@@ -1,5 +1,5 @@
 import styles from './StatisticsExercisesPopup.module.scss';
-import { CategoryType } from "@/types/categoryTypes";
+import { CategoryType } from "@/@types/categoryTypes";
 import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BackButton } from "@/components/Buttons/BackButton/BackButton";
@@ -15,6 +15,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
+import { formatTimestampToDate } from '@/services/formatTimestampToDate';
 
 interface StatisticsExercisesPopupProps {
   category: CategoryType | null;
@@ -40,16 +41,6 @@ export const StatisticsExercisesPopup = ({ category, unsetCategory }: Statistics
       <p>Добавьте упражнение, чтобы записать показать статистику</p>
     </div>
   );
-
-  const formatTimestampToDate = (timestamp: number): string => {
-    const date = new Date(timestamp);
-
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-
-    return `${day}.${month}.${year}`;
-  }
 
   const handleChange = useCallback((event: SelectChangeEvent) => {
     if (!category) return;

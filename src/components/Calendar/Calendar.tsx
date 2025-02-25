@@ -4,7 +4,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { ruRU } from '@mui/x-date-pickers/locales';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import useClickOutside from '@/hooks/useClickOutside';
 import dayjs, { Dayjs } from 'dayjs';
 import Image from 'next/image';
@@ -62,7 +62,6 @@ export const Calendar = () => {
 
   const onChangeDay = useCallback(({ $d: day }: { $d: Date }) => {
     if (currentDate === day) return false;
-
     setExercisesOfCurrentDay(day);
     setCurrentDate(day);
   }, [currentDate, setExercisesOfCurrentDay]);
@@ -81,6 +80,11 @@ export const Calendar = () => {
 
     return dayjs(date).format('D MMMM');
   }, []);
+
+  useEffect(() => {
+    const todayMidnight = new Date(new Date().setHours(0, 0, 0, 0));
+    setCurrentDate(todayMidnight);
+  }, [])
 
 
   const ref = useClickOutside<HTMLDivElement>(handleCloseCalendar);

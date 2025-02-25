@@ -1,119 +1,77 @@
-'use client';
+import { useReducer } from 'react';
 
 import styles from './App.module.scss';
+
+import { Bar } from '@/components/Bar/Bar';
 import { Calendar } from '@/components/Calendar/Calendar';
 import { ExercisesList } from '@/components/Exercises/ExercisesList/ExercisesList';
 import { MainPopup } from '@/components/Popups/MainPopup/MainPopup';
-import { useCallback, useEffect, useState } from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
+import { ActionSetsPopup } from '@/components/Popups/ActionSetsPopup/ActionSetsPopup';
+import { StatisticsPopup } from '@/components/Popups/StatisticsPopup/StatisticsPopup';
+
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
-import { useExercisesStore } from '@/stores/exercisesStore';
-import { ActionSetsPopup } from '@/components/Popups/ActionSetsPopup/ActionSetsPopup';
-import { AddNewButton } from '@/components/Buttons/AddNewButton/AddNewButton';
-import { StatisticsPopup } from '@/components/Popups/StatisticsPopup/StatisticsPopup';
-import { useCategoryStore } from '@/stores/categoriesStore';
-import { getLocalStorage } from '@/helpers/localStorage';
-import { getStorage, setStorage } from '@/helpers/IndexedDB';
-import { useAppSettingStore } from '@/stores/appSettingStore';
 
 dayjs.locale('ru');
 
+import { useExercisesStore } from '@/stores/exercisesStore';
+
 interface AppState {
-  isClient: boolean;
   menuIsOpen: boolean;
   statIsOpen: boolean;
   actionSetId: number | null;
 }
 
-export const App = () => {
-  const [appState, setAppState] = useState<AppState>({
-    isClient: false,
-    menuIsOpen: false,
-    actionSetId: null,
-    statIsOpen: false,
-  });
+type Action =
+  | { type: 'TOGGLE_MENU' }
+  | { type: 'TOGGLE_STATS' }
+  | { type: 'SET_ACTION_SET'; payload: number }
+  | { type: 'UNSET_ACTION_SET' };
 
-  const exercisesOfCurrentDay = useExercisesStore((state) => state.exercisesOfCurrentDay);
-  const setExercisesOfCurrentDay = useExercisesStore((state) => state.setExercisesOfCurrentDay);
-  const setExercisesLocalList = useExercisesStore((state) => state.setExercisesList);
-  const setCategoriesLocalList = useCategoryStore((state) => state.setCategories);
-  const setStorageSupported = useAppSettingStore((state) => state.setStorageSettingState);
-  const categoriesList = useCategoryStore((state) => state.categories);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      let localCategories, localExercises;
-
-      const isStorageSupportedData: Record<string, any>[] = await getStorage('isStorageSupported');
-      const isStorageSupportedValue = isStorageSupportedData && isStorageSupportedData?.length > 0;
-      setStorageSupported(isStorageSupportedValue)
-
-      if (isStorageSupportedValue) {
-        localCategories = await getStorage('categories');
-        localExercises = await getStorage('exercises');
-      } else {
-        localCategories = getLocalStorage('categories');
-        localExercises = getLocalStorage('exercises');
-
-        await setStorage('categories', localCategories);
-        await setStorage('exercises', localExercises);
-        await setStorage('isStorageSupported', [{ 'isStorageSupported': '1' }]);
-        setStorageSupported(true)
-      }
-
-      if (localCategories && localCategories?.length > 1) {
-        setCategoriesLocalList(localCategories);
-      } else {
-        await setStorage('categories', categoriesList);
-      }
-
-      if (localExercises && localExercises?.length > 0) {
-        setExercisesLocalList(localExercises);
-      }
-    };
-
-
-    fetchData();
-  }, []);
-
-
-  useEffect(() => {
-    setExercisesOfCurrentDay(new Date());
-    setAppState(prevState => ({ ...prevState, isClient: true }));
-  }, [setExercisesOfCurrentDay]);
-
-  const toggleMenu = useCallback(() => {
-    setAppState(prevState => ({ ...prevState, menuIsOpen: !prevState.menuIsOpen }));
-  }, []);
-
-  const toggleStatPopup = useCallback(() => {
-    setAppState(prevState => ({ ...prevState, statIsOpen: !prevState.statIsOpen }));
-  }, []);
-
-  const setActionSet = useCallback((setId: number) => {
-    setAppState(prevState => ({ ...prevState, actionSetId: setId }));
-  }, []);
-
-  const unsetValue = useCallback(() => {
-    setAppState(prevState => ({ ...prevState, actionSetId: null }));
-  }, []);
-
-  return (
-    <>
-      {!appState.isClient ?
-        <div className={styles.loading}><CircularProgress /></div>
-        :
-        <div className={styles.page}>
-          <Calendar />
-          <ExercisesList {...exercisesOfCurrentDay} setActionSetId={setActionSet} />
-          <AddNewButton openMenu={toggleMenu} />
-          <button className={styles.statButton} onClick={toggleStatPopup}>Статистика</button>
-          {appState.menuIsOpen && <MainPopup toggleMenuPopupVisible={toggleMenu} />}
-          {appState.actionSetId && <ActionSetsPopup unsetValue={unsetValue} setId={appState.actionSetId} />}
-          {appState.statIsOpen && <StatisticsPopup closeStat={toggleStatPopup} />}
-        </div>
-      }
-    </>
-  );
+const reducer = (state: AppState, action: Action): AppState => {
+  switch (action.type) {
+    case 'TOGGLE_MENU':
+      return { ...state, menuIsOpen: !state.menuIsOpen };
+    case 'TOGGLE_STATS':
+      return { ...state, statIsOpen: !state.statIsOpen };
+    case 'SET_ACTION_SET':
+      return { ...state, actionSetId: action.payload };
+    case 'UNSET_ACTION_SET':
+      return { ...state, actionSetId: null };
+    default:
+      return state;
+  }
 };
+
+export const App = () => {
+    const [state, dispatch] = useReducer(reducer, {
+      menuIsOpen: false,
+      statIsOpen: false,
+      actionSetId: null,
+    });
+
+    const { exercisesOfCurrentDay } = useExercisesStore((state) => ({ exercisesOfCurrentDay: state.exercisesOfCurrentDay }));
+
+    return (
+      <div className={styles.page}>
+        <Calendar />
+        <ExercisesList
+          {...exercisesOfCurrentDay}
+          setActionSetId={(id) => dispatch({ type: 'SET_ACTION_SET', payload: id })}
+        />
+        <Bar
+          openMenu={() => dispatch({ type: 'TOGGLE_MENU' })}
+          openStats={() => dispatch({ type: 'TOGGLE_STATS' })}
+        />
+        {state.menuIsOpen && <MainPopup toggleMenuPopupVisible={() => dispatch({ type: 'TOGGLE_MENU' })} />}
+        {state.actionSetId && (
+          <ActionSetsPopup
+            unsetValue={() => dispatch({ type: 'UNSET_ACTION_SET' })}
+            setId={state.actionSetId}
+          />
+        )}
+        {state.statIsOpen && <StatisticsPopup closeStat={() => dispatch({ type: 'TOGGLE_STATS' })} />}
+      </div>
+    );
+  }
+;

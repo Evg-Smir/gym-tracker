@@ -1,9 +1,10 @@
 import styles from './ActionExercisePopup.module.scss';
-import { CategoryType } from "@/types/categoryTypes";
+import { CategoryType } from "@/@types/categoryTypes";
 import { useCategoryStore } from "@/stores/categoriesStore";
 import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
 import { BackButton } from "@/components/Buttons/BackButton/BackButton";
 import { useEffect, useState, useCallback, useMemo } from "react";
+import { useAuth } from '@/context/AuthContext';
 
 interface ActionExercisePopupProps {
   category: CategoryType;
@@ -25,7 +26,7 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
     doubleWeight: false,
     ownWeight: false,
   });
-
+  const { user } = useAuth();
   const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
 
   useEffect(() => {
@@ -55,10 +56,10 @@ export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerc
   }, [hide, unsetCreateCategory]);
 
   const handleActionExercise = useCallback((action: 'create' | 'update' | 'remove') => {
-    actionExerciseOfCategory(category.id, {
+    user && actionExerciseOfCategory(category.id, {
       ...memoizedParamExercise,
       id: action === 'create' ? -1 : Number(changeExerciseId),
-    }, action);
+    }, action, user.uid);
     closePopup();
   }, [actionExerciseOfCategory, category.id, changeExerciseId, memoizedParamExercise, closePopup]);
 

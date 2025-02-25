@@ -1,5 +1,5 @@
 import styles from './ExercisesCategoriesList.module.scss';
-import { CategoryType } from "@/types/categoryTypes";
+import { CategoryType } from "@/@types/categoryTypes";
 
 interface ExercisesCategoriesListProps {
   categoriesList: CategoryType[];

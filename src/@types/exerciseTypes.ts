@@ -1,3 +1,5 @@
+import { UserID } from '@/@types/userStoreTypes';
+
 export interface ExerciseRepsType {
   weight: string,
   reps: string,
@@ -21,8 +23,8 @@ export interface ExercisesStateType {
   exercises: DayOfExercisesType[];
   exercisesOfCurrentDay: DayOfExercisesType;
   setExercisesList: (exercisesList: any) => void;
-  setExercise: (categoryId: number, exerciseId: number) => void;
+  setExercise: (categoryId: number, exerciseId: number, uid: UserID) => void;
   updateExercise: (exercise: ExerciseType) => void;
-  removeExercise: (exercise: ExerciseType) => void;
+  removeExercise: (exercise: ExerciseType, uid: UserID) => void;
   setExercisesOfCurrentDay: (time: Date) => void;
 }

@@ -8,7 +8,7 @@ import { BackButton } from "@/components/Buttons/BackButton/BackButton";
 import { WrapperPopup } from "@/components/Popups/WrapperPopups/WrapperPopup";
 import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
 import useFilteredCategories from "@/hooks/useFilteredCategories";
-import { CategoryType } from "@/types/categoryTypes";
+import { CategoryType } from "@/@types/categoryTypes";
 
 interface MenuPopupProps {
   toggleMenuPopupVisible: () => void;

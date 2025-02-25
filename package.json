@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 192.168.0.6 -p 3000",
+    "dev": "next dev -H 0.0.0.0 -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -18,9 +18,11 @@
     "axios": "^1.7.9",
     "dayjs": "^1.11.11",
     "express": "^4.21.2",
+    "firebase": "^11.3.1",
     "framer-motion": "^12.4.5",
     "fs": "^0.0.1-security",
     "jotai": "^2.8.3",
+    "js-cookie": "^3.0.5",
     "mobx": "^6.12.4",
     "mobx-react": "^9.1.1",
     "mysql2": "^3.12.0",
@@ -39,6 +41,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

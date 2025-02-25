@@ -1,0 +1,26 @@
+.bar {
+  display: flex;
+  align-items: stretch;
+
+  &__button {
+    width: 100%;
+  }
+
+  .button {
+    font-weight: 600;
+    font-size: 18px;
+    padding: 16px;
+    width: 100%;
+    text-align: center;
+    background: var(--system-dark-gray-6);
+    color: var(--system-gray-6);
+    border: none;
+    height: 100%;
+
+    &__icon {
+      margin: 0 auto;
+      width: 28px;
+      height: 28px;
+    }
+  }
+}

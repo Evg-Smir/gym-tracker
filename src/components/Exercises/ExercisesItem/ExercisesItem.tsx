@@ -1,8 +1,14 @@
 import styles from './ExercisesItem.module.scss';
-import { ExerciseType } from "@/types/exerciseTypes";
-import { ExerciseSetItem } from "@/components/Exercises/ExerciseSetItem/ExerciseSetItem";
-import { useCallback, useState } from "react";
-import { useExercisesStore } from "@/stores/exercisesStore";
+
+import { useCallback, useState } from 'react';
+
+import { ExerciseType } from '@/@types/exerciseTypes';
+
+import { ExerciseSetItem } from '@/components/Exercises/ExerciseSetItem/ExerciseSetItem';
+
+import { useExercisesStore } from '@/stores/exercisesStore';
+
+import { useAuth } from '@/context/AuthContext';
 
 interface ExercisesItemProps {
   exercise: ExerciseType;
@@ -13,6 +19,7 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
   const removeExercise = useExercisesStore((state) => state.removeExercise);
   const { category_icon, exercise_name, sets, id } = exercise;
   const [contentIsVisible, setContentIsVisible] = useState(false);
+  const { user } = useAuth();
 
   const toggleContentVisibility = useCallback(() => {
     setContentIsVisible(prevState => !prevState);
@@ -21,6 +28,10 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
   const handleActionSetClick = useCallback(() => {
     setActionSetId(id);
   }, [id, setActionSetId]);
+
+  const actionExercise = (exercise: ExerciseType) => {
+    user && removeExercise(exercise, user.uid);
+  };
 
   const renderSets = () => {
     if (!contentIsVisible) return null;
@@ -34,7 +45,7 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
         />
       ));
     } else {
-      return <ExerciseSetItem index={0}/>;
+      return <ExerciseSetItem index={0} />;
     }
   };
 
@@ -42,7 +53,7 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
     <div className={styles.exercisesItem}>
       <div className={styles.exercisesItemTop}>
         <div className={styles.exercisesItemTopContent} onClick={toggleContentVisibility}>
-          <img className={styles.icon} src={category_icon} alt="Иконка"/>
+          <img className={styles.icon} src={category_icon} alt="Иконка" />
           <div className={styles.nameWrapper}>
             <p className={styles.exercisesItemName}>{exercise_name}</p>
             <img
@@ -52,8 +63,8 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
             />
           </div>
         </div>
-        <button onClick={() => removeExercise(exercise)}>
-          <img src="/ui/close-red.svg" alt=""/>
+        <button onClick={() => actionExercise(exercise)}>
+          <img src="/ui/close-red.svg" alt="" />
         </button>
       </div>
       <div className={styles.exercisesItemBottom} onClick={handleActionSetClick}>

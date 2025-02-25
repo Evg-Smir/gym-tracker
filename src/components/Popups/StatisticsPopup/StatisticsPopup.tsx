@@ -6,7 +6,7 @@ import { BackButton } from "@/components/Buttons/BackButton/BackButton";
 import { ExercisesCategoriesList } from "@/components/Exercises/ExercisesCategoriesList/ExercisesCategoriesList";
 import { StatisticsExercisesPopup } from "@/components/Popups/StatisticsExercisesPopup/StatisticsExercisesPopup";
 import { useCategoryStore } from "@/stores/categoriesStore";
-import { CategoryType } from "@/types/categoryTypes";
+import { CategoryType } from "@/@types/categoryTypes";
 import useFilteredCategories from "@/hooks/useFilteredCategories";
 
 interface StatisticsPopupProps {

@@ -1,7 +1,8 @@
 import { create } from 'zustand';
-import { ExercisesStateType, ExerciseType } from '@/types/exerciseTypes';
+import { ExercisesStateType, ExerciseType } from '@/@types/exerciseTypes';
 import { useCategoryStore } from '@/stores/categoriesStore';
-import { setStorage } from '@/helpers/IndexedDB';
+import { setStorage } from '@/services/IndexedDB';
+import { addWorkout, deleteWorkout, updateWorkout } from '@/db/client';
 
 export const useExercisesStore = create<ExercisesStateType>((set) => ({
   exercises: [],
@@ -17,7 +18,7 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
     };
   }),
 
-  setExercise: (categoryId, exerciseId) => set((state) => {
+  setExercise: (categoryId, exerciseId, uid) => set((state) => {
     const currentDayTime = state.exercisesOfCurrentDay.time;
     const categoriesList = useCategoryStore.getState().categories;
 
@@ -55,9 +56,10 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
         time: currentDayTime,
         exercises: [...currentDayExercises, newExercise],
       };
+
+      updateWorkout(uid, updatedCurrentDayExercises);
     } else {
       const newExercise = createNewExercise(0);
-
       newExercisesArray.push({
         time: currentDayTime,
         exercises: [newExercise],
@@ -67,6 +69,8 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
         time: currentDayTime,
         exercises: [newExercise],
       };
+
+      addWorkout(uid, updatedCurrentDayExercises);
     }
 
     setStorage('exercises', newExercisesArray);
@@ -116,7 +120,7 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
     };
   }),
 
-  removeExercise: (exercise) => set((state) => {
+  removeExercise: (exercise, uid) => set((state) => {
     const currentDayTime = state.exercisesOfCurrentDay.time;
     const dayIndex = state.exercises.findIndex(item => item.time === currentDayTime);
 
@@ -127,15 +131,26 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
     const currentDayExercises = state.exercises[dayIndex].exercises.filter(ex => ex.id !== exercise.id);
 
     const newExercisesArray = [...state.exercises];
-    newExercisesArray[dayIndex] = {
-      ...state.exercises[dayIndex],
-      exercises: currentDayExercises,
-    };
+
+    if (!currentDayExercises.length) {
+      newExercisesArray.splice(dayIndex, 1);
+    } else {
+      newExercisesArray[dayIndex] = {
+        ...state.exercises[dayIndex],
+        exercises: currentDayExercises,
+      };
+    }
 
     const newExercisesOfCurrentDay = {
       ...state.exercisesOfCurrentDay,
       exercises: currentDayExercises,
     };
+
+    if (newExercisesOfCurrentDay.exercises.length > 0) {
+      updateWorkout(uid, newExercisesOfCurrentDay);
+    } else {
+      deleteWorkout(uid, newExercisesOfCurrentDay.time);
+    }
 
     setStorage('exercises', newExercisesArray);
 

@@ -2,7 +2,7 @@ import { CategoriesPopup } from "@/components/Popups/CategoriesPopup/CategoriesP
 import { CreateExercisesList } from "@/components/Popups/CreateExercisesList/CreateExercisesList";
 import { ActionExercisePopup } from "@/components/Popups/ActionExercisePopup/ActionExercisePopup";
 import { useCallback, useEffect, useState } from "react";
-import { CategoryType, SelectedExerciseType } from "@/types/categoryTypes";
+import { CategoryType, SelectedExerciseType } from "@/@types/categoryTypes";
 import { useCategoryStore } from "@/stores/categoriesStore";
 
 interface WrapperPopupProps {
@@ -45,7 +45,7 @@ export const WrapperPopup = (
   }, [setListForCreate, selectedCategoryProp]);
 
   const createExercise = useCallback((category: CategoryType | null): void => {
-    setState((prevState) => ({ ...prevState, exerciseForAction: category }));
+    setState((prevState) => ({ ...prevState, exerciseForChange: null, exerciseForAction: category }));
   }, []);
 
   const createNewExercise = useCallback((categoryId: number) => {

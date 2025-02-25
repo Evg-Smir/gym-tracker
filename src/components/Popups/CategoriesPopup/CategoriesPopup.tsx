@@ -1,10 +1,11 @@
 import styles from './CategoriesPopup.module.scss';
-import { useExercisesStore } from "@/stores/exercisesStore";
-import { AddExerciseButton } from "@/components/Buttons/AddExerciseButton/AddExerciseButton";
-import { BackButton } from "@/components/Buttons/BackButton/BackButton";
-import { useState, useCallback, useMemo, useEffect } from "react";
-import { CategoryType, ExercisesOfCategoryType, SelectedExerciseType } from "@/types/categoryTypes";
-import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
+import { useExercisesStore } from '@/stores/exercisesStore';
+import { AddExerciseButton } from '@/components/Buttons/AddExerciseButton/AddExerciseButton';
+import { BackButton } from '@/components/Buttons/BackButton/BackButton';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import { CategoryType, ExercisesOfCategoryType, SelectedExerciseType } from '@/@types/categoryTypes';
+import useAnimatedVisibility from '@/hooks/useAnimatedVisibility';
+import { useAuth } from '@/context/AuthContext';
 
 interface CategoriesPopupProps {
   category: CategoryType | null;
@@ -20,11 +21,12 @@ export const CategoriesPopup = (
     changeExercise,
     unsetCategory,
     createExercise,
-    closeAllPopups
+    closeAllPopups,
   }: CategoriesPopupProps) => {
   const [selectedExercises, setSelectedExercises] = useState<SelectedExerciseType[]>([]);
   const setCurrentExercise = useExercisesStore(state => state.setExercise);
   const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
+  const { user } = useAuth();
 
   useEffect(() => {
     show();
@@ -33,7 +35,7 @@ export const CategoriesPopup = (
   const selectExercise = useCallback((exerciseId: number, categoryId: number): void => {
     setSelectedExercises((prevState) => {
       const index = prevState.findIndex(
-        (exercise) => exercise.exerciseId === exerciseId && exercise.categoryId === categoryId
+        (exercise) => exercise.exerciseId === exerciseId && exercise.categoryId === categoryId,
       );
 
       if (index > -1) {
@@ -48,13 +50,13 @@ export const CategoriesPopup = (
     return selectedExercises.some(
       (selected) =>
         selected.exerciseId === exercise.id &&
-        selected.categoryId === category.id
-    ) ? <img src="/ui/check-mark.svg" alt="icon"/> : null;
+        selected.categoryId === category.id,
+    ) ? <img src="/ui/check-mark.svg" alt="icon" /> : null;
   }, [selectedExercises]);
 
   const setExercise = useCallback(() => {
     const [{ categoryId, exerciseId }] = selectedExercises;
-    setCurrentExercise(categoryId, exerciseId);
+    user && setCurrentExercise(categoryId, exerciseId, user.uid);
     closeAllPopups();
   }, [selectedExercises, setCurrentExercise, closeAllPopups]);
 
@@ -75,7 +77,7 @@ export const CategoriesPopup = (
       return (
         <button onClick={() => {
           changeExercise(selectedExercises[0]);
-          setTimeout(() => setSelectedExercises([]), 300)
+          setTimeout(() => setSelectedExercises([]), 300);
         }} className={styles.changeButton}>
           Изменить
         </button>
@@ -88,9 +90,9 @@ export const CategoriesPopup = (
 
   return (
     <div className={`${styles.categoriesPopup} ${isVisible ? styles.visible : ''}`}>
-      <BackButton clickButton={closePopup}/>
+      <BackButton clickButton={closePopup} />
       <h2 className={styles.categoryName}>{category.name}</h2>
-      <AddExerciseButton clickButton={() => createExercise(category)}/>
+      <AddExerciseButton clickButton={() => createExercise(category)} />
       <div className={styles.categoryExercises}>
         {category.exercises.map(exercise => (
           <div

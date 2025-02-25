@@ -18,7 +18,7 @@ const openDB = (): Promise<IDBDatabase> => {
   });
 };
 
-export const getStorage = async (name: 'exercises' | 'categories' | 'isStorageSupported'): Promise<Record<string, any>[]> => {
+export const getStorage = async (name: 'exercises' | 'categories' | 'isStorageSupported' | 'isFirebaseSupported'): Promise<Record<string, any>[]> => {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE_NAME, 'readonly');
@@ -30,7 +30,7 @@ export const getStorage = async (name: 'exercises' | 'categories' | 'isStorageSu
   });
 };
 
-export const setStorage = async (name: 'exercises' | 'categories' | 'isStorageSupported', data: Record<string, any>[]) => {
+export const setStorage = async (name: 'exercises' | 'categories' | 'isStorageSupported' | 'isFirebaseSupported', data: Record<string, any>[]) => {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE_NAME, 'readwrite');

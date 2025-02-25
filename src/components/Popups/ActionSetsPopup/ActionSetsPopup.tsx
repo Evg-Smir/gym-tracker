@@ -3,7 +3,7 @@ import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
 import React, { useEffect, useState, useMemo } from "react";
 import { BackButton } from "@/components/Buttons/BackButton/BackButton";
 import { useExercisesStore } from "@/stores/exercisesStore";
-import { ExerciseRepsType, ExerciseType } from "@/types/exerciseTypes";
+import { ExerciseRepsType, ExerciseType } from "@/@types/exerciseTypes";
 import { SetItem } from "@/components/Sets/SetItem/SetItem";
 
 interface ActionSetsPopupProps {
@@ -57,6 +57,7 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
     const updatedSet = currentSet.sets.filter((set) => !!set.weight.trim().length || !!set.reps.trim().length);
     const updatedExercise = { ...currentSet, sets: [...updatedSet] };
     updateExercise(updatedExercise);
+
     setTimeout(() => {
       closePopup();
     }, 0);

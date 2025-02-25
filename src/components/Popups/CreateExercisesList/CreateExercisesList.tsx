@@ -3,7 +3,7 @@ import styles from './CreateExercisesList.module.scss'
 import { ExercisesCategoriesList } from "@/components/Exercises/ExercisesCategoriesList/ExercisesCategoriesList";
 import { BackButton } from "@/components/Buttons/BackButton/BackButton";
 
-import { CategoryType } from "@/types/categoryTypes";
+import { CategoryType } from "@/@types/categoryTypes";
 import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
 import { useEffect } from "react";
 

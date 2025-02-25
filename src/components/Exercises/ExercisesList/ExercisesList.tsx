@@ -1,6 +1,6 @@
 import styles from "@/components/Exercises/ExercisesList/ExercisesList.module.scss";
 import { ExercisesItem } from "@/components/Exercises/ExercisesItem/ExercisesItem";
-import { DayOfExercisesType } from "@/types/exerciseTypes";
+import { DayOfExercisesType } from "@/@types/exerciseTypes";
 
 interface ExercisesListProps extends DayOfExercisesType {
   setActionSetId: (id: number) => void;
