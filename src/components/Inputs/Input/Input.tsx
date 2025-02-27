@@ -5,7 +5,7 @@ import { ChangeEvent, HTMLInputTypeAttribute, useState } from 'react';
 export const Input = ({ type, placeholder, value, onChange }: {
   type: HTMLInputTypeAttribute,
   placeholder: string,
-  value: string,
+  value?: string,
   onChange: (value: string) => void,
 }) => {
   const [inputValue, setInputValue] = useState('');
@@ -20,7 +20,7 @@ export const Input = ({ type, placeholder, value, onChange }: {
         className={styles.input__native}
         type={type}
         placeholder={placeholder}
-        value={inputValue}
+        value={inputValue || value}
         onChange={inputOnChange}
         required={true}
         minLength={5}

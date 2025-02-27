@@ -7,7 +7,7 @@ import { getUserData } from '@/db/client';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { errorCode } from '@/services/codeError';
+import { InputError } from '@/components/Inputs/InputError/InputError';
 
 export const Registration = () => {
   const setUser = useUserStore((state) => state.setUserData);
@@ -28,7 +28,7 @@ export const Registration = () => {
     e.preventDefault();
 
     if (passwordSecond !== error) {
-      setError(errorCode('password-not-match'));
+      setError('password-not-match');
       return;
     }
 
@@ -61,7 +61,7 @@ export const Registration = () => {
             <Input type={'password'} placeholder={'Пароль'} value={'password'} onChange={setPassword} />
             <Input type={'password'} placeholder={'Повторите пароль'} value={'password_second'}
                    onChange={setPasswordSecond} />
-            {error && <div className={styles.errorMessage}>{error}</div>}
+            <InputError error={error} />
             <Button label={'Зарегестрироваться'} type={'submit'} />
           </form>
           <div className={styles.registrationLink}>

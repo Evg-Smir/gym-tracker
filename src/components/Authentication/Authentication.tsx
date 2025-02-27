@@ -7,7 +7,7 @@ import { getUserData } from '@/db/client';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { errorCode } from '@/services/codeError';
+import { InputError } from '@/components/Inputs/InputError/InputError';
 
 export const Authentication = () => {
   const setUser = useUserStore((state) => state.setUserData);
@@ -35,7 +35,7 @@ export const Authentication = () => {
       await setUserData(userData.user.uid);
       router.push('/');
     } catch (err: any) {
-      setError(errorCode(err.code) || 'Неизвестная ошибка');
+      setError(err.code || 'Неизвестная ошибка');
     }
   };
 
@@ -60,7 +60,7 @@ export const Authentication = () => {
               value={password}
               onChange={setPassword}
             />
-            {error && <div className={styles.errorMessage}>{error}</div>}
+            <InputError error={error} />
             <Button label="Войти" type="submit" />
           </form>
           <div className={styles.authenticationLink}>

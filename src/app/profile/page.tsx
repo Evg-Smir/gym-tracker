@@ -3,9 +3,8 @@
 import { useEffect } from 'react';
 
 import { redirect } from 'next/navigation';
-
-import { logoutUser } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
+import { Profile } from '@/components/Profile/Profile';
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -14,21 +13,7 @@ export default function ProfilePage() {
     !user && redirect(`/auth`);
   }, [user]);
 
-
-  const handleLogout = async () => {
-    await logoutUser();
-    alert('Вы вышли из аккаунта!');
-  };
-
   return (
-    <>
-      {user &&
-        <>
-          <span>Привет, {user.displayName}!</span>
-          <br/>
-          <button onClick={handleLogout}>Выйти</button>
-        </>
-      }
-    </>
+    user && <Profile />
   );
 }

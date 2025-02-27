@@ -1,0 +1,28 @@
+.profile {
+  height: 100%;
+
+  &__inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .profileTitle {
+      text-align: center;
+      color: var(--system-dark-gray-5);
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .profileForm {
+      padding: 15px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profileButtons {
+      margin-top: auto;
+    }
+  }
+}
