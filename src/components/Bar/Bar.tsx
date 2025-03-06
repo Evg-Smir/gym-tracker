@@ -2,14 +2,11 @@ import styles from './Bar.module.scss';
 
 import React from 'react';
 
-import { useRouter } from 'next/navigation';
-
-export const Bar = ({ openMenu, openStats }: { openMenu: () => void, openStats: () => void }) => {
-  const router = useRouter();
-
-  const toAccount = () => {
-    router.push('/profile');
-  };
+export const Bar = ({ openMenu, openStats, openProfile }: {
+  openMenu: () => void,
+  openStats: () => void,
+  openProfile: () => void
+}) => {
 
   return (
     <div className={styles.bar}>
@@ -24,7 +21,7 @@ export const Bar = ({ openMenu, openStats }: { openMenu: () => void, openStats: 
         </button>
       </div>
       <div className={styles.bar__button}>
-        <button className={styles.button} onClick={toAccount}>
+        <button className={styles.button} onClick={openProfile}>
           <img className={styles.button__icon} src="/ui/user.svg" alt="Личный кабинет" />
         </button>
       </div>

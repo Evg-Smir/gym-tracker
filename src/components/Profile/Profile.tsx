@@ -9,8 +9,7 @@ import { Button } from '@/components/Buttons/Button/Button';
 import { redirect, useRouter } from 'next/navigation';
 import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 
-//TODO сделать ЛК в попапе
-export const Profile = ({}: {}) => {
+export const Profile = ({ closePopup }: { closePopup: () => void }) => {
   const setUser = useUserStore((state) => state.setUserData);
   const userData = useUserStore((state) => state.userData);
   const [firstName, setFirstName] = useState('');
@@ -20,13 +19,12 @@ export const Profile = ({}: {}) => {
   const [secondPassword, setSecondPassword] = useState('');
   const [changes, setChanges] = useState(false);
   const { user } = useAuth();
-  const router = useRouter();
 
   const handleLogout = async () => {
     await logoutUser();
   };
 
-  const setUserData = async (uid: string, local: boolean) => {
+  const setUserData = async (uid: string, local?: boolean) => {
     if (local) {
       setFirstName(userData.firstName);
       setLastName(userData.lastName);
@@ -58,6 +56,8 @@ export const Profile = ({}: {}) => {
     };
 
     user && await updateUserData(user.uid, updatedUser);
+    setUserData(userData.uid, true);
+    setChanges(false)
   };
 
   useEffect(() => {
@@ -67,7 +67,6 @@ export const Profile = ({}: {}) => {
       setUserData(user.uid);
     } else if (user && userData) {
       setUserData(user.uid, true);
-
     }
 
   }, [user]);
@@ -86,13 +85,13 @@ export const Profile = ({}: {}) => {
     <div className={styles.profile}>
       <div className={styles.profile__inner}>
         <div className={styles.profileForm}>
-          <BackButton clickButton={() => router.push('/')} />
+          <BackButton clickButton={closePopup} />
           <h1 className={styles.profileTitle}>Личный кабинет</h1>
           <Input type={'text'} placeholder={'Имя'} value={firstName} onChange={setFirstName} />
           <Input type={'text'} placeholder={'Фамилия'} value={lastName} onChange={setLastName} />
-          <Input type={'email'} placeholder={'Почта'} value={email} onChange={setFirstName} />
-          <Input type={'password'} placeholder={'Новый пароль'} onChange={setPassword} />
-          <Input type={'password'} placeholder={'Повторите пароль'} onChange={setSecondPassword} />
+          {/*<Input type={'email'} placeholder={'Почта'} value={email} onChange={setFirstName} />*/}
+          {/*<Input type={'password'} placeholder={'Новый пароль'} onChange={setPassword} />*/}
+          {/*<Input type={'password'} placeholder={'Повторите пароль'} onChange={setSecondPassword} />*/}
           <div className={styles.profileButtons}>
             {changes && <Button label={'Сохранить изменения'} type={'button'} onClick={saveUserData} />}
             <Button label={'Выйти из аккаунта'} type={'button'} onClick={handleLogout} />

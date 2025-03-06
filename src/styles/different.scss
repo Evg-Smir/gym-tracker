@@ -17,18 +17,20 @@
   justify-content: space-between;
 
   .busyDay {
-    position: relative;
+    button {
+      position: relative;
 
-    &::after {
-      content: '';
-      background-size: contain;
-      background: var(--system-gray-6) url('/ui/gym_light.svg') no-repeat center;
-      position: absolute;
-      top: -2px;
-      right: 0;
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
+      &::after {
+        content: '';
+        background-size: contain;
+        background: var(--system-gray-6) url('/ui/gym_light.svg') no-repeat center;
+        position: absolute;
+        top: -2px;
+        right: 0;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+      }
     }
   }
 }

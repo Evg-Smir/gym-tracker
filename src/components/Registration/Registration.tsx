@@ -55,11 +55,11 @@ export const Registration = () => {
 
         <div className={styles.registrationBottom}>
           <form onSubmit={handleSubmit}>
-            <Input type={'text'} placeholder={'Имя'} value={'firstName'} onChange={setFirstName} />
-            <Input type={'text'} placeholder={'Фамилия'} value={'lastName'} onChange={setLastName} />
-            <Input type={'email'} placeholder={'Почта'} value={'email'} onChange={setEmail} />
-            <Input type={'password'} placeholder={'Пароль'} value={'password'} onChange={setPassword} />
-            <Input type={'password'} placeholder={'Повторите пароль'} value={'password_second'}
+            <Input type={'text'} placeholder={'Имя'} value={firstName} onChange={setFirstName} />
+            <Input type={'text'} placeholder={'Фамилия'} value={lastName} onChange={setLastName} />
+            <Input type={'email'} placeholder={'Почта'} value={email} onChange={setEmail} />
+            <Input type={'password'} placeholder={'Пароль'} value={password} onChange={setPassword} />
+            <Input type={'password'} placeholder={'Повторите пароль'} value={passwordSecond}
                    onChange={setPasswordSecond} />
             <InputError error={error} />
             <Button label={'Зарегестрироваться'} type={'submit'} />
