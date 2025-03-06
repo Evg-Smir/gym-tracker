@@ -8,6 +8,7 @@ import { Input } from '@/components/Inputs/Input/Input';
 import { Button } from '@/components/Buttons/Button/Button';
 import { redirect, useRouter } from 'next/navigation';
 import { BackButton } from '@/components/Buttons/BackButton/BackButton';
+import { UserDataType } from '@/@types/userStoreTypes';
 
 export const Profile = ({ closePopup }: { closePopup: () => void }) => {
   const setUser = useUserStore((state) => state.setUserData);
@@ -35,7 +36,7 @@ export const Profile = ({ closePopup }: { closePopup: () => void }) => {
 
     try {
       const data = await getUserData(uid);
-      setUser({ ...data, uid });
+      setUser({ ...data, uid } as UserDataType);
 
       if (data) {
         setFirstName(data.firstName);

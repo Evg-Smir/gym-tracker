@@ -8,6 +8,7 @@ import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { InputError } from '@/components/Inputs/InputError/InputError';
+import { UserDataType } from '@/@types/userStoreTypes';
 
 export const Authentication = () => {
   const setUser = useUserStore((state) => state.setUserData);
@@ -19,7 +20,7 @@ export const Authentication = () => {
   const setUserData = async (uid: string) => {
     try {
       const data = await getUserData(uid);
-      setUser({ ...data, uid });
+      setUser({ ...data, uid } as UserDataType);
     } catch (err) {
       console.error('Ошибка получения данных пользователя:', err);
     }

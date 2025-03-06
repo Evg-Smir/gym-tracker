@@ -59,7 +59,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchUserData = useCallback(async () => {
     if (!user || userData?.uid === user.uid) return;
     const data = await getUserData(user.uid);
-    if (data) setUserData({ ...data, uid: user.uid });
+    if (data) { // @ts-ignore
+      setUserData({ ...data, uid: user.uid });
+    }
   }, [user, userData?.uid, setUserData]);
 
   const fetchData = useCallback(async () => {

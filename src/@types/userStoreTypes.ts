@@ -6,12 +6,12 @@ export interface UserDataType {
   lastName: string;
   email: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
   categoriesIsUpload?: boolean;
   exercisesIsUpload?: boolean;
 }
 
 export interface userStoreTypes {
   userData: UserDataType;
-  setUserData: (user: Record<string, any>) => void;
+  setUserData: (user: UserDataType) => void;
 }

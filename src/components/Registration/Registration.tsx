@@ -8,6 +8,7 @@ import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { InputError } from '@/components/Inputs/InputError/InputError';
+import { UserDataType } from '@/@types/userStoreTypes';
 
 export const Registration = () => {
   const setUser = useUserStore((state) => state.setUserData);
@@ -21,13 +22,13 @@ export const Registration = () => {
 
   const setUserData = async (uid: string) => {
     const data = await getUserData(uid);
-    setUser({ ...data, uid });
+    setUser({ ...data, uid } as UserDataType);
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (passwordSecond !== error) {
+    if (passwordSecond !== password) {
       setError('password-not-match');
       return;
     }

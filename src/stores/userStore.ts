@@ -3,7 +3,13 @@ import { userStoreTypes } from '@/@types/userStoreTypes';
 
 
 export const useUserStore = create<userStoreTypes>((set) => ({
-  userData: {},
+  userData: {
+    uid: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    createdAt: '',
+  },
 
   setUserData: (user) => set((state) => {
     return {
