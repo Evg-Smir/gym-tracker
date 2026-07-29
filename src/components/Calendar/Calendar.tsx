@@ -60,11 +60,14 @@ export const Calendar = () => {
     setCalendarIsOpened(false);
   }, []);
 
-  const onChangeDay = useCallback(({ $d: day }: { $d: Date }) => {
-    if (currentDate === day) return false;
+  const onChangeDay = useCallback((value: Dayjs | null) => {
+    if (!value) return;
+
+    const day = value.toDate();
     setExercisesOfCurrentDay(day);
-    setCurrentDate(day);
-  }, [currentDate, setExercisesOfCurrentDay]);
+    setCurrentDate(new Date(day.getFullYear(), day.getMonth(), day.getDate()));
+    setCalendarIsOpened(false);
+  }, [setExercisesOfCurrentDay]);
 
   const getDate = useCallback((date: Date) => {
     const now = new Date();
@@ -107,7 +110,9 @@ export const Calendar = () => {
                 <DateCalendar
                   className={styles.dateCalendar}
                   views={['day']}
-                  onChange={onChangeDay} slots={{ day: ServerDay }}
+                  value={dayjs(currentDate)}
+                  onChange={onChangeDay}
+                  slots={{ day: ServerDay }}
                 />
               </LocalizationProvider>
             </ThemeProvider>
