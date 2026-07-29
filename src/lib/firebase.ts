@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, connectFirestoreEmulator } from 'firebase/firestore';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -10,7 +10,13 @@ import {
   reauthenticateWithCredential,
   updateEmail,
   updatePassword,
+  connectAuthEmulator,
 } from 'firebase/auth';
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __FIREBASE_EMULATORS_CONNECTED__: boolean | undefined;
+}
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -25,6 +31,15 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+if (
+  process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true' &&
+  !globalThis.__FIREBASE_EMULATORS_CONNECTED__
+) {
+  connectAuthEmulator(auth, 'http://127.0.0.1:9199', { disableWarnings: true });
+  connectFirestoreEmulator(db, '127.0.0.1', 8185);
+  globalThis.__FIREBASE_EMULATORS_CONNECTED__ = true;
+}
 
 export const registerUser = async (email: string, password: string, firstName: string, lastName: string) => {
   try {

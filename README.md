@@ -32,7 +32,7 @@ The build is a Next.js static export: the `out/` folder can be served from any s
 | Backend | Firebase Auth, Cloud Firestore |
 | Local storage | IndexedDB (`PWAStorage`) |
 | Build | `output: 'export'` → static files in `out/` |
-| Tests | Vitest |
+| Tests | Vitest (unit), Playwright (e2e) + Firebase Emulator Suite |
 
 ---
 
@@ -42,7 +42,7 @@ The build is a Next.js static export: the `out/` folder can be served from any s
 
 - Node.js 18+
 - npm
-- a Firebase project with **Email/Password** Auth and **Firestore**
+- a Firebase project with **Email/Password** Auth and **Firestore** (or Emulator Suite for local/e2e)
 
 ### Setup
 
@@ -61,6 +61,19 @@ The app runs at [http://localhost:3000](http://localhost:3000) (listens on `0.0.
 
 Unauthenticated users are redirected to `/auth`.
 
+To develop against emulators instead of a real project:
+
+```bash
+# terminal 1
+npm run emulators
+
+# terminal 2 — set in .env.local:
+# NEXT_PUBLIC_USE_FIREBASE_EMULATOR=true
+# NEXT_PUBLIC_FIREBASE_PROJECT_ID=gym-tracker-demo
+# (other NEXT_PUBLIC_FIREBASE_* can be any non-empty demo values)
+npm run dev
+```
+
 ---
 
 ## Scripts
@@ -71,7 +84,10 @@ Unauthenticated users are redirected to `/auth`.
 | `npm run build` | Production build + static export to `out/` |
 | `npm start` | `next start` (for non-export scenarios) |
 | `npm run lint` | ESLint |
-| `npm test` | Unit tests (Vitest) |
+| `npm test` / `npm run test:unit` | Unit tests (Vitest) |
+| `npm run emulators` | Firebase Auth + Firestore emulators |
+| `npm run test:e2e` | E2E tests (Playwright + emulators + Next) |
+| `npm run test:e2e:ui` | Playwright UI mode |
 
 ---
 
@@ -88,6 +104,9 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
+
+# "true" to use Auth (:9199) + Firestore (:8185) emulators
+NEXT_PUBLIC_USE_FIREBASE_EMULATOR=
 ```
 
 These keys are public (`NEXT_PUBLIC_*`). Data security comes from **Firestore Security Rules**, not from hiding the API key.
@@ -102,19 +121,25 @@ users/{uid}
   └── workouts/{dd.mm.yyyy} # workouts by day
 ```
 
-The same data is also written locally to IndexedDB (`PWAStorage`) under `{uid}:exercises` and `{uid}:categories`.
+The same data is also written locally to IndexedDB (`PWAStorage`) under `exercises` and `categories`.
 
 ### Security Rules
 
-[`firestore.rules`](firestore.rules) allows read/write only for the document owner (`request.auth.uid == userId`).
-
-Deploy the rules:
+[`firestore.rules`](firestore.rules) in the repo is **permissive** for local Emulator e2e. Tighten before production (owner-scoped `request.auth.uid == userId` checks) and deploy:
 
 ```bash
 firebase deploy --only firestore:rules
 ```
 
-or via the Firebase Console. Without rules, client-side uid checks do **not** protect your data.
+or via the Firebase Console. Without proper rules, client-side uid checks do **not** protect your data.
+
+### Emulators
+
+```bash
+npm run emulators
+```
+
+Starts Auth on `9199` and Firestore on `8185` (project `gym-tracker-demo`). Emulator UI is disabled by default for quieter local/CI runs.
 
 ---
 
@@ -131,6 +156,7 @@ src/
 ├── services/             # IndexedDB, statistics, filters, defaultCategories
 ├── hooks/                # useFilteredCategories, useClickOutside, …
 └── @types/               # TypeScript types
+e2e/                      # Playwright specs + helpers
 ```
 
 ### Data flow
@@ -154,7 +180,7 @@ Popups (catalog menu, statistics, profile, set editing) open over the home scree
 
 ## Deploy (GitHub Pages)
 
-Production builds deploy to GitHub Pages from `main` via `.github/workflows/deploy.yml`.
+Production builds deploy to GitHub Pages from `main` via `.github/workflows/deploy.yml`. Deploy runs only after unit and e2e jobs pass.
 
 URL: `https://<user>.github.io/gym-tracker/`
 
@@ -171,11 +197,24 @@ In production the app uses `basePath=/gym-tracker`; with `npm run dev` the base 
 
 ## Tests
 
-Unit tests cover statistics, category filters, date formatting, and the exercises store:
+**Unit (Vitest)** — services and Zustand stores (mocked IndexedDB / Firestore):
 
 ```bash
 npm test
 ```
+
+**E2E (Playwright)** — starts Firebase emulators + Next.js automatically, then runs critical flows (auth, add exercise/set, day switch). Requires Java 21+ on `PATH` (Firestore emulator):
+
+```bash
+# macOS example
+export PATH="/opt/homebrew/opt/openjdk@21/bin:$PATH"
+export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
+
+npx playwright install chromium   # once
+npm run test:e2e
+```
+
+CI: `.github/workflows/test.yml` on push/PR; deploy workflow also gates on the same checks.
 
 ---
 
