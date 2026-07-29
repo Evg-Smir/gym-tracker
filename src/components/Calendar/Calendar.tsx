@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { useExercisesStore } from '@/stores/exercisesStore';
 import { useSwipeable } from 'react-swipeable';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
+import { withBasePath } from '@/lib/basePath';
 
 const theme = createTheme(
   {
@@ -63,7 +64,7 @@ export const Calendar = () => {
         <div className={styles.calendarTop}>
           <div className={styles.currentDate}>{getDateLabel(currentDate)}</div>
           <button className={styles.calendarButton} onClick={toggleCalendar}>
-            <Image src="/ui/calendar.svg" alt="Calendar" width={28} height={28} />
+            <Image src={withBasePath('/ui/calendar.svg')} alt="Calendar" width={28} height={28} />
           </button>
         </div>
         <div

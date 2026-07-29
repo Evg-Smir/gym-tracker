@@ -1,6 +1,7 @@
 import styles from "@/components/Exercises/ExercisesList/ExercisesList.module.scss";
 import { ExercisesItem } from "@/components/Exercises/ExercisesItem/ExercisesItem";
 import { DayOfExercisesType } from "@/@types/exerciseTypes";
+import { withBasePath } from '@/lib/basePath';
 
 interface ExercisesListProps extends DayOfExercisesType {
   setActionSetId: (id: number) => void;
@@ -8,7 +9,7 @@ interface ExercisesListProps extends DayOfExercisesType {
 
 const EmptyBlock = () => (
   <div className={styles.emptyBlock}>
-    <img src="/ui/background.png" alt="Фон"/>
+    <img src={withBasePath('/ui/background.png')} alt="Фон"/>
     <p>Добавьте упражнение, чтобы записать тренировку</p>
   </div>
 );

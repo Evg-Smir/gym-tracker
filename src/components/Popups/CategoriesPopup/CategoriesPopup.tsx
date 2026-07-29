@@ -3,6 +3,7 @@ import { AddExerciseButton } from '@/components/Buttons/AddExerciseButton/AddExe
 import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 import { CategoryType, SelectedExerciseType } from '@/@types/categoryTypes';
 import { useCategoryExerciseSelection } from '@/hooks/useCategoryExerciseSelection';
+import { withBasePath } from '@/lib/basePath';
 
 interface CategoriesPopupProps {
   category: CategoryType | null;
@@ -45,7 +46,7 @@ export const CategoriesPopup = ({
             onClick={() => selectExercise(exercise.id, category.id)}
           >
             <span>{exercise.name}</span>
-            {isSelected(exercise) ? <img src="/ui/check-mark.svg" alt="icon" /> : null}
+            {isSelected(exercise) ? <img src={withBasePath('/ui/check-mark.svg')} alt="icon" /> : null}
           </div>
         ))}
       </div>

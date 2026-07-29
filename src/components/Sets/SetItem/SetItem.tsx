@@ -1,6 +1,7 @@
 import styles from './SetItem.module.scss';
 import { ExerciseRepsType } from "@/@types/exerciseTypes";
 import React, { useEffect, useState } from "react";
+import { withBasePath } from '@/lib/basePath';
 
 type UpdatedValue = (value: ExerciseRepsType) => void;
 
@@ -90,7 +91,7 @@ export const SetItem = ({
         />
       </div>
       <button onClick={() => removeSet(index)}>
-        <img src="/ui/close-red.svg" alt=""/>
+        <img src={withBasePath('/ui/close-red.svg')} alt=""/>
       </button>
     </div>
   );

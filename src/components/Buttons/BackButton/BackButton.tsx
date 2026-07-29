@@ -1,5 +1,7 @@
 import styles from './BackButton.module.scss';
 
+import { withBasePath } from '@/lib/basePath';
+
 interface BackButtonType {
   clickButton: () => void,
 }
@@ -7,7 +9,7 @@ interface BackButtonType {
 export const BackButton = ({ clickButton }: BackButtonType) => {
   return (
     <button className={styles.backButton} onClick={clickButton}>
-      <img src="/ui/arrow-light.svg" alt="arrow"/>
+      <img src={withBasePath('/ui/arrow-light.svg')} alt="arrow"/>
       <span>назад</span>
     </button>
   )
