@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Gym Tracker
 
-## Getting Started
+Мобильное PWA для учёта силовых тренировок: календарь, упражнения по группам мышц, подходы (вес × повторы), статистика прогресса и профиль.
 
-First, run the development server:
+## Стек
+
+- Next.js 14 (App Router) + React 18 + TypeScript
+- Static export (`output: 'export'`)
+- Zustand, Firebase Auth + Firestore, IndexedDB
+- SCSS Modules, Tailwind, MUI DateCalendar, Recharts
+- Service worker (`public/sw.js`) для offline shell
+
+## Setup
+
+1. Установите зависимости:
+
+```bash
+npm install
+```
+
+2. Скопируйте env-файл и заполните Firebase-ключи:
+
+```bash
+cp .env.example .env.local
+```
+
+3. Запустите dev-сервер:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Откройте [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+| Script | Описание |
+|--------|----------|
+| `npm run dev` | Dev-сервер на `0.0.0.0:3000` |
+| `npm run build` | Static export в `out/` |
+| `npm start` | Next start (для non-export сценариев) |
+| `npm run lint` | ESLint |
+| `npm test` | Vitest (unit) |
 
-## Learn More
+## Firebase
 
-To learn more about Next.js, take a look at the following resources:
+Нужен проект Firebase с Email/Password Auth и Firestore.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Переменные (см. `.env.example`):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `NEXT_PUBLIC_FIREBASE_APP_ID`
 
-## Deploy on Vercel
+Структура данных:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+users/{uid}
+  ├── categories/{slug}
+  └── workouts/{dd.mm.yyyy}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Локально данные также пишутся в IndexedDB (`PWAStorage`).
+
+## Основные возможности
+
+- Регистрация / вход
+- Дневник тренировок по дням
+- Каталог упражнений с флагами «удвоить вес» и «собственный вес»
+- Multi-select при добавлении упражнений
+- Статистика: max weight / volume (или reps для bodyweight)
+- Профиль: имя, email, пароль (с reauth)
+- PWA manifest + service worker
+
+## Deploy
+
+После `npm run build` раздайте содержимое `out/` как статику (Firebase Hosting, S3, Nginx и т.п.). Для service worker нужен HTTPS (или localhost).
