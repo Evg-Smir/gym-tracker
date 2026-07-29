@@ -8,6 +8,7 @@ import Select from '@mui/material/Select';
 import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useExerciseStatistics } from '@/hooks/useExerciseStatistics';
 import { withBasePath } from '@/lib/basePath';
+import { useT } from '@/hooks/useT';
 
 interface StatisticsExercisesPopupProps {
   category: CategoryType | null;
@@ -28,20 +29,21 @@ export const StatisticsExercisesPopup = ({
     handleMetricChange,
     closePopup,
   } = useExerciseStatistics(category, unsetCategory);
+  const t = useT();
 
   if (!shouldRender || !category) return null;
 
   return (
     <div className={`${styles.statisticsExercisesPopup} ${isVisible ? styles.visible : ''}`}>
       <BackButton clickButton={closePopup} />
-      <h2 className={styles.title}>Статистика</h2>
+      <h2 className={styles.title}>{t('statistics.title')}</h2>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Упражнение</InputLabel>
+        <InputLabel id="demo-simple-select-label">{t('statistics.exercise')}</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={staticsState.exercise}
-          label="Упражнение"
+          label={t('statistics.exercise')}
           onChange={handleChange}
         >
           {category.exercises.map((ex) => (
@@ -59,14 +61,14 @@ export const StatisticsExercisesPopup = ({
             className={staticsState.metric === 'weight' ? styles.metricActive : ''}
             onClick={() => handleMetricChange('weight')}
           >
-            Вес
+            {t('statistics.metric.weight')}
           </button>
           <button
             type="button"
             className={staticsState.metric === 'volume' ? styles.metricActive : ''}
             onClick={() => handleMetricChange('volume')}
           >
-            Объём
+            {t('statistics.metric.volume')}
           </button>
         </div>
       )}
@@ -97,8 +99,8 @@ export const StatisticsExercisesPopup = ({
         </>
       ) : (
         <div className={styles.emptyBlock}>
-          <img src={withBasePath('/ui/background.png')} alt="Фон" />
-          <p>Добавьте подходы, чтобы показать статистику</p>
+          <img src={withBasePath('/ui/background.png')} alt={t('common.backgroundAlt')} />
+          <p>{t('statistics.empty')}</p>
         </div>
       )}
     </div>

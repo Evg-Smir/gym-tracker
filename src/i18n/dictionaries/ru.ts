@@ -1,0 +1,80 @@
+export const ru = {
+  'common.email': 'Почта',
+  'common.password': 'Пароль',
+  'common.firstName': 'Имя',
+  'common.lastName': 'Фамилия',
+  'common.confirmPassword': 'Повторите пароль',
+  'common.back': 'назад',
+  'common.backAlt': 'Назад',
+  'common.done': 'Готово',
+  'common.backgroundAlt': 'Фон',
+  'common.arrowAlt': 'Стрелка',
+  'common.checkAlt': 'Выбрано',
+
+  'auth.title': 'Вход',
+  'auth.login': 'Войти',
+  'auth.orRegister': 'Или зарегистрируйтесь',
+
+  'register.title': 'Регистрация',
+  'register.submit': 'Зарегистрироваться',
+  'register.orLogin': 'Или войдите',
+
+  'profile.title': 'Личный кабинет',
+  'profile.newPassword': 'Новый пароль',
+  'profile.currentPassword': 'Текущий пароль',
+  'profile.save': 'Сохранить изменения',
+  'profile.logout': 'Выйти из аккаунта',
+  'profile.language': 'Язык',
+  'profile.languageRu': 'Русский',
+  'profile.languageEn': 'English',
+
+  'bar.addAlt': 'Добавить',
+  'bar.statsAlt': 'Статистика',
+  'bar.profileAlt': 'Личный кабинет',
+
+  'calendar.today': 'Сегодня',
+  'calendar.iconAlt': 'Календарь',
+
+  'exercises.create': 'Создать упражнение',
+  'exercises.createAlt': 'Создать упражнение',
+  'exercises.empty': 'Добавьте упражнение, чтобы записать тренировку',
+  'exercises.iconAlt': 'Иконка',
+  'exercises.namePlaceholder': 'Название упражнения',
+  'exercises.doubleWeight': 'Удвоить вес',
+  'exercises.ownWeight': 'Собственный вес',
+  'exercises.update': 'Изменить упражнение',
+  'exercises.delete': 'Удалить упражнение',
+  'exercises.new': 'Новое упражнение',
+  'exercises.chooseCategory': 'Выберите категорию',
+
+  'sets.weight': 'Вес',
+  'sets.reps': 'Повторения',
+  'sets.add': 'Добавить подход',
+
+  'search.placeholder': 'Искать',
+  'search.clearAlt': 'Очистить',
+  'search.iconAlt': 'Поиск',
+
+  'statistics.title': 'Статистика',
+  'statistics.exercise': 'Упражнение',
+  'statistics.metric.weight': 'Вес',
+  'statistics.metric.volume': 'Объём',
+  'statistics.metric.reps': 'Повторения',
+  'statistics.empty': 'Добавьте подходы, чтобы показать статистику',
+
+  'categories.select': 'Выбрать',
+  'categories.edit': 'Изменить',
+  'categories.iconAlt': 'Иконка категории',
+
+  'errors.emailAlreadyInUse': 'Пользователь уже существует',
+  'errors.invalidEmail': 'Некорректный email',
+  'errors.invalidCredentials': 'Неверный email или пароль',
+  'errors.requiresRecentLogin': 'Введите текущий пароль для подтверждения',
+  'errors.weakPassword': 'Слишком слабый пароль',
+  'errors.tooManyRequests': 'Слишком много попыток. Попробуйте позже',
+  'errors.network': 'Нет соединения с сервером. Проверьте интернет и попробуйте снова',
+  'errors.passwordMismatch': 'Пароли не совпадают',
+  'errors.server': 'Ошибка сервера. Попробуйте позже',
+} as const;
+
+export type TranslationKey = keyof typeof ru;

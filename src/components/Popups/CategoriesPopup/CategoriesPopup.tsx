@@ -4,6 +4,7 @@ import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 import { CategoryType, SelectedExerciseType } from '@/@types/categoryTypes';
 import { useCategoryExerciseSelection } from '@/hooks/useCategoryExerciseSelection';
 import { withBasePath } from '@/lib/basePath';
+import { useT } from '@/hooks/useT';
 
 interface CategoriesPopupProps {
   category: CategoryType | null;
@@ -30,6 +31,7 @@ export const CategoriesPopup = ({
     closePopup,
     clearSelection,
   } = useCategoryExerciseSelection(category, unsetCategory, closeAllPopups);
+  const t = useT();
 
   if (!shouldRender || !category) return null;
 
@@ -46,14 +48,14 @@ export const CategoriesPopup = ({
             onClick={() => selectExercise(exercise.id, category.id)}
           >
             <span>{exercise.name}</span>
-            {isSelected(exercise) ? <img src={withBasePath('/ui/check-mark.svg')} alt="icon" /> : null}
+            {isSelected(exercise) ? <img src={withBasePath('/ui/check-mark.svg')} alt={t('common.checkAlt')} /> : null}
           </div>
         ))}
       </div>
       <div className={styles.categoriesPopupButtons}>
         {selectedExercises.length > 0 && (
           <button className={styles.selectButton} onClick={confirmSelection}>
-            Выбрать
+            {t('categories.select')}
           </button>
         )}
         {selectedExercises.length === 1 && (
@@ -64,7 +66,7 @@ export const CategoriesPopup = ({
             }}
             className={styles.changeButton}
           >
-            Изменить
+            {t('categories.edit')}
           </button>
         )}
       </div>

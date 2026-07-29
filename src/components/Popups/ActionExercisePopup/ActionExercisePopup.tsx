@@ -2,6 +2,7 @@ import styles from './ActionExercisePopup.module.scss';
 import { CategoryType } from '@/@types/categoryTypes';
 import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 import { useActionExerciseForm } from '@/hooks/useActionExerciseForm';
+import { useT } from '@/hooks/useT';
 
 interface ActionExercisePopupProps {
   category: CategoryType;
@@ -22,6 +23,7 @@ export const ActionExercisePopup = ({
     closePopup,
     handleActionExercise,
   } = useActionExerciseForm(category, changeExerciseId, unsetCreateCategory);
+  const t = useT();
 
   if (!shouldRender) return null;
 
@@ -33,7 +35,7 @@ export const ActionExercisePopup = ({
         <div className={styles.actionExercisePopupInput}>
           <input
             type="text"
-            placeholder="Название упражнения"
+            placeholder={t('exercises.namePlaceholder')}
             name="name"
             value={state.name}
             onChange={handleInputChange}
@@ -41,7 +43,7 @@ export const ActionExercisePopup = ({
         </div>
         <div className={styles.actionExercisePopupSelect}>
           <div className={styles.createExerciseName}>
-            <span>Удвоить вес</span>
+            <span>{t('exercises.doubleWeight')}</span>
             <span className={styles.tooltip}>i</span>
           </div>
           <div className={styles.actionExercisePopupCheckbox}>
@@ -55,7 +57,7 @@ export const ActionExercisePopup = ({
         </div>
         <div className={styles.actionExercisePopupSelect}>
           <div className={styles.createExerciseName}>
-            <span>Собственный вес</span>
+            <span>{t('exercises.ownWeight')}</span>
             <span className={styles.tooltip}>i</span>
           </div>
           <div className={styles.actionExercisePopupCheckbox}>
@@ -70,17 +72,17 @@ export const ActionExercisePopup = ({
         <div className={styles.actionExercisePopupButtons}>
           {!changeExerciseId && state.name && (
             <button className={styles.saveButton} onClick={() => handleActionExercise('create')}>
-              Создать упражнение
+              {t('exercises.create')}
             </button>
           )}
           {changeExerciseId && (
             <button className={styles.saveButton} onClick={() => handleActionExercise('update')}>
-              Изменить упражнение
+              {t('exercises.update')}
             </button>
           )}
           {changeExerciseId && (
             <button className={styles.removeButton} onClick={() => handleActionExercise('remove')}>
-              Удалить упражнение
+              {t('exercises.delete')}
             </button>
           )}
         </div>

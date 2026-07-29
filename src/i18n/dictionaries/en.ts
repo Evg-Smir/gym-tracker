@@ -1,0 +1,80 @@
+import type { TranslationKey } from './ru';
+
+export const en: Record<TranslationKey, string> = {
+  'common.email': 'Email',
+  'common.password': 'Password',
+  'common.firstName': 'First name',
+  'common.lastName': 'Last name',
+  'common.confirmPassword': 'Confirm password',
+  'common.back': 'back',
+  'common.backAlt': 'Back',
+  'common.done': 'Done',
+  'common.backgroundAlt': 'Background',
+  'common.arrowAlt': 'Arrow',
+  'common.checkAlt': 'Selected',
+
+  'auth.title': 'Sign in',
+  'auth.login': 'Sign in',
+  'auth.orRegister': 'Or register',
+
+  'register.title': 'Sign up',
+  'register.submit': 'Create account',
+  'register.orLogin': 'Or sign in',
+
+  'profile.title': 'Profile',
+  'profile.newPassword': 'New password',
+  'profile.currentPassword': 'Current password',
+  'profile.save': 'Save changes',
+  'profile.logout': 'Log out',
+  'profile.language': 'Language',
+  'profile.languageRu': 'Русский',
+  'profile.languageEn': 'English',
+
+  'bar.addAlt': 'Add',
+  'bar.statsAlt': 'Statistics',
+  'bar.profileAlt': 'Profile',
+
+  'calendar.today': 'Today',
+  'calendar.iconAlt': 'Calendar',
+
+  'exercises.create': 'Create exercise',
+  'exercises.createAlt': 'Create exercise',
+  'exercises.empty': 'Add an exercise to log your workout',
+  'exercises.iconAlt': 'Icon',
+  'exercises.namePlaceholder': 'Exercise name',
+  'exercises.doubleWeight': 'Double weight',
+  'exercises.ownWeight': 'Bodyweight',
+  'exercises.update': 'Update exercise',
+  'exercises.delete': 'Delete exercise',
+  'exercises.new': 'New exercise',
+  'exercises.chooseCategory': 'Choose a category',
+
+  'sets.weight': 'Weight',
+  'sets.reps': 'Reps',
+  'sets.add': 'Add set',
+
+  'search.placeholder': 'Search',
+  'search.clearAlt': 'Clear',
+  'search.iconAlt': 'Search',
+
+  'statistics.title': 'Statistics',
+  'statistics.exercise': 'Exercise',
+  'statistics.metric.weight': 'Weight',
+  'statistics.metric.volume': 'Volume',
+  'statistics.metric.reps': 'Reps',
+  'statistics.empty': 'Add sets to show statistics',
+
+  'categories.select': 'Select',
+  'categories.edit': 'Edit',
+  'categories.iconAlt': 'Category icon',
+
+  'errors.emailAlreadyInUse': 'User already exists',
+  'errors.invalidEmail': 'Invalid email',
+  'errors.invalidCredentials': 'Invalid email or password',
+  'errors.requiresRecentLogin': 'Enter your current password to confirm',
+  'errors.weakPassword': 'Password is too weak',
+  'errors.tooManyRequests': 'Too many attempts. Try again later',
+  'errors.network': 'No connection to the server. Check your internet and try again',
+  'errors.passwordMismatch': 'Passwords do not match',
+  'errors.server': 'Server error. Try again later',
+};

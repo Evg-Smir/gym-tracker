@@ -10,11 +10,6 @@ import { ProfilePopup } from '@/components/Popups/ProfilePopup/ProfilePopup';
 import { useAppPopups } from '@/hooks/useAppPopups';
 import { useExercisesStore } from '@/stores/exercisesStore';
 
-import dayjs from 'dayjs';
-import 'dayjs/locale/ru';
-
-dayjs.locale('ru');
-
 export const App = () => {
   const {
     state,

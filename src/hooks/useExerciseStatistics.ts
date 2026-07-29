@@ -10,6 +10,7 @@ import {
 } from '@/domain/statistics';
 import useAnimatedVisibility from '@/hooks/useAnimatedVisibility';
 import { useExercisesStore } from '@/stores/exercisesStore';
+import { useT } from '@/hooks/useT';
 
 interface StatisticsState {
   exercise: string;
@@ -23,6 +24,7 @@ export const useExerciseStatistics = (
 ) => {
   const exercisesList = useExercisesStore((state) => state.exercises);
   const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
+  const t = useT();
   const [staticsState, setStaticsState] = useState<StatisticsState>({
     exercise: '',
     exerciseList: [],
@@ -40,7 +42,11 @@ export const useExerciseStatistics = (
   );
 
   const metricLabel =
-    activeMetric === 'reps' ? 'Повторения' : activeMetric === 'volume' ? 'Объём' : 'Вес';
+    activeMetric === 'reps'
+      ? t('statistics.metric.reps')
+      : activeMetric === 'volume'
+        ? t('statistics.metric.volume')
+        : t('statistics.metric.weight');
 
   const rebuildSeries = useCallback(
     (exerciseId: string, metric: 'weight' | 'volume') => {

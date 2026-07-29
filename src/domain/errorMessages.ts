@@ -1,3 +1,7 @@
+import { translate } from '@/i18n/translate';
+import type { Locale } from '@/i18n/types';
+import type { TranslationKey } from '@/i18n/dictionaries';
+
 const AUTH_CODE_PATTERN = /auth\/[a-z0-9-]+/i;
 
 type AuthErrorLike = {
@@ -32,29 +36,25 @@ export const normalizeAuthErrorCode = (err: AuthErrorLike | null | undefined): s
   return directCode || 'unknown_error';
 };
 
-export const errorCode = (code: string) => {
-  switch (code) {
-    case 'auth/email-already-exists':
-    case 'auth/email-already-in-use':
-      return 'Пользователь уже существует';
-    case 'auth/invalid-email':
-      return 'Некорректный email';
-    case 'auth/wrong-password':
-    case 'auth/invalid-credential':
-    case 'auth/user-not-found':
-      return 'Неверный email или пароль';
-    case 'auth/requires-recent-login':
-      return 'Введите текущий пароль для подтверждения';
-    case 'auth/weak-password':
-      return 'Слишком слабый пароль';
-    case 'auth/too-many-requests':
-      return 'Слишком много попыток. Попробуйте позже';
-    case 'auth/network-request-failed':
-      return 'Нет соединения с сервером. Проверьте интернет и попробуйте снова';
-    case 'password-not-match':
-      return 'Пароли не совпадают';
-    case 'unknown_error':
-    default:
-      return 'Ошибка сервера. Попробуйте позже';
-  }
+const ERROR_KEYS: Record<string, TranslationKey> = {
+  'auth/email-already-exists': 'errors.emailAlreadyInUse',
+  'auth/email-already-in-use': 'errors.emailAlreadyInUse',
+  'auth/invalid-email': 'errors.invalidEmail',
+  'auth/wrong-password': 'errors.invalidCredentials',
+  'auth/invalid-credential': 'errors.invalidCredentials',
+  'auth/user-not-found': 'errors.invalidCredentials',
+  'auth/requires-recent-login': 'errors.requiresRecentLogin',
+  'auth/weak-password': 'errors.weakPassword',
+  'auth/too-many-requests': 'errors.tooManyRequests',
+  'auth/network-request-failed': 'errors.network',
+  'password-not-match': 'errors.passwordMismatch',
+  unknown_error: 'errors.server',
+};
+
+export const errorCodeKey = (code: string): TranslationKey => {
+  return ERROR_KEYS[code] ?? 'errors.server';
+};
+
+export const errorCode = (code: string, locale: Locale = 'ru') => {
+  return translate(locale, errorCodeKey(code));
 };

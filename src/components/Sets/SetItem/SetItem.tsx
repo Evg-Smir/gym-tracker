@@ -2,6 +2,7 @@ import styles from './SetItem.module.scss';
 import { ExerciseRepsType } from "@/@types/exerciseTypes";
 import React, { useEffect, useState } from "react";
 import { withBasePath } from '@/lib/basePath';
+import { useT } from '@/hooks/useT';
 
 type UpdatedValue = (value: ExerciseRepsType) => void;
 
@@ -22,6 +23,8 @@ export const SetItem = ({
   doubleWeight = false,
   ownWeight = false,
 }: SetItemProps) => {
+  const t = useT();
+
   const displayWeight = doubleWeight && weight
     ? String(Number(weight) / 2 || '')
     : weight;
@@ -76,7 +79,7 @@ export const SetItem = ({
               type="number"
               value={valueSets.weight}
               onChange={handleWeightChange}
-              placeholder={"Вес"}
+              placeholder={t('sets.weight')}
               inputMode={"numeric"}
             />
             {doubleWeight && <span className={styles.doubleHint}>×2</span>}
@@ -86,7 +89,7 @@ export const SetItem = ({
           type="number"
           value={valueSets.reps}
           onChange={handleRepsChange}
-          placeholder={"Повторения"}
+          placeholder={t('sets.reps')}
           inputMode={"numeric"}
         />
       </div>
