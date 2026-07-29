@@ -59,7 +59,7 @@ export const Registration = () => {
             <Input type={'password'} placeholder={'Повторите пароль'} value={passwordSecond}
                    onChange={setPasswordSecond} />
             <InputError error={error} />
-            <Button label={'Зарегестрироваться'} type={'submit'} />
+            <Button label={'Зарегистрироваться'} type={'submit'} />
           </form>
           <div className={styles.registrationLink}>
             <Link className={styles.registrationLink} href={'/auth'}>Или войдите</Link>

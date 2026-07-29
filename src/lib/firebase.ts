@@ -6,15 +6,11 @@ import {
   updateProfile,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
   EmailAuthProvider,
   reauthenticateWithCredential,
   updateEmail,
   updatePassword,
-  User,
 } from 'firebase/auth';
-
-import Cookies from 'js-cookie';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -29,20 +25,6 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-
-const saveToken = async (user: User) => {
-  const token = await user.getIdToken();
-  Cookies.set('firebaseAuth', token, { expires: 7, secure: true });
-};
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    saveToken(user).then(() => {
-    });
-  } else {
-    Cookies.remove('firebaseAuth');
-  }
-});
 
 export const registerUser = async (email: string, password: string, firstName: string, lastName: string) => {
   try {
@@ -71,7 +53,6 @@ export const registerUser = async (email: string, password: string, firstName: s
 export const loginUser = async (email: string, password: string) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    await saveToken(userCredential.user);
     return userCredential;
   } catch (err: any) {
     console.error('Ошибка авторизации:', err);
@@ -81,7 +62,6 @@ export const loginUser = async (email: string, password: string) => {
 
 export const logoutUser = async () => {
   await signOut(auth);
-  Cookies.remove('firebaseAuth');
   window.location.href = '/auth';
 };
 
