@@ -1,19 +1,19 @@
 import { UserID } from '@/@types/userStoreTypes';
 
 export interface ExerciseRepsType {
-  weight: string,
-  reps: string,
+  weight: string;
+  reps: string;
 }
 
 export interface ExerciseType {
-  id: number,
-  category_id: number,
-  category_icon: string,
-  exercise_id: number,
-  exercise_name: string,
-  doubleWeight?: boolean,
-  ownWeight?: boolean,
-  sets: ExerciseRepsType[]
+  id: number;
+  category_id: number;
+  category_icon: string;
+  exercise_id: number;
+  exercise_name: string;
+  doubleWeight?: boolean;
+  ownWeight?: boolean;
+  sets: ExerciseRepsType[];
 }
 
 export interface DayOfExercisesType {
@@ -21,12 +21,19 @@ export interface DayOfExercisesType {
   exercises: ExerciseType[];
 }
 
+export interface SelectedExerciseInput {
+  categoryId: number;
+  exerciseId: number;
+}
+
 export interface ExercisesStateType {
   exercises: DayOfExercisesType[];
   exercisesOfCurrentDay: DayOfExercisesType;
-  setExercisesList: (exercisesList: any) => void;
+  setExercisesList: (exercisesList: DayOfExercisesType[]) => void;
   setExercise: (categoryId: number, exerciseId: number, uid: UserID) => void;
+  addExercises: (items: SelectedExerciseInput[], uid: UserID) => void;
   updateExercise: (exercise: ExerciseType, uid: UserID) => void;
   removeExercise: (exercise: ExerciseType, uid: UserID) => void;
   setExercisesOfCurrentDay: (time: Date) => void;
+  resetExercises: () => void;
 }

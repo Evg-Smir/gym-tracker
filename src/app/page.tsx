@@ -1,20 +1,16 @@
 'use client';
 
-import { useEffect } from 'react';
-
-import { redirect } from 'next/navigation';
-
 import { App } from '@/components/App/App';
 import { useAuth } from '@/context/AuthContext';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    !user && redirect(`/auth`);
-  }, [user]);
+  if (loading) return null;
+  if (!user) {
+    redirect('/auth');
+  }
 
-  return (
-    <App />
-  );
+  return <App />;
 }

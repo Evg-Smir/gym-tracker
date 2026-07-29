@@ -71,7 +71,7 @@ describe('exercisesStore.updateExercise', () => {
     });
   });
 
-  it('writes sets to IndexedDB and Firestore', () => {
+  it('writes sets to IndexedDB and Firestore', async () => {
     const updated = {
       id: 1,
       category_id: 1,
@@ -85,21 +85,24 @@ describe('exercisesStore.updateExercise', () => {
 
     useExercisesStore.getState().updateExercise(updated, 'user-1');
 
-    expect(setStorage).toHaveBeenCalledWith(
-      'exercises',
-      expect.arrayContaining([
+    await vi.waitFor(() => {
+      expect(setStorage).toHaveBeenCalledWith(
+        'user-1',
+        'exercises',
+        expect.arrayContaining([
+          expect.objectContaining({
+            time: 1000,
+            exercises: [expect.objectContaining({ sets: updated.sets })],
+          }),
+        ]),
+      );
+      expect(updateWorkout).toHaveBeenCalledWith(
+        'user-1',
         expect.objectContaining({
           time: 1000,
           exercises: [expect.objectContaining({ sets: updated.sets })],
         }),
-      ]),
-    );
-    expect(updateWorkout).toHaveBeenCalledWith(
-      'user-1',
-      expect.objectContaining({
-        time: 1000,
-        exercises: [expect.objectContaining({ sets: updated.sets })],
-      }),
-    );
+      );
+    });
   });
 });

@@ -63,7 +63,9 @@ users/{uid}
   └── workouts/{dd.mm.yyyy}
 ```
 
-Локально данные также пишутся в IndexedDB (`PWAStorage`).
+Локально данные также пишутся в IndexedDB (`PWAStorage`) с ключами `{uid}:exercises` / `{uid}:categories`.
+
+Security Rules лежат в [`firestore.rules`](firestore.rules) — задеплойте их в Firebase Console или через Firebase CLI (`firebase deploy --only firestore:rules`), иначе клиентские проверки uid не защищают данные.
 
 ## Основные возможности
 

@@ -14,4 +14,5 @@ export interface UserDataType {
 export interface userStoreTypes {
   userData: UserDataType;
   setUserData: (user: UserDataType) => void;
+  resetUserData: () => void;
 }

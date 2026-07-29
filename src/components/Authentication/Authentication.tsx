@@ -8,7 +8,6 @@ import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { InputError } from '@/components/Inputs/InputError/InputError';
-import { UserDataType } from '@/@types/userStoreTypes';
 
 export const Authentication = () => {
   const setUser = useUserStore((state) => state.setUserData);
@@ -17,26 +16,25 @@ export const Authentication = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const setUserData = async (uid: string) => {
-    try {
-      const data = await getUserData(uid);
-      setUser({ ...data, uid } as UserDataType);
-    } catch (err) {
-      console.error('Ошибка получения данных пользователя:', err);
-    }
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
-      const userData = await loginUser(email, password);
-      if (!userData) return;
-      await setUserData(userData.user.uid);
+      const userCredential = await loginUser(email, password);
+      if (!userCredential?.user) return;
+
+      const data = await getUserData(userCredential.user.uid);
+      if (data) {
+        setUser(data);
+      }
+
       router.push('/');
-    } catch (err: any) {
-      setError(err.code || 'Неизвестная ошибка');
+    } catch (err: unknown) {
+      const code = typeof err === 'object' && err && 'code' in err
+        ? String((err as { code: string }).code)
+        : 'unknown_error';
+      setError(code);
     }
   };
 
@@ -60,6 +58,7 @@ export const Authentication = () => {
               placeholder="Пароль"
               value={password}
               onChange={setPassword}
+              minLength={6}
             />
             <InputError error={error} />
             <Button label="Войти" type="submit" />
@@ -72,4 +71,3 @@ export const Authentication = () => {
     </div>
   );
 };
-

@@ -18,9 +18,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  userScalable: false,
-  maximumScale: 1,
   initialScale: 1,
+  width: 'device-width',
 };
 
 interface RootLayoutType {

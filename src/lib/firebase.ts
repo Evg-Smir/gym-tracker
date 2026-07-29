@@ -1,4 +1,4 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
+import { initializeApp, getApps, getApp, FirebaseError } from 'firebase/app';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import {
   getAuth,
@@ -8,7 +8,7 @@ import {
   signOut,
   EmailAuthProvider,
   reauthenticateWithCredential,
-  updateEmail,
+  verifyBeforeUpdateEmail,
   updatePassword,
 } from 'firebase/auth';
 
@@ -26,6 +26,16 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
+const toAuthError = (err: unknown) => {
+  if (err instanceof FirebaseError) {
+    return { code: err.code };
+  }
+  if (typeof err === 'object' && err && 'code' in err) {
+    return { code: String((err as { code: string }).code) };
+  }
+  return { code: 'unknown_error' };
+};
+
 export const registerUser = async (email: string, password: string, firstName: string, lastName: string) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -40,29 +50,30 @@ export const registerUser = async (email: string, password: string, firstName: s
       lastName,
       email,
       createdAt: new Date(),
+      categoriesIsUpload: false,
+      exercisesIsUpload: false,
     });
 
-    console.log('User registered successfully!');
     return user;
-  } catch (err: any) {
-    console.error('Error registering user: ', err);
-    throw { code: err.code || 'unknown_error' };
+  } catch (err) {
+    throw toAuthError(err);
   }
 };
 
 export const loginUser = async (email: string, password: string) => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return userCredential;
-  } catch (err: any) {
-    console.error('Ошибка авторизации:', err);
-    throw { code: err.code || 'unknown_error' }
+    return await signInWithEmailAndPassword(auth, email, password);
+  } catch (err) {
+    throw toAuthError(err);
   }
 };
 
 export const logoutUser = async () => {
-  await signOut(auth);
-  window.location.href = '/auth';
+  try {
+    await signOut(auth);
+  } finally {
+    window.location.href = '/auth';
+  }
 };
 
 export const reauthenticate = async (password: string) => {
@@ -74,8 +85,8 @@ export const reauthenticate = async (password: string) => {
   try {
     const credential = EmailAuthProvider.credential(user.email, password);
     await reauthenticateWithCredential(user, credential);
-  } catch (err: any) {
-    throw { code: err.code || 'unknown_error' };
+  } catch (err) {
+    throw toAuthError(err);
   }
 };
 
@@ -87,9 +98,9 @@ export const updateUserEmail = async (newEmail: string, currentPassword: string)
 
   try {
     await reauthenticate(currentPassword);
-    await updateEmail(user, newEmail);
-  } catch (err: any) {
-    throw { code: err.code || 'unknown_error' };
+    await verifyBeforeUpdateEmail(user, newEmail);
+  } catch (err) {
+    throw toAuthError(err);
   }
 };
 
@@ -102,8 +113,8 @@ export const updateUserPassword = async (newPassword: string, currentPassword: s
   try {
     await reauthenticate(currentPassword);
     await updatePassword(user, newPassword);
-  } catch (err: any) {
-    throw { code: err.code || 'unknown_error' };
+  } catch (err) {
+    throw toAuthError(err);
   }
 };
 

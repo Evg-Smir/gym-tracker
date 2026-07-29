@@ -1,15 +1,19 @@
 import styles from './BackActionButton.module.scss';
-import { dark } from "@mui/material/styles/createPalette";
 
 interface BackActionButtonType {
-  clickButton: () => void,
-  dark? : boolean
+  clickButton: () => void;
+  dark?: boolean;
 }
 
-export const BackActionButton = ({ clickButton }: BackActionButtonType) => {
+export const BackActionButton = ({ clickButton, dark }: BackActionButtonType) => {
   return (
-    <button className={`${styles.backActionButton} ${dark ? styles.dark : ''}`} onClick={clickButton}>
-      <img src="/ui/arrow-left.svg" alt="arrow"/>
+    <button
+      className={`${styles.backActionButton} ${dark ? styles.dark : ''}`}
+      onClick={clickButton}
+      aria-label="Назад"
+      type="button"
+    >
+      <img src="/ui/arrow-left.svg" alt="" />
     </button>
-  )
-}
+  );
+};

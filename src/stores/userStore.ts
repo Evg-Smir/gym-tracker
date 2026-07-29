@@ -1,20 +1,18 @@
 import { create } from 'zustand';
-import { userStoreTypes } from '@/@types/userStoreTypes';
+import { UserDataType, userStoreTypes } from '@/@types/userStoreTypes';
 
+const emptyUser: UserDataType = {
+  uid: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  createdAt: '',
+};
 
 export const useUserStore = create<userStoreTypes>((set) => ({
-  userData: {
-    uid: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    createdAt: '',
-  },
+  userData: emptyUser,
 
-  setUserData: (user) => set((state) => {
-    return {
-      ...state,
-      userData: user,
-    };
-  }),
+  setUserData: (user) => set({ userData: user }),
+
+  resetUserData: () => set({ userData: emptyUser }),
 }));
