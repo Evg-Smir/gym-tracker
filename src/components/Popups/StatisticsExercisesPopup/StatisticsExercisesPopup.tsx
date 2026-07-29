@@ -7,6 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useExerciseStatistics } from '@/hooks/useExerciseStatistics';
+import useSwipeToClose from '@/hooks/useSwipeToClose';
 import { withBasePath } from '@/lib/basePath';
 import { useT } from '@/hooks/useT';
 import { translateExerciseName } from '@/i18n/catalog';
@@ -31,11 +32,15 @@ export const StatisticsExercisesPopup = ({
     closePopup,
   } = useExerciseStatistics(category, unsetCategory);
   const t = useT();
+  const swipeHandlers = useSwipeToClose(closePopup);
 
   if (!shouldRender || !category) return null;
 
   return (
-    <div className={`${styles.statisticsExercisesPopup} ${isVisible ? styles.visible : ''}`}>
+    <div
+      {...swipeHandlers}
+      className={`${styles.statisticsExercisesPopup} ${isVisible ? styles.visible : ''}`}
+    >
       <BackButton clickButton={closePopup} />
       <h2 className={styles.title}>{t('statistics.title')}</h2>
       <FormControl fullWidth>
