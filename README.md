@@ -2,6 +2,8 @@
 
 A mobile web app for logging strength workouts. Pick a day, add exercises, record sets, and track progress over time — all in a simple interface that feels like a native app.
 
+**Try it:** [https://evg-smir.github.io/gym-tracker/](https://evg-smir.github.io/gym-tracker/)
+
 ---
 
 ## Features
