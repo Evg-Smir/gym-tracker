@@ -1,85 +1,85 @@
 # Gym Tracker
 
-Мобильное Progressive Web App для учёта силовых тренировок. Приложение позволяет вести дневник по дням, добавлять упражнения из каталога по группам мышц, фиксировать подходы (вес × повторы) и смотреть прогресс в статистике.
+A mobile Progressive Web App for logging strength workouts. Track sessions by day, pick exercises from a muscle-group catalog, record sets (weight × reps), and review progress in statistics.
 
-Сборка — статический export Next.js: готовый `out/` можно раздавать с любого static-хостинга. Данные синхронизируются через Firebase (Auth + Firestore) и дублируются локально в IndexedDB для офлайн-сценариев.
-
----
-
-## Возможности
-
-- **Авторизация** — регистрация и вход по email/password (Firebase Auth)
-- **Календарь тренировок** — выбор дня и просмотр упражнений за эту дату
-- **Каталог упражнений** — группы мышц (руки, спина, плечи, грудь, ноги, пресс) с готовым набором движений
-- **Флаги упражнений** — «удвоить вес» (гантели) и «собственный вес» (без нагрузки)
-- **Подходы** — добавление, редактирование и удаление сетов (вес × повторы)
-- **Multi-select** — быстрое добавление нескольких упражнений за раз
-- **Статистика** — графики max weight / volume; для bodyweight — суммарные повторы (Recharts)
-- **Профиль** — имя, email, смена пароля (с re-authentication)
-- **PWA** — web app manifest + service worker (`public/sw.js`) для offline shell
+The build is a Next.js static export: the `out/` folder can be served from any static host. Data syncs through Firebase (Auth + Firestore) and is mirrored locally in IndexedDB for offline use.
 
 ---
 
-## Стек
+## Features
 
-| Слой | Технологии |
+- **Authentication** — sign up and sign in with email/password (Firebase Auth)
+- **Workout calendar** — pick a day and view exercises for that date
+- **Exercise catalog** — muscle groups (arms, back, shoulders, chest, legs, abs) with a starter set of movements
+- **Exercise flags** — “double weight” (dumbbells) and “bodyweight” (no external load)
+- **Sets** — add, edit, and delete sets (weight × reps)
+- **Multi-select** — add several exercises at once
+- **Statistics** — max weight / volume charts; bodyweight exercises use total reps (Recharts)
+- **Profile** — name, email, password change (with re-authentication)
+- **PWA** — web app manifest + service worker (`public/sw.js`) for an offline shell
+
+---
+
+## Stack
+
+| Layer | Technologies |
 |------|------------|
 | UI | Next.js 14 (App Router), React 18, TypeScript |
-| Стили | SCSS Modules, Tailwind CSS |
-| Состояние | Zustand |
-| Календарь | MUI X Date Pickers (`DateCalendar`) + dayjs |
-| Графики | Recharts |
+| Styles | SCSS Modules, Tailwind CSS |
+| State | Zustand |
+| Calendar | MUI X Date Pickers (`DateCalendar`) + dayjs |
+| Charts | Recharts |
 | Backend | Firebase Auth, Cloud Firestore |
-| Локальное хранение | IndexedDB (`PWAStorage`) |
-| Сборка | `output: 'export'` → статика в `out/` |
-| Тесты | Vitest |
+| Local storage | IndexedDB (`PWAStorage`) |
+| Build | `output: 'export'` → static files in `out/` |
+| Tests | Vitest |
 
 ---
 
-## Быстрый старт
+## Quick start
 
-### Требования
+### Requirements
 
 - Node.js 18+
 - npm
-- проект Firebase с **Email/Password** Auth и **Firestore**
+- a Firebase project with **Email/Password** Auth and **Firestore**
 
-### Установка
+### Setup
 
 ```bash
 npm install
 cp .env.example .env.local
 ```
 
-Заполните `.env.local` ключами Firebase (см. ниже), затем:
+Fill in `.env.local` with your Firebase keys (see below), then:
 
 ```bash
 npm run dev
 ```
 
-Приложение откроется на [http://localhost:3000](http://localhost:3000) (слушает `0.0.0.0:3000`).
+The app runs at [http://localhost:3000](http://localhost:3000) (listens on `0.0.0.0:3000`).
 
-Без авторизации пользователь перенаправляется на `/auth`.
+Unauthenticated users are redirected to `/auth`.
 
 ---
 
 ## Scripts
 
-| Команда | Описание |
+| Command | Description |
 |---------|----------|
-| `npm run dev` | Dev-сервер на `0.0.0.0:3000` |
-| `npm run build` | Production-сборка + static export в `out/` |
-| `npm start` | `next start` (для non-export сценариев) |
+| `npm run dev` | Dev server on `0.0.0.0:3000` |
+| `npm run build` | Production build + static export to `out/` |
+| `npm start` | `next start` (for non-export scenarios) |
 | `npm run lint` | ESLint |
-| `npm test` | Unit-тесты (Vitest) |
+| `npm test` | Unit tests (Vitest) |
 
 ---
 
 ## Firebase
 
-### Переменные окружения
+### Environment variables
 
-Скопируйте `.env.example` → `.env.local` и укажите:
+Copy `.env.example` → `.env.local` and set:
 
 ```env
 NEXT_PUBLIC_FIREBASE_API_KEY=
@@ -90,35 +90,35 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
 ```
 
-Все ключи публичные (`NEXT_PUBLIC_*`) — безопасность данных обеспечивается **Firestore Security Rules**, а не секретностью API key.
+These keys are public (`NEXT_PUBLIC_*`). Data security comes from **Firestore Security Rules**, not from hiding the API key.
 
-### Структура данных
+### Data model
 
 ```
 users/{uid}
   ├── firstName, lastName, email, createdAt, updatedAt
   ├── categoriesIsUpload, exercisesIsUpload
-  ├── categories/{slug}     # каталог упражнений пользователя
-  └── workouts/{dd.mm.yyyy} # тренировки по дням
+  ├── categories/{slug}     # user exercise catalog
+  └── workouts/{dd.mm.yyyy} # workouts by day
 ```
 
-Локально те же данные пишутся в IndexedDB (`PWAStorage`) с ключами `{uid}:exercises` и `{uid}:categories`.
+The same data is also written locally to IndexedDB (`PWAStorage`) under `{uid}:exercises` and `{uid}:categories`.
 
 ### Security Rules
 
-Файл [`firestore.rules`](firestore.rules) ограничивает чтение/запись только владельцем документа (`request.auth.uid == userId`).
+[`firestore.rules`](firestore.rules) allows read/write only for the document owner (`request.auth.uid == userId`).
 
-Задеплойте правила:
+Deploy the rules:
 
 ```bash
 firebase deploy --only firestore:rules
 ```
 
-или через Firebase Console. Без правил клиентские проверки uid **не** защищают данные.
+or via the Firebase Console. Without rules, client-side uid checks do **not** protect your data.
 
 ---
 
-## Архитектура
+## Architecture
 
 ```
 src/
@@ -127,28 +127,28 @@ src/
 ├── context/              # AuthContext (Firebase onAuthStateChanged)
 ├── stores/               # Zustand: exercisesStore, categoriesStore, userStore
 ├── db/                   # Firestore CRUD (users, workouts, categories)
-├── lib/                  # инициализация Firebase
-├── services/             # IndexedDB, статистика, фильтры, defaultCategories
+├── lib/                  # Firebase initialization
+├── services/             # IndexedDB, statistics, filters, defaultCategories
 ├── hooks/                # useFilteredCategories, useClickOutside, …
-└── @types/               # TypeScript-типы
+└── @types/               # TypeScript types
 ```
 
-### Поток данных
+### Data flow
 
-1. После входа `AuthContext` отдаёт `uid`.
-2. Stores загружают категории и тренировки из Firestore; параллельно пишут/читают IndexedDB.
-3. Изменения дня (добавить упражнение, сет, удалить) обновляют Zustand → IndexedDB → Firestore.
-4. Статистика считается на клиенте из истории тренировок (`services/statistics.ts`).
+1. After sign-in, `AuthContext` provides the `uid`.
+2. Stores load categories and workouts from Firestore and also read/write IndexedDB.
+3. Day changes (add exercise, set, delete) update Zustand → IndexedDB → Firestore.
+4. Statistics are computed on the client from workout history (`services/statistics.ts`).
 
-### Основные экраны
+### Main screens
 
-| Маршрут | Назначение |
+| Route | Purpose |
 |---------|------------|
-| `/` | Главный экран: календарь + список упражнений дня + нижний бар |
-| `/auth` | Вход |
-| `/register` | Регистрация |
+| `/` | Home: calendar + day exercise list + bottom bar |
+| `/auth` | Sign in |
+| `/register` | Sign up |
 
-Попапы (меню каталога, статистика, профиль, редактирование сетов) открываются поверх главного экрана без смены маршрута.
+Popups (catalog menu, statistics, profile, set editing) open over the home screen without changing the route.
 
 ---
 
@@ -158,15 +158,15 @@ src/
 npm run build
 ```
 
-Раздайте содержимое `out/` как статику (Firebase Hosting, S3, Nginx, GitHub Pages и т.п.).
+Serve the contents of `out/` as static files (Firebase Hosting, S3, Nginx, GitHub Pages, etc.).
 
-Для service worker нужен **HTTPS** (или `localhost`). После деплоя правил Firestore убедитесь, что Auth Email/Password включён в консоли Firebase.
+The service worker requires **HTTPS** (or `localhost`). After deploying Firestore rules, confirm Email/Password Auth is enabled in the Firebase Console.
 
 ---
 
-## Тесты
+## Tests
 
-Unit-тесты покрывают статистику, фильтры категорий, формат дат и store упражнений:
+Unit tests cover statistics, category filters, date formatting, and the exercises store:
 
 ```bash
 npm test
@@ -174,6 +174,6 @@ npm test
 
 ---
 
-## Лицензия
+## License
 
-Private project (`"private": true` в `package.json`).
+Private project (`"private": true` in `package.json`).
