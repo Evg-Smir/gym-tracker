@@ -36,7 +36,7 @@ export const Authentication = () => {
       await setUserData(userData.user.uid);
       router.push('/');
     } catch (err: any) {
-      setError(err.code || 'Неизвестная ошибка');
+      setError(err.code || 'unknown_error');
     }
   };
 
