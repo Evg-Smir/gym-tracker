@@ -21,7 +21,7 @@ export async function registerUser(
   await page.getByPlaceholder('Повторите пароль').fill(password);
   await page.getByRole('button', { name: 'Зарегистрироваться' }).click();
 
-  await expect(page.getByAltText('Calendar')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByAltText('Календарь')).toBeVisible({ timeout: 30_000 });
 
   return { email, password, firstName, lastName };
 }
@@ -31,7 +31,7 @@ export async function loginUser(page: Page, email: string, password: string) {
   await page.getByPlaceholder('Почта').fill(email);
   await page.getByPlaceholder('Пароль').fill(password);
   await page.getByRole('button', { name: 'Войти' }).click();
-  await expect(page.getByAltText('Calendar')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByAltText('Календарь')).toBeVisible({ timeout: 30_000 });
 }
 
 export async function logoutUser(page: Page) {
