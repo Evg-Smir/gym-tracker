@@ -1,5 +1,6 @@
 import styles from './MenuPopupInput.module.scss';
 import React, { useCallback, useEffect, useState } from "react";
+import { withBasePath } from '@/lib/basePath';
 
 interface MenuPopupInputProps {
   updateValue: (value: string) => void;
@@ -23,14 +24,14 @@ export const SearchInput = ({ updateValue }: MenuPopupInputProps) => {
   const renderClearButton = useCallback(() => {
     return (
       <button className={styles.clearButton} onClick={handleClearInput}>
-        <img src="/ui/close.svg" alt="Очистить"/>
+        <img src={withBasePath('/ui/close.svg')} alt="Очистить"/>
       </button>
     );
   }, [handleClearInput]);
 
   return (
     <div className={styles.searchInputInputWrapper}>
-      <img className={styles.iconSearch} src="/ui/search.svg" alt="Поиск"/>
+      <img className={styles.iconSearch} src={withBasePath('/ui/search.svg')} alt="Поиск"/>
       <input
         className={styles.searchInputInputWrapper__input}
         type="text"

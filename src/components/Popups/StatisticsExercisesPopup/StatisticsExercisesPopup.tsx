@@ -7,6 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useExerciseStatistics } from '@/hooks/useExerciseStatistics';
+import { withBasePath } from '@/lib/basePath';
 
 interface StatisticsExercisesPopupProps {
   category: CategoryType | null;
@@ -96,7 +97,7 @@ export const StatisticsExercisesPopup = ({
         </>
       ) : (
         <div className={styles.emptyBlock}>
-          <img src="/ui/background.png" alt="Фон" />
+          <img src={withBasePath('/ui/background.png')} alt="Фон" />
           <p>Добавьте подходы, чтобы показать статистику</p>
         </div>
       )}

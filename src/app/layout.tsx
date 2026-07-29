@@ -6,6 +6,7 @@ import { Inter } from 'next/font/google';
 
 import { AuthProvider } from '@/context/AuthContext';
 import { ServiceWorkerRegister } from '@/components/ServiceWorkerRegister/ServiceWorkerRegister';
+import { withBasePath } from '@/lib/basePath';
 
 import '../styles/globals.scss';
 import '../styles/different.scss';
@@ -28,9 +29,11 @@ interface RootLayoutType {
 }
 
 export default function RootLayout({ children }: RootLayoutType) {
+  const gymLightIcon = `url(${withBasePath('/ui/gym_light.svg')})`;
+
   return (
     <html lang="ru">
-    <body className={`${InterFont.className}`}>
+    <body className={`${InterFont.className}`} style={{ ['--ui-gym-light' as string]: gymLightIcon }}>
     <main>
       <AuthProvider>
         {children}
