@@ -5,6 +5,7 @@ import { CategoryType, SelectedExerciseType } from '@/@types/categoryTypes';
 import { useCategoryExerciseSelection } from '@/hooks/useCategoryExerciseSelection';
 import { withBasePath } from '@/lib/basePath';
 import { useT } from '@/hooks/useT';
+import { translateCategoryName, translateExerciseName } from '@/i18n/catalog';
 
 interface CategoriesPopupProps {
   category: CategoryType | null;
@@ -38,7 +39,7 @@ export const CategoriesPopup = ({
   return (
     <div className={`${styles.categoriesPopup} ${isVisible ? styles.visible : ''}`}>
       <BackButton clickButton={closePopup} />
-      <h2 className={styles.categoryName}>{category.name}</h2>
+      <h2 className={styles.categoryName}>{translateCategoryName(category, t)}</h2>
       <AddExerciseButton clickButton={() => createExercise(category)} />
       <div className={styles.categoryExercises}>
         {category.exercises.map((exercise) => (
@@ -47,7 +48,7 @@ export const CategoriesPopup = ({
             key={exercise.id}
             onClick={() => selectExercise(exercise.id, category.id)}
           >
-            <span>{exercise.name}</span>
+            <span>{translateExerciseName(exercise.name, t)}</span>
             {isSelected(exercise) ? <img src={withBasePath('/ui/check-mark.svg')} alt={t('common.checkAlt')} /> : null}
           </div>
         ))}

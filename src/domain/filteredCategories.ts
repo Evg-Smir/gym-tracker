@@ -1,4 +1,9 @@
 import { CategoryType } from '@/@types/categoryTypes';
+import {
+  categorySearchLabels,
+  exerciseSearchLabels,
+  matchesSearch,
+} from '@/i18n/catalog';
 
 export const filterCategories = (list: CategoryType[], filter: string): CategoryType[] => {
   const lowercasedFilter = filter.trim().toLowerCase();
@@ -9,14 +14,12 @@ export const filterCategories = (list: CategoryType[], filter: string): Category
 
   return list
     .map((category) => {
-      const categoryMatches = category.name.toLowerCase().includes(lowercasedFilter);
-
-      if (categoryMatches) {
+      if (matchesSearch(categorySearchLabels(category), lowercasedFilter)) {
         return category;
       }
 
       const filteredExercises = category.exercises.filter((exercise) =>
-        exercise.name.toLowerCase().includes(lowercasedFilter),
+        matchesSearch(exerciseSearchLabels(exercise.name), lowercasedFilter),
       );
 
       return { ...category, exercises: filteredExercises };

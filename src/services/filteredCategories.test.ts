@@ -42,4 +42,26 @@ describe('filterCategories', () => {
     expect(result[0].name).toBe('Ноги');
     expect(result[0].exercises.map((ex) => ex.name)).toEqual(['Приседания']);
   });
+
+  it('matches default categories by English labels via slug', () => {
+    const seeded: CategoryType[] = [
+      {
+        id: 4,
+        name: 'Грудь',
+        slug: 'chest',
+        icon: '/categories/chest.svg',
+        exercises: [
+          { id: 1, name: 'Жим штанги на плоской', doubleWeight: false, ownWeight: false },
+        ],
+      },
+    ];
+
+    const byCategory = filterCategories(seeded, 'chest');
+    expect(byCategory).toHaveLength(1);
+    expect(byCategory[0].exercises).toHaveLength(1);
+
+    const byExercise = filterCategories(seeded, 'flat barbell');
+    expect(byExercise).toHaveLength(1);
+    expect(byExercise[0].exercises.map((ex) => ex.name)).toEqual(['Жим штанги на плоской']);
+  });
 });
