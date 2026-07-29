@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
 
 import { AuthProvider } from '@/context/AuthContext';
+import { LocaleSync } from '@/components/LocaleSync/LocaleSync';
 import { ServiceWorkerRegister } from '@/components/ServiceWorkerRegister/ServiceWorkerRegister';
 import { withBasePath } from '@/lib/basePath';
 
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: RootLayoutType) {
     <body className={`${InterFont.className}`} style={{ ['--ui-gym-light' as string]: gymLightIcon }}>
     <main>
       <AuthProvider>
+        <LocaleSync />
         {children}
       </AuthProvider>
     </main>

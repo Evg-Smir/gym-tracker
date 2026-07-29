@@ -4,6 +4,7 @@ import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 import { ExercisesCategoriesList } from '@/components/Exercises/ExercisesCategoriesList/ExercisesCategoriesList';
 import { StatisticsExercisesPopup } from '@/components/Popups/StatisticsExercisesPopup/StatisticsExercisesPopup';
 import { useStatisticsPopup } from '@/hooks/useStatisticsPopup';
+import { useT } from '@/hooks/useT';
 
 interface StatisticsPopupProps {
   closeStat: () => void;
@@ -20,13 +21,14 @@ export const StatisticsPopup = ({ closeStat }: StatisticsPopupProps) => {
     setInputValue,
     selectCategory,
   } = useStatisticsPopup(closeStat);
+  const t = useT();
 
   if (!shouldRender) return null;
 
   return (
     <div className={`${styles.statisticsPopup} ${isVisible ? styles.visible : ''}`}>
       <BackButton clickButton={closePopup} />
-      <h2 className={styles.title}>Статистика</h2>
+      <h2 className={styles.title}>{t('statistics.title')}</h2>
       <SearchInput updateValue={setInputValue} />
       <ExercisesCategoriesList
         categoriesList={filteredCategoriesList}

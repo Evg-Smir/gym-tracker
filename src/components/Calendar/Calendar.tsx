@@ -3,24 +3,18 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { ruRU } from '@mui/x-date-pickers/locales';
+import { enUS, ruRU } from '@mui/x-date-pickers/locales';
 import useClickOutside from '@/hooks/useClickOutside';
 import { useSelectWorkoutDay } from '@/hooks/useSelectWorkoutDay';
+import { useT } from '@/hooks/useT';
+import { useLocaleStore } from '@/stores/localeStore';
 import dayjs, { Dayjs } from 'dayjs';
 import Image from 'next/image';
 import { useExercisesStore } from '@/stores/exercisesStore';
 import { useSwipeable } from 'react-swipeable';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 import { withBasePath } from '@/lib/basePath';
-
-const theme = createTheme(
-  {
-    palette: {
-      primary: { main: '#1976d2' },
-    },
-  },
-  ruRU,
-);
+import { useMemo } from 'react';
 
 interface ServerDayProps extends PickersDayProps<Dayjs> {
   highlightedDays?: number[];
@@ -50,6 +44,21 @@ export const Calendar = () => {
     onChangeDay,
     getDateLabel,
   } = useSelectWorkoutDay();
+  const t = useT();
+  const locale = useLocaleStore((state) => state.locale);
+
+  const theme = useMemo(
+    () =>
+      createTheme(
+        {
+          palette: {
+            primary: { main: '#1976d2' },
+          },
+        },
+        locale === 'en' ? enUS : ruRU,
+      ),
+    [locale],
+  );
 
   const handlers = useSwipeable({
     onSwipedDown: toggleCalendar,
@@ -64,7 +73,12 @@ export const Calendar = () => {
         <div className={styles.calendarTop}>
           <div className={styles.currentDate}>{getDateLabel(currentDate)}</div>
           <button className={styles.calendarButton} onClick={toggleCalendar}>
-            <Image src={withBasePath('/ui/calendar.svg')} alt="Calendar" width={28} height={28} />
+            <Image
+              src={withBasePath('/ui/calendar.svg')}
+              alt={t('calendar.iconAlt')}
+              width={28}
+              height={28}
+            />
           </button>
         </div>
         <div
@@ -72,7 +86,7 @@ export const Calendar = () => {
         >
           <div className={styles.calendarBottomContent}>
             <ThemeProvider theme={theme}>
-              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale}>
                 <DateCalendar
                   className={styles.dateCalendar}
                   views={['day']}

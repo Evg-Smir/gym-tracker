@@ -10,6 +10,7 @@ import { useExercisesStore } from '@/stores/exercisesStore';
 
 import { useAuth } from '@/context/AuthContext';
 import { withBasePath } from '@/lib/basePath';
+import { useT } from '@/hooks/useT';
 
 interface ExercisesItemProps {
   exercise: ExerciseType;
@@ -21,6 +22,7 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
   const { category_icon, exercise_name, sets, id, ownWeight } = exercise;
   const [contentIsVisible, setContentIsVisible] = useState(false);
   const { user } = useAuth();
+  const t = useT();
 
   const toggleContentVisibility = useCallback(() => {
     setContentIsVisible(prevState => !prevState);
@@ -55,13 +57,13 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
     <div className={styles.exercisesItem}>
       <div className={styles.exercisesItemTop}>
         <div className={styles.exercisesItemTopContent} onClick={toggleContentVisibility}>
-          <img className={styles.icon} src={withBasePath(category_icon)} alt="Иконка" />
+          <img className={styles.icon} src={withBasePath(category_icon)} alt={t('exercises.iconAlt')} />
           <div className={styles.nameWrapper}>
             <p className={styles.exercisesItemName}>{exercise_name}</p>
             <img
               className={`${styles.arrowIcon} ${contentIsVisible ? styles.arrowIconActive : ''}`}
               src={withBasePath('/ui/arrow.svg')}
-              alt="Стрелка"
+              alt={t('common.arrowAlt')}
             />
           </div>
         </div>

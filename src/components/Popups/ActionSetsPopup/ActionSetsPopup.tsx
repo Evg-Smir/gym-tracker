@@ -2,6 +2,7 @@ import styles from './ActionSetsPopup.module.scss';
 import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 import { SetItem } from '@/components/Sets/SetItem/SetItem';
 import { useActionSetsForm } from '@/hooks/useActionSetsForm';
+import { useT } from '@/hooks/useT';
 
 interface ActionSetsPopupProps {
   setId: number;
@@ -19,6 +20,7 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
     removeSet,
     saveChanges,
   } = useActionSetsForm(setId, unsetValue);
+  const t = useT();
 
   if (!shouldRender) return null;
 
@@ -45,11 +47,11 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
             />
           ))}
           <button className={styles.addSets} onClick={addSet}>
-            Добавить подход
+            {t('sets.add')}
           </button>
           <div className={styles.actionSetsPopupButtons}>
             <button className={styles.addButton} onClick={saveChanges}>
-              Готово
+              {t('common.done')}
             </button>
           </div>
         </>

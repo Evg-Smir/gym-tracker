@@ -24,6 +24,11 @@ describe('errorCode', () => {
     expect(errorCode('auth/email-already-in-use')).toBe('Пользователь уже существует');
     expect(errorCode('password-not-match')).toBe('Пароли не совпадают');
   });
+
+  it('translates messages for English locale', () => {
+    expect(errorCode('auth/invalid-credential', 'en')).toBe('Invalid email or password');
+    expect(errorCode('password-not-match', 'en')).toBe('Passwords do not match');
+  });
 });
 
 describe('normalizeAuthErrorCode', () => {

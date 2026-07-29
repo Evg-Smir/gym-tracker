@@ -1,6 +1,7 @@
 import styles from './MenuPopupInput.module.scss';
 import React, { useCallback, useEffect, useState } from "react";
 import { withBasePath } from '@/lib/basePath';
+import { useT } from '@/hooks/useT';
 
 interface MenuPopupInputProps {
   updateValue: (value: string) => void;
@@ -8,6 +9,7 @@ interface MenuPopupInputProps {
 
 export const SearchInput = ({ updateValue }: MenuPopupInputProps) => {
   const [inputValue, setInputValue] = useState('');
+  const t = useT();
 
   useEffect(() => {
     updateValue(inputValue);
@@ -24,19 +26,19 @@ export const SearchInput = ({ updateValue }: MenuPopupInputProps) => {
   const renderClearButton = useCallback(() => {
     return (
       <button className={styles.clearButton} onClick={handleClearInput}>
-        <img src={withBasePath('/ui/close.svg')} alt="Очистить"/>
+        <img src={withBasePath('/ui/close.svg')} alt={t('search.clearAlt')}/>
       </button>
     );
-  }, [handleClearInput]);
+  }, [handleClearInput, t]);
 
   return (
     <div className={styles.searchInputInputWrapper}>
-      <img className={styles.iconSearch} src={withBasePath('/ui/search.svg')} alt="Поиск"/>
+      <img className={styles.iconSearch} src={withBasePath('/ui/search.svg')} alt={t('search.iconAlt')}/>
       <input
         className={styles.searchInputInputWrapper__input}
         type="text"
         value={inputValue}
-        placeholder="Искать"
+        placeholder={t('search.placeholder')}
         onChange={handleInputChange}
       />
       {inputValue && renderClearButton()}

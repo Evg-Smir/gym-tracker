@@ -5,6 +5,7 @@ import { BackButton } from "@/components/Buttons/BackButton/BackButton";
 
 import { CategoryType } from "@/@types/categoryTypes";
 import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
+import { useT } from "@/hooks/useT";
 import { useEffect } from "react";
 
 interface CreateExercisesListType {
@@ -15,6 +16,7 @@ interface CreateExercisesListType {
 
 export const CreateExercisesList = ({ categoriesList, unsetValue, selectCategory }: CreateExercisesListType) => {
   const { isVisible, show, hide } = useAnimatedVisibility();
+  const t = useT();
 
   useEffect(() => {
     show();
@@ -28,8 +30,8 @@ export const CreateExercisesList = ({ categoriesList, unsetValue, selectCategory
   return (
     <div className={`${styles.createExercisesList} ${isVisible ? styles.visible : ''}`}>
       <BackButton clickButton={closePopup} />
-      <h3 className={styles.title}>Новое упражнение</h3>
-      <h1 className={styles.subtitle}>Выберите категорию</h1>
+      <h3 className={styles.title}>{t('exercises.new')}</h3>
+      <h1 className={styles.subtitle}>{t('exercises.chooseCategory')}</h1>
       <ExercisesCategoriesList categoriesList={categoriesList} selectCategory={selectCategory} mini />
     </div>
   );
