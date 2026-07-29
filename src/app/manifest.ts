@@ -2,9 +2,9 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'GYM tracker',
-    short_name: 'GYM',
-    description: 'Helper for your workout',
+    name: 'Gym Tracker',
+    short_name: 'Gym Tracker',
+    description: 'Учёт силовых тренировок: подходы, прогресс и статистика',
     start_url: '/',
     scope: '/',
     display: 'standalone',
