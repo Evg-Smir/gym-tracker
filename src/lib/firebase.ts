@@ -11,6 +11,7 @@ import {
   updateEmail,
   updatePassword,
 } from 'firebase/auth';
+import { normalizeAuthErrorCode } from '@/services/codeError';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -46,7 +47,7 @@ export const registerUser = async (email: string, password: string, firstName: s
     return user;
   } catch (err: any) {
     console.error('Error registering user: ', err);
-    throw { code: err.code || 'unknown_error' };
+    throw { code: normalizeAuthErrorCode(err) };
   }
 };
 
@@ -56,7 +57,7 @@ export const loginUser = async (email: string, password: string) => {
     return userCredential;
   } catch (err: any) {
     console.error('Ошибка авторизации:', err);
-    throw { code: err.code || 'unknown_error' }
+    throw { code: normalizeAuthErrorCode(err) };
   }
 };
 
@@ -76,7 +77,7 @@ export const reauthenticate = async (password: string) => {
     const credential = EmailAuthProvider.credential(user.email, password);
     await reauthenticateWithCredential(user, credential);
   } catch (err: any) {
-    throw { code: err.code || 'unknown_error' };
+    throw { code: normalizeAuthErrorCode(err) };
   }
 };
 
@@ -90,7 +91,7 @@ export const updateUserEmail = async (newEmail: string, currentPassword: string)
     await reauthenticate(currentPassword);
     await updateEmail(user, newEmail);
   } catch (err: any) {
-    throw { code: err.code || 'unknown_error' };
+    throw { code: normalizeAuthErrorCode(err) };
   }
 };
 
@@ -104,7 +105,7 @@ export const updateUserPassword = async (newPassword: string, currentPassword: s
     await reauthenticate(currentPassword);
     await updatePassword(user, newPassword);
   } catch (err: any) {
-    throw { code: err.code || 'unknown_error' };
+    throw { code: normalizeAuthErrorCode(err) };
   }
 };
 
