@@ -11,7 +11,7 @@ test.describe('auth', () => {
   test('registers a new user and lands on home', async ({ page }) => {
     await registerUser(page);
     await expect(page.getByText('Сегодня')).toBeVisible();
-    await expect(page.getByAltText('Плюс')).toBeVisible();
+    await expect(page.getByAltText('Добавить')).toBeVisible();
   });
 
   test('logs in an existing user and can log out', async ({ page }) => {
