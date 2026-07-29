@@ -34,16 +34,12 @@ export const Registration = () => {
     }
 
     try {
-      const userData = await registerUser(email, password, firstName, lastName);
-      // @ts-ignore
-      await setUserData(userData.user.uid).then(() => {
-        router.push('/');
-      }).catch((err: any) => {
-        console.log(err);
-      });
-    } catch (err) {
+      const user = await registerUser(email, password, firstName, lastName);
+      await setUserData(user.uid);
+      router.push('/');
+    } catch (err: any) {
       console.log(err);
-      setError('Ошибка при регистрации. Попробуйте снова.');
+      setError(err.code || 'unknown_error');
     }
   };
 

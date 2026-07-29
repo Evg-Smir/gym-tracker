@@ -58,9 +58,9 @@ export const registerUser = async (email: string, password: string, firstName: s
 
     console.log('User registered successfully!');
     return user;
-  } catch (error) {
-    console.error('Error registering user: ', error);
-    throw error;
+  } catch (err: any) {
+    console.error('Error registering user: ', err);
+    throw { code: err.code || 'unknown_error' };
   }
 };
 

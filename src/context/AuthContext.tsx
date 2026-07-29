@@ -13,7 +13,7 @@ import styles from '@/components/App/App.module.scss';
 
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { getAllCategories, getAllExercises, getUserData, updateUserData } from '@/db/client';
+import { getAllCategories, getAllWorkouts, getUserData, updateUserData } from '@/db/client';
 import { getStorage, setStorage } from '@/services/IndexedDB';
 import { filteredExercises } from '@/services/filteredExercises';
 import { getLocalStorage } from '@/services/localStorage';
@@ -113,13 +113,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
 
       if (user?.uid) {
-        const [fetchedExercises, fetchedCategories] = await Promise.all([
-          getAllExercises(user.uid),
+        const [fetchedWorkouts, fetchedCategories] = await Promise.all([
+          getAllWorkouts(user.uid),
           getAllCategories(user.uid),
         ]);
 
         if (fetchedCategories?.length) setCategories(fetchedCategories);
-        if (fetchedExercises?.length) setExercisesList(fetchedExercises);
+        if (fetchedWorkouts?.length) setExercisesList(fetchedWorkouts);
       }
 
       setExercisesOfCurrentDay(new Date());

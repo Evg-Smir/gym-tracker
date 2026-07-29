@@ -5,6 +5,7 @@ import { BackButton } from "@/components/Buttons/BackButton/BackButton";
 import { useExercisesStore } from "@/stores/exercisesStore";
 import { ExerciseRepsType, ExerciseType } from "@/@types/exerciseTypes";
 import { SetItem } from "@/components/Sets/SetItem/SetItem";
+import { useAuth } from '@/context/AuthContext';
 
 interface ActionSetsPopupProps {
   setId: number;
@@ -15,6 +16,7 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
   const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
   const exercisesOfCurrentDay = useExercisesStore((state) => state.exercisesOfCurrentDay);
   const updateExercise = useExercisesStore((state) => state.updateExercise);
+  const { user } = useAuth();
   const [currentSet, setCurrentSet] = useState<ExerciseType | undefined>();
 
   useEffect(() => {
@@ -53,10 +55,10 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
   };
 
   const saveChanges = () => {
-    if (!currentSet) return;
+    if (!currentSet || !user) return;
     const updatedSet = currentSet.sets.filter((set) => !!set.weight.trim().length || !!set.reps.trim().length);
     const updatedExercise = { ...currentSet, sets: [...updatedSet] };
-    updateExercise(updatedExercise);
+    updateExercise(updatedExercise, user.uid);
 
     setTimeout(() => {
       closePopup();

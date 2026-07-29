@@ -50,8 +50,18 @@ export const StatisticsExercisesPopup = ({ category, unsetCategory }: Statistics
 
     const filteredExercises = exercisesList.flatMap(exerciseItem => {
       return exerciseItem.exercises
-        .filter(ex => ex.exercise_id === subcategoryId && ex.category_id === categoryId)
-        .map(ex => ({ time: formatTimestampToDate(exerciseItem.time), weight: Number(ex.sets[0].weight) }));
+        .filter(ex =>
+          ex.exercise_id === subcategoryId &&
+          ex.category_id === categoryId &&
+          ex.sets?.length > 0 &&
+          ex.sets[0]?.weight != null &&
+          String(ex.sets[0].weight).trim() !== ''
+        )
+        .map(ex => ({
+          time: formatTimestampToDate(exerciseItem.time),
+          weight: Number(ex.sets[0].weight) || 0,
+        }))
+        .filter(point => !Number.isNaN(point.weight));
     });
 
     setStaticsState(prevState => ({ ...prevState, exercise: event.target.value }));
