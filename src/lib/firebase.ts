@@ -69,10 +69,11 @@ export const loginUser = async (email: string, password: string) => {
 };
 
 export const logoutUser = async () => {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
   try {
     await signOut(auth);
   } finally {
-    window.location.href = '/auth';
+    window.location.href = `${basePath}/auth/`;
   }
 };
 
