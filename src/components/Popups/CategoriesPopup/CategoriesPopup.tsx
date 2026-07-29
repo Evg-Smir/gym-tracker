@@ -1,11 +1,8 @@
 import styles from './CategoriesPopup.module.scss';
-import { useExercisesStore } from '@/stores/exercisesStore';
 import { AddExerciseButton } from '@/components/Buttons/AddExerciseButton/AddExerciseButton';
 import { BackButton } from '@/components/Buttons/BackButton/BackButton';
-import { useState, useCallback, useMemo, useEffect } from 'react';
-import { CategoryType, ExercisesOfCategoryType, SelectedExerciseType } from '@/@types/categoryTypes';
-import useAnimatedVisibility from '@/hooks/useAnimatedVisibility';
-import { useAuth } from '@/context/AuthContext';
+import { CategoryType, SelectedExerciseType } from '@/@types/categoryTypes';
+import { useCategoryExerciseSelection } from '@/hooks/useCategoryExerciseSelection';
 
 interface CategoriesPopupProps {
   category: CategoryType | null;
@@ -15,79 +12,23 @@ interface CategoriesPopupProps {
   createExercise: (category: CategoryType | null) => void;
 }
 
-export const CategoriesPopup = (
-  {
-    category,
-    changeExercise,
-    unsetCategory,
-    createExercise,
-    closeAllPopups,
-  }: CategoriesPopupProps) => {
-  const [selectedExercises, setSelectedExercises] = useState<SelectedExerciseType[]>([]);
-  const setCurrentExercise = useExercisesStore(state => state.setExercise);
-  const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    show();
-  }, [show]);
-
-  const selectExercise = useCallback((exerciseId: number, categoryId: number): void => {
-    setSelectedExercises((prevState) => {
-      const index = prevState.findIndex(
-        (exercise) => exercise.exerciseId === exerciseId && exercise.categoryId === categoryId,
-      );
-
-      if (index > -1) {
-        return prevState.filter((_, i) => i !== index);
-      } else {
-        return [...prevState, { exerciseId, categoryId }];
-      }
-    });
-  }, []);
-
-  const checkMark = useCallback((category: CategoryType, exercise: ExercisesOfCategoryType) => {
-    return selectedExercises.some(
-      (selected) =>
-        selected.exerciseId === exercise.id &&
-        selected.categoryId === category.id,
-    ) ? <img src="/ui/check-mark.svg" alt="icon" /> : null;
-  }, [selectedExercises]);
-
-  const setExercise = useCallback(() => {
-    if (!user || selectedExercises.length === 0) return;
-
-    selectedExercises.forEach(({ categoryId, exerciseId }) => {
-      setCurrentExercise(categoryId, exerciseId, user.uid);
-    });
-    closeAllPopups();
-  }, [selectedExercises, setCurrentExercise, closeAllPopups, user]);
-
-  const closePopup = useCallback(() => {
-    hide();
-    setTimeout(unsetCategory, 300);
-  }, [hide, unsetCategory]);
-
-  const renderSelectButton = useMemo(() => {
-    if (selectedExercises.length > 0) {
-      return <button className={styles.selectButton} onClick={setExercise}>Выбрать</button>;
-    }
-    return null;
-  }, [selectedExercises.length, setExercise]);
-
-  const renderChangeButton = useMemo(() => {
-    if (selectedExercises.length === 1) {
-      return (
-        <button onClick={() => {
-          changeExercise(selectedExercises[0]);
-          setTimeout(() => setSelectedExercises([]), 300);
-        }} className={styles.changeButton}>
-          Изменить
-        </button>
-      );
-    }
-    return null;
-  }, [selectedExercises, changeExercise]);
+export const CategoriesPopup = ({
+  category,
+  changeExercise,
+  unsetCategory,
+  createExercise,
+  closeAllPopups,
+}: CategoriesPopupProps) => {
+  const {
+    selectedExercises,
+    isVisible,
+    shouldRender,
+    selectExercise,
+    isSelected,
+    confirmSelection,
+    closePopup,
+    clearSelection,
+  } = useCategoryExerciseSelection(category, unsetCategory, closeAllPopups);
 
   if (!shouldRender || !category) return null;
 
@@ -97,20 +38,34 @@ export const CategoriesPopup = (
       <h2 className={styles.categoryName}>{category.name}</h2>
       <AddExerciseButton clickButton={() => createExercise(category)} />
       <div className={styles.categoryExercises}>
-        {category.exercises.map(exercise => (
+        {category.exercises.map((exercise) => (
           <div
-            className={`${styles.exercise} ${selectedExercises.some(se => se.exerciseId === exercise.id) ? styles.selected : ''}`}
+            className={`${styles.exercise} ${isSelected(exercise) ? styles.selected : ''}`}
             key={exercise.id}
-            onClick={() => selectExercise(exercise.id, category!.id)}
+            onClick={() => selectExercise(exercise.id, category.id)}
           >
             <span>{exercise.name}</span>
-            {checkMark(category, exercise)}
+            {isSelected(exercise) ? <img src="/ui/check-mark.svg" alt="icon" /> : null}
           </div>
         ))}
       </div>
       <div className={styles.categoriesPopupButtons}>
-        {renderSelectButton}
-        {renderChangeButton}
+        {selectedExercises.length > 0 && (
+          <button className={styles.selectButton} onClick={confirmSelection}>
+            Выбрать
+          </button>
+        )}
+        {selectedExercises.length === 1 && (
+          <button
+            onClick={() => {
+              changeExercise(selectedExercises[0]);
+              clearSelection();
+            }}
+            className={styles.changeButton}
+          >
+            Изменить
+          </button>
+        )}
       </div>
     </div>
   );

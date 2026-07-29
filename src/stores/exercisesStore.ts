@@ -1,171 +1,79 @@
 import { create } from 'zustand';
-import { ExercisesStateType, ExerciseType } from '@/@types/exerciseTypes';
-import { useCategoryStore } from '@/stores/categoriesStore';
-import { setStorage } from '@/services/IndexedDB';
-import { addWorkout, deleteWorkout, updateWorkout } from '@/db/client';
 
-export const useExercisesStore = create<ExercisesStateType>((set) => ({
+import { ExercisesStateType, ExerciseType, DayOfExercisesType } from '@/@types/exerciseTypes';
+import { persistExercisesLocal, persistWorkoutDay } from '@/application/persist';
+import {
+  addExerciseToDay,
+  removeExerciseFromDay,
+  selectDayFromExercises,
+  updateExerciseInDay,
+} from '@/domain/workoutReducers';
+import { useCategoryStore } from '@/stores/categoriesStore';
+
+export const useExercisesStore = create<ExercisesStateType>((set, get) => ({
   exercises: [],
   exercisesOfCurrentDay: {
     time: 0,
     exercises: [],
   },
 
-  setExercisesList: (exercisesList) => set((state) => {
-    return {
-      ...state,
-      exercises: exercisesList,
-    };
-  }),
+  setExercisesList: (exercisesList: DayOfExercisesType[]) => {
+    set({ exercises: exercisesList });
+  },
 
-  setExercise: (categoryId, exerciseId, uid) => set((state) => {
-    const currentDayTime = state.exercisesOfCurrentDay.time;
+  setExercise: (categoryId, exerciseId, uid) => {
     const categoriesList = useCategoryStore.getState().categories;
+    const category = categoriesList.find((cat) => cat.id === categoryId);
+    if (!category) return;
 
-    const category = categoriesList.find(cat => cat.id === categoryId);
-    if (!category) return state;
+    const exercise = category.exercises.find((ex) => ex.id === exerciseId);
+    if (!exercise) return;
 
-    const exercise = category.exercises.find(ex => ex.id === exerciseId);
-    if (!exercise) return state;
+    const result = addExerciseToDay(get(), category, exercise);
+    if (!result) return;
 
-    const dayIndex = state.exercises.findIndex(item => item.time === currentDayTime);
-    let newExercisesArray = [...state.exercises];
-
-    const createNewExercise = (maxId: number) => ({
-      id: maxId + 1,
-      category_id: category.id,
-      category_icon: category.icon,
-      exercise_id: exercise.id,
-      exercise_name: exercise.name,
-      doubleWeight: exercise.doubleWeight,
-      ownWeight: exercise.ownWeight,
-      sets: [],
+    set({
+      exercises: result.exercises,
+      exercisesOfCurrentDay: result.exercisesOfCurrentDay,
     });
 
-    let updatedCurrentDayExercises: { exercises: ExerciseType[]; time: number };
+    void persistExercisesLocal(result.exercises);
+    void persistWorkoutDay(uid, result.exercisesOfCurrentDay, result.created ? 'add' : 'update');
+  },
 
-    if (dayIndex !== -1) {
-      const currentDayExercises = state.exercises[dayIndex].exercises;
-      const maxId = currentDayExercises.reduce((max, ex) => Math.max(max, ex.id), 0);
-      const newExercise = createNewExercise(maxId);
+  updateExercise: (exercise: ExerciseType, uid) => {
+    const result = updateExerciseInDay(get(), exercise);
+    if (!result) return;
 
-      newExercisesArray[dayIndex] = {
-        ...state.exercises[dayIndex],
-        exercises: [...currentDayExercises, newExercise],
-      };
+    set({
+      exercises: result.exercises,
+      exercisesOfCurrentDay: result.exercisesOfCurrentDay,
+    });
 
-      updatedCurrentDayExercises = {
-        time: currentDayTime,
-        exercises: [...currentDayExercises, newExercise],
-      };
+    void persistExercisesLocal(result.exercises);
+    void persistWorkoutDay(uid, result.exercisesOfCurrentDay, 'update');
+  },
 
-      updateWorkout(uid, updatedCurrentDayExercises);
-    } else {
-      const newExercise = createNewExercise(0);
-      newExercisesArray.push({
-        time: currentDayTime,
-        exercises: [newExercise],
-      });
+  removeExercise: (exercise: ExerciseType, uid) => {
+    const result = removeExerciseFromDay(get(), exercise);
+    if (!result) return;
 
-      updatedCurrentDayExercises = {
-        time: currentDayTime,
-        exercises: [newExercise],
-      };
+    set({
+      exercises: result.exercises,
+      exercisesOfCurrentDay: result.exercisesOfCurrentDay,
+    });
 
-      addWorkout(uid, updatedCurrentDayExercises);
-    }
+    void persistExercisesLocal(result.exercises);
+    void persistWorkoutDay(
+      uid,
+      result.exercisesOfCurrentDay,
+      result.deleted ? 'delete' : 'update',
+    );
+  },
 
-    setStorage('exercises', newExercisesArray);
-
-    return {
-      exercises: newExercisesArray,
-      exercisesOfCurrentDay: updatedCurrentDayExercises,
-    };
-  }),
-
-  updateExercise: (exercise, uid) => set((state) => {
-    const currentDayTime = state.exercisesOfCurrentDay.time;
-    const dayIndex = state.exercises.findIndex(item => item.time === currentDayTime);
-
-    if (dayIndex === -1) {
-      return state;
-    }
-
-    const currentDayExercises = [...state.exercises[dayIndex].exercises];
-    const exerciseIndex = currentDayExercises.findIndex(ex => ex.id === exercise.id);
-
-    if (exerciseIndex === -1) {
-      return state;
-    }
-
-    currentDayExercises[exerciseIndex] = {
-      ...currentDayExercises[exerciseIndex],
-      ...exercise,
-    };
-
-    const newExercisesArray = [...state.exercises];
-    newExercisesArray[dayIndex] = {
-      ...state.exercises[dayIndex],
-      exercises: currentDayExercises,
-    };
-
-    const newExercisesOfCurrentDay = {
-      ...state.exercisesOfCurrentDay,
-      exercises: currentDayExercises,
-    };
-
-    setStorage('exercises', newExercisesArray);
-    updateWorkout(uid, newExercisesOfCurrentDay);
-
-    return {
-      exercises: newExercisesArray,
-      exercisesOfCurrentDay: newExercisesOfCurrentDay,
-    };
-  }),
-
-  removeExercise: (exercise, uid) => set((state) => {
-    const currentDayTime = state.exercisesOfCurrentDay.time;
-    const dayIndex = state.exercises.findIndex(item => item.time === currentDayTime);
-
-    if (dayIndex === -1) {
-      return state;
-    }
-
-    const currentDayExercises = state.exercises[dayIndex].exercises.filter(ex => ex.id !== exercise.id);
-
-    const newExercisesArray = [...state.exercises];
-
-    if (!currentDayExercises.length) {
-      newExercisesArray.splice(dayIndex, 1);
-    } else {
-      newExercisesArray[dayIndex] = {
-        ...state.exercises[dayIndex],
-        exercises: currentDayExercises,
-      };
-    }
-
-    const newExercisesOfCurrentDay = {
-      ...state.exercisesOfCurrentDay,
-      exercises: currentDayExercises,
-    };
-
-    if (newExercisesOfCurrentDay.exercises.length > 0) {
-      updateWorkout(uid, newExercisesOfCurrentDay);
-    } else {
-      deleteWorkout(uid, newExercisesOfCurrentDay.time);
-    }
-
-    setStorage('exercises', newExercisesArray);
-
-    return {
-      exercises: newExercisesArray,
-      exercisesOfCurrentDay: newExercisesOfCurrentDay,
-    };
-  }),
-
-  setExercisesOfCurrentDay: (time) => set((state) => {
-    const updatedTime = Number(new Date(time.getFullYear(), time.getMonth(), time.getDate()));
-    const currentDay = state.exercises.find(item => item.time === updatedTime);
-    return { exercisesOfCurrentDay: currentDay || { time: updatedTime, exercises: [] } };
-  }),
+  setExercisesOfCurrentDay: (time) => {
+    set({
+      exercisesOfCurrentDay: selectDayFromExercises(get().exercises, time),
+    });
+  },
 }));

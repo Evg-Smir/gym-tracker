@@ -1,5 +1,5 @@
 import styles from './InputError.module.scss';
-import { errorCode } from '@/services/codeError';
+import { errorCode } from '@/domain/errorMessages';
 
 export const InputError = ({ error }: { error: string }) => {
   return (

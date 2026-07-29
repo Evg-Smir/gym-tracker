@@ -1,25 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/services/IndexedDB', () => ({
-  setStorage: vi.fn(),
+vi.mock('@/application/persist', () => ({
+  persistCategoriesLocal: vi.fn(),
+  persistCategory: vi.fn(),
 }));
 
-vi.mock('@/db/client', () => ({
-  updateCategory: vi.fn(),
-}));
-
-vi.mock('@/context/AuthContext', () => ({
-  useAuth: () => ({ user: null, loading: false }),
-}));
-
-vi.mock('@/stores/userStore', () => ({
-  useUserStore: {
-    getState: () => ({}),
-  },
-}));
-
-import { updateCategory } from '@/db/client';
-import { setStorage } from '@/services/IndexedDB';
+import { persistCategoriesLocal, persistCategory } from '@/application/persist';
 import { useCategoryStore } from '@/stores/categoriesStore';
 
 describe('categoriesStore.actionExerciseOfCategory', () => {
@@ -55,7 +41,7 @@ describe('categoriesStore.actionExerciseOfCategory', () => {
       name: 'Жим гантелей',
       doubleWeight: true,
     });
-    expect(updateCategory).toHaveBeenCalledWith(
+    expect(persistCategory).toHaveBeenCalledWith(
       'user-1',
       expect.objectContaining({
         slug: 'chest',
@@ -64,7 +50,7 @@ describe('categoriesStore.actionExerciseOfCategory', () => {
         ]),
       }),
     );
-    expect(setStorage).toHaveBeenCalledWith('categories', expect.any(Array));
+    expect(persistCategoriesLocal).toHaveBeenCalledWith(expect.any(Array));
   });
 
   it('updates an existing exercise', () => {
@@ -81,13 +67,13 @@ describe('categoriesStore.actionExerciseOfCategory', () => {
       name: 'Жим штанги (обновлено)',
       doubleWeight: true,
     });
-    expect(updateCategory).toHaveBeenCalledWith(
+    expect(persistCategory).toHaveBeenCalledWith(
       'user-1',
       expect.objectContaining({
         exercises: [expect.objectContaining({ name: 'Жим штанги (обновлено)' })],
       }),
     );
-    expect(setStorage).toHaveBeenCalled();
+    expect(persistCategoriesLocal).toHaveBeenCalled();
   });
 
   it('removes an exercise', () => {
@@ -99,11 +85,11 @@ describe('categoriesStore.actionExerciseOfCategory', () => {
     );
 
     expect(useCategoryStore.getState().categories[0].exercises).toHaveLength(0);
-    expect(updateCategory).toHaveBeenCalledWith(
+    expect(persistCategory).toHaveBeenCalledWith(
       'user-1',
       expect.objectContaining({ exercises: [] }),
     );
-    expect(setStorage).toHaveBeenCalled();
+    expect(persistCategoriesLocal).toHaveBeenCalled();
   });
 
   it('no-ops when category is missing', () => {
@@ -114,7 +100,7 @@ describe('categoriesStore.actionExerciseOfCategory', () => {
       'user-1',
     );
 
-    expect(updateCategory).not.toHaveBeenCalled();
-    expect(setStorage).not.toHaveBeenCalled();
+    expect(persistCategory).not.toHaveBeenCalled();
+    expect(persistCategoriesLocal).not.toHaveBeenCalled();
   });
 });
