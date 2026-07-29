@@ -17,7 +17,7 @@ interface ExercisesItemProps {
 
 export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) => {
   const removeExercise = useExercisesStore((state) => state.removeExercise);
-  const { category_icon, exercise_name, sets, id } = exercise;
+  const { category_icon, exercise_name, sets, id, ownWeight } = exercise;
   const [contentIsVisible, setContentIsVisible] = useState(false);
   const { user } = useAuth();
 
@@ -41,11 +41,12 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
         <ExerciseSetItem
           key={index}
           index={index}
+          ownWeight={ownWeight}
           {...set}
         />
       ));
     } else {
-      return <ExerciseSetItem index={0} />;
+      return <ExerciseSetItem index={0} ownWeight={ownWeight} />;
     }
   };
 

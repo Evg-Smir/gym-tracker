@@ -52,6 +52,28 @@
   margin-top: 30px;
 }
 
+.metricToggle {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.metricToggle button {
+  flex: 1;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: var(--system-gray-5);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--system-gray-2);
+}
+
+.metricActive {
+  background: var(--system-gray-4) !important;
+  color: #1c1c1e !important;
+}
+
 .emptyBlock {
   height: 100%;
   display: grid;

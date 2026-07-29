@@ -9,6 +9,8 @@ export const errorCode = (code: string) => {
       return 'Неверный пароль';
     case 'auth/invalid-credential':
       return 'Неверный email или пароль';
+    case 'auth/requires-recent-login':
+      return 'Введите текущий пароль для подтверждения';
     case 'auth/weak-password':
       return 'Слишком слабый пароль';
     case 'auth/too-many-requests':

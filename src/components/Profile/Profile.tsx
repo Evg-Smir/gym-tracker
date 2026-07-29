@@ -1,14 +1,15 @@
 import styles from './Profile.module.scss';
 import { useAuth } from '@/context/AuthContext';
-import { logoutUser } from '@/lib/firebase';
+import { logoutUser, updateUserEmail, updateUserPassword } from '@/lib/firebase';
 import { useUserStore } from '@/stores/userStore';
 import { useEffect, useState } from 'react';
 import { getUserData, updateUserData } from '@/db/client';
 import { Input } from '@/components/Inputs/Input/Input';
 import { Button } from '@/components/Buttons/Button/Button';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 import { UserDataType } from '@/@types/userStoreTypes';
+import { InputError } from '@/components/Inputs/InputError/InputError';
 
 export const Profile = ({ closePopup }: { closePopup: () => void }) => {
   const setUser = useUserStore((state) => state.setUserData);
@@ -18,7 +19,9 @@ export const Profile = ({ closePopup }: { closePopup: () => void }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secondPassword, setSecondPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [changes, setChanges] = useState(false);
+  const [error, setError] = useState('');
   const { user } = useAuth();
 
   const handleLogout = async () => {
@@ -49,16 +52,54 @@ export const Profile = ({ closePopup }: { closePopup: () => void }) => {
   };
 
   const saveUserData = async () => {
-    const updatedUser = {
-      ...userData,
-      firstName,
-      lastName,
-      email,
-    };
+    if (!user) return;
 
-    user && await updateUserData(user.uid, updatedUser);
-    setUserData(userData.uid, true);
-    setChanges(false)
+    setError('');
+
+    const emailChanged = email !== userData.email;
+    const passwordChanged = !!password || !!secondPassword;
+    const needsReauth = emailChanged || passwordChanged;
+
+    if (needsReauth && !currentPassword) {
+      setError('auth/requires-recent-login');
+      return;
+    }
+
+    if (passwordChanged) {
+      if (password !== secondPassword) {
+        setError('password-not-match');
+        return;
+      }
+    }
+
+    try {
+      if (emailChanged) {
+        await updateUserEmail(email, currentPassword);
+      }
+
+      if (passwordChanged) {
+        await updateUserPassword(password, currentPassword);
+      }
+
+      const updatedUser = {
+        ...userData,
+        firstName,
+        lastName,
+        email,
+      };
+
+      await updateUserData(user.uid, updatedUser);
+      setUser(updatedUser);
+      setFirstName(updatedUser.firstName);
+      setLastName(updatedUser.lastName);
+      setEmail(updatedUser.email);
+      setPassword('');
+      setSecondPassword('');
+      setCurrentPassword('');
+      setChanges(false);
+    } catch (err: any) {
+      setError(err.code || 'unknown_error');
+    }
   };
 
   useEffect(() => {
@@ -73,16 +114,22 @@ export const Profile = ({ closePopup }: { closePopup: () => void }) => {
   }, [user]);
 
   useEffect(() => {
-    if (userData && (firstName && firstName !== userData.firstName || lastName && lastName !== userData.lastName || email && email !== userData.email)) {
-      setChanges(true);
-    } else {
+    if (!userData) {
       setChanges(false);
+      return;
     }
 
-  }, [firstName, lastName, email]);
+    const profileChanged =
+      firstName !== userData.firstName ||
+      lastName !== userData.lastName ||
+      email !== userData.email ||
+      !!password ||
+      !!secondPassword;
+
+    setChanges(profileChanged);
+  }, [firstName, lastName, email, password, secondPassword, userData]);
 
   return (
-
     <div className={styles.profile}>
       <div className={styles.profile__inner}>
         <div className={styles.profileForm}>
@@ -90,9 +137,18 @@ export const Profile = ({ closePopup }: { closePopup: () => void }) => {
           <h1 className={styles.profileTitle}>Личный кабинет</h1>
           <Input type={'text'} placeholder={'Имя'} value={firstName} onChange={setFirstName} />
           <Input type={'text'} placeholder={'Фамилия'} value={lastName} onChange={setLastName} />
-          {/*<Input type={'email'} placeholder={'Почта'} value={email} onChange={setFirstName} />*/}
-          {/*<Input type={'password'} placeholder={'Новый пароль'} onChange={setPassword} />*/}
-          {/*<Input type={'password'} placeholder={'Повторите пароль'} onChange={setSecondPassword} />*/}
+          <Input type={'email'} placeholder={'Почта'} value={email} onChange={setEmail} />
+          <Input type={'password'} placeholder={'Новый пароль'} value={password} onChange={setPassword} />
+          <Input type={'password'} placeholder={'Повторите пароль'} value={secondPassword} onChange={setSecondPassword} />
+          {(email !== userData?.email || password || secondPassword) && (
+            <Input
+              type={'password'}
+              placeholder={'Текущий пароль'}
+              value={currentPassword}
+              onChange={setCurrentPassword}
+            />
+          )}
+          <InputError error={error} />
           <div className={styles.profileButtons}>
             {changes && <Button label={'Сохранить изменения'} type={'button'} onClick={saveUserData} />}
             <Button label={'Выйти из аккаунта'} type={'button'} onClick={handleLogout} />
@@ -100,6 +156,5 @@ export const Profile = ({ closePopup }: { closePopup: () => void }) => {
         </div>
       </div>
     </div>
-
   );
 };

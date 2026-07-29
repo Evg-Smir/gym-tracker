@@ -12,7 +12,7 @@
     font-weight: 600;
     font-size: 22px;
     line-height: 1.7;
-    width: calc((100% - 6px) / 2);
+    width: 100%;
     border: none;
     outline: none;
   }
@@ -33,4 +33,27 @@
   display: flex;
   align-items: center;
   column-gap: 12px;
+  flex: 1;
+}
+
+.weightField {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.doubleHint {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--system-gray-2);
+  pointer-events: none;
+}
+
+.inputsRow > input {
+  flex: 1;
+  min-width: 0;
 }

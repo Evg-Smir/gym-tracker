@@ -42,7 +42,7 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
     if (!currentSet) return;
     setCurrentSet(prevState => ({
       ...prevState!,
-      sets: [...prevState!.sets, { weight: '', reps: '' }]
+      sets: [...prevState!.sets, { weight: prevState!.ownWeight ? '0' : '', reps: '' }]
     }));
   };
 
@@ -56,8 +56,15 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
 
   const saveChanges = () => {
     if (!currentSet || !user) return;
-    const updatedSet = currentSet.sets.filter((set) => !!set.weight.trim().length || !!set.reps.trim().length);
-    const updatedExercise = { ...currentSet, sets: [...updatedSet] };
+    const updatedSet = currentSet.sets.filter((set) =>
+      currentSet.ownWeight
+        ? !!set.reps.trim().length
+        : !!set.weight.trim().length || !!set.reps.trim().length
+    );
+    const normalizedSets = updatedSet.map((set) =>
+      currentSet.ownWeight ? { ...set, weight: '0' } : set
+    );
+    const updatedExercise = { ...currentSet, sets: [...normalizedSets] };
     updateExercise(updatedExercise, user.uid);
 
     setTimeout(() => {
@@ -83,6 +90,8 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
               key={index}
               index={index}
               {...set}
+              doubleWeight={memoizedCurrentSet.doubleWeight}
+              ownWeight={memoizedCurrentSet.ownWeight}
               removeSet={() => removeSet(index)}
               updateValue={(value) => updateValue(value, index)}
             />

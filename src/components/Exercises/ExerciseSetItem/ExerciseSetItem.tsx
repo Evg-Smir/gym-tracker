@@ -4,15 +4,16 @@ interface ExerciseSetItemType {
   index: number;
   weight?: number | string;
   reps?: number | string;
+  ownWeight?: boolean;
 }
 
-export const ExerciseSetItem = ({ index, weight, reps }: ExerciseSetItemType) => {
+export const ExerciseSetItem = ({ index, weight, reps, ownWeight }: ExerciseSetItemType) => {
   return (
     <div className={styles.exercisesSet}>
       <span className={styles.exercisesSetLabel}>{index + 1}</span>
       {weight || reps ? (
         <div className={styles.exercisesSetFields}>
-          <div>{weight || '-'}</div>
+          {!ownWeight && <div>{weight || '-'}</div>}
           <div>{reps || '-'}</div>
         </div>
       ) : (

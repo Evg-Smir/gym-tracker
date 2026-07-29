@@ -7,6 +7,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updateEmail,
+  updatePassword,
   User,
 } from 'firebase/auth';
 
@@ -79,6 +83,48 @@ export const logoutUser = async () => {
   await signOut(auth);
   Cookies.remove('firebaseAuth');
   window.location.href = '/auth';
+};
+
+export const reauthenticate = async (password: string) => {
+  const user = auth.currentUser;
+  if (!user?.email) {
+    throw { code: 'auth/user-not-found' };
+  }
+
+  try {
+    const credential = EmailAuthProvider.credential(user.email, password);
+    await reauthenticateWithCredential(user, credential);
+  } catch (err: any) {
+    throw { code: err.code || 'unknown_error' };
+  }
+};
+
+export const updateUserEmail = async (newEmail: string, currentPassword: string) => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw { code: 'auth/user-not-found' };
+  }
+
+  try {
+    await reauthenticate(currentPassword);
+    await updateEmail(user, newEmail);
+  } catch (err: any) {
+    throw { code: err.code || 'unknown_error' };
+  }
+};
+
+export const updateUserPassword = async (newPassword: string, currentPassword: string) => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw { code: 'auth/user-not-found' };
+  }
+
+  try {
+    await reauthenticate(currentPassword);
+    await updatePassword(user, newPassword);
+  } catch (err: any) {
+    throw { code: err.code || 'unknown_error' };
+  }
 };
 
 export default app;

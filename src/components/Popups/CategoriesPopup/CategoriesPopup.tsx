@@ -55,10 +55,13 @@ export const CategoriesPopup = (
   }, [selectedExercises]);
 
   const setExercise = useCallback(() => {
-    const [{ categoryId, exerciseId }] = selectedExercises;
-    user && setCurrentExercise(categoryId, exerciseId, user.uid);
+    if (!user || selectedExercises.length === 0) return;
+
+    selectedExercises.forEach(({ categoryId, exerciseId }) => {
+      setCurrentExercise(categoryId, exerciseId, user.uid);
+    });
     closeAllPopups();
-  }, [selectedExercises, setCurrentExercise, closeAllPopups]);
+  }, [selectedExercises, setCurrentExercise, closeAllPopups, user]);
 
   const closePopup = useCallback(() => {
     hide();
