@@ -1,22 +1,28 @@
-import styles from './CreateExercisesList.module.scss'
+import styles from './CreateExercisesList.module.scss';
 
-import { ExercisesCategoriesList } from "@/components/Exercises/ExercisesCategoriesList/ExercisesCategoriesList";
-import { BackButton } from "@/components/Buttons/BackButton/BackButton";
+import { ExercisesCategoriesList } from '@/components/Exercises/ExercisesCategoriesList/ExercisesCategoriesList';
+import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 
-import { CategoryType } from "@/@types/categoryTypes";
-import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
-import { useT } from "@/hooks/useT";
-import { useEffect } from "react";
+import { CategoryType } from '@/@types/categoryTypes';
+import useAnimatedVisibility from '@/hooks/useAnimatedVisibility';
+import useSwipeToClose from '@/hooks/useSwipeToClose';
+import { useT } from '@/hooks/useT';
+import { useEffect, useRef } from 'react';
 
 interface CreateExercisesListType {
-  categoriesList: CategoryType[]
-  unsetValue: () => void,
-  selectCategory: (categoryId: number) => void
+  categoriesList: CategoryType[];
+  unsetValue: () => void;
+  selectCategory: (categoryId: number) => void;
 }
 
-export const CreateExercisesList = ({ categoriesList, unsetValue, selectCategory }: CreateExercisesListType) => {
+export const CreateExercisesList = ({
+  categoriesList,
+  unsetValue,
+  selectCategory,
+}: CreateExercisesListType) => {
   const { isVisible, show, hide } = useAnimatedVisibility();
   const t = useT();
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     show();
@@ -24,15 +30,25 @@ export const CreateExercisesList = ({ categoriesList, unsetValue, selectCategory
 
   const closePopup = () => {
     hide();
-    setTimeout(unsetValue, 300)
+    setTimeout(unsetValue, 300);
   };
 
+  const swipeHandlers = useSwipeToClose(closePopup, scrollRef);
+
   return (
-    <div className={`${styles.createExercisesList} ${isVisible ? styles.visible : ''}`}>
+    <div
+      {...swipeHandlers}
+      className={`${styles.createExercisesList} ${isVisible ? styles.visible : ''}`}
+    >
       <BackButton clickButton={closePopup} />
       <h3 className={styles.title}>{t('exercises.new')}</h3>
       <h1 className={styles.subtitle}>{t('exercises.chooseCategory')}</h1>
-      <ExercisesCategoriesList categoriesList={categoriesList} selectCategory={selectCategory} mini />
+      <ExercisesCategoriesList
+        ref={scrollRef}
+        categoriesList={categoriesList}
+        selectCategory={selectCategory}
+        mini
+      />
     </div>
   );
 };

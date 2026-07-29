@@ -1,7 +1,8 @@
 import styles from './ProfilePopup.module.scss';
 
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import useAnimatedVisibility from '@/hooks/useAnimatedVisibility';
+import useSwipeToClose from '@/hooks/useSwipeToClose';
 import { Profile } from '@/components/Profile/Profile';
 
 interface ProfilePopupProps {
@@ -15,15 +16,20 @@ export const ProfilePopup = ({ closeProfile }: ProfilePopupProps) => {
     show();
   }, [show]);
 
-  const closePopup = () => {
+  const closePopup = useCallback(() => {
     hide();
     setTimeout(closeProfile, 300);
-  };
+  }, [hide, closeProfile]);
+
+  const swipeHandlers = useSwipeToClose(closePopup);
 
   if (!shouldRender) return null;
 
   return (
-    <div className={`${styles.profilePopup} ${isVisible ? styles.visible : ''}`}>
+    <div
+      {...swipeHandlers}
+      className={`${styles.profilePopup} ${isVisible ? styles.visible : ''}`}
+    >
       <Profile closePopup={closePopup} />
     </div>
   );

@@ -2,6 +2,7 @@ import styles from './ActionExercisePopup.module.scss';
 import { CategoryType } from '@/@types/categoryTypes';
 import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 import { useActionExerciseForm } from '@/hooks/useActionExerciseForm';
+import useSwipeToClose from '@/hooks/useSwipeToClose';
 import { useT } from '@/hooks/useT';
 import { translateCategoryName } from '@/i18n/catalog';
 
@@ -25,11 +26,15 @@ export const ActionExercisePopup = ({
     handleActionExercise,
   } = useActionExerciseForm(category, changeExerciseId, unsetCreateCategory);
   const t = useT();
+  const swipeHandlers = useSwipeToClose(closePopup);
 
   if (!shouldRender) return null;
 
   return (
-    <div className={`${styles.actionExercisePopup} ${isVisible ? styles.visible : ''}`}>
+    <div
+      {...swipeHandlers}
+      className={`${styles.actionExercisePopup} ${isVisible ? styles.visible : ''}`}
+    >
       <BackButton clickButton={closePopup} />
       <div className={styles.actionExercisePopupWrapper}>
         <h1 className={styles.actionExercisePopupName}>{translateCategoryName(category, t)}</h1>

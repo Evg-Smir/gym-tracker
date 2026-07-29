@@ -2,8 +2,10 @@ import styles from './ActionSetsPopup.module.scss';
 import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 import { SetItem } from '@/components/Sets/SetItem/SetItem';
 import { useActionSetsForm } from '@/hooks/useActionSetsForm';
+import useSwipeToClose from '@/hooks/useSwipeToClose';
 import { useT } from '@/hooks/useT';
 import { translateExerciseName } from '@/i18n/catalog';
+import { useCallback } from 'react';
 
 interface ActionSetsPopupProps {
   setId: number;
@@ -23,16 +25,21 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
   } = useActionSetsForm(setId, unsetValue);
   const t = useT();
 
+  const handleClose = useCallback(() => {
+    closePopup();
+    saveChanges();
+  }, [closePopup, saveChanges]);
+
+  const swipeHandlers = useSwipeToClose(handleClose);
+
   if (!shouldRender) return null;
 
   return (
-    <div className={`${styles.actionSetsPopup} ${isVisible ? styles.visible : ''}`}>
-      <BackButton
-        clickButton={() => {
-          closePopup();
-          saveChanges();
-        }}
-      />
+    <div
+      {...swipeHandlers}
+      className={`${styles.actionSetsPopup} ${isVisible ? styles.visible : ''}`}
+    >
+      <BackButton clickButton={handleClose} />
       {currentSet && (
         <>
           <div className={styles.name}>{translateExerciseName(currentSet.exercise_name, t)}</div>
