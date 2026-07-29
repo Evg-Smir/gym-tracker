@@ -1,24 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { CategoryType } from '@/@types/categoryTypes';
+import { filterCategories } from '@/services/filteredCategories';
 
 const useFilteredCategories = (categories: CategoryType[], filter: string) => {
   const [filteredCategories, setFilteredCategories] = useState<CategoryType[]>([]);
 
-  const filterCategories = useCallback((list: CategoryType[], filter: string): CategoryType[] => {
-    const lowercasedFilter = filter.toLowerCase();
-    return list
-      .map(category => {
-        const filteredExercises = category.exercises.filter(exercise =>
-          exercise.name.toLowerCase().includes(lowercasedFilter)
-        );
-        return { ...category, exercises: filteredExercises };
-      })
-      .filter(category => category !== null) as CategoryType[];
+  const applyFilter = useCallback((list: CategoryType[], filterValue: string): CategoryType[] => {
+    return filterCategories(list, filterValue);
   }, []);
 
   useEffect(() => {
-    setFilteredCategories(filterCategories(categories, filter));
-  }, [categories, filter, filterCategories]);
+    setFilteredCategories(applyFilter(categories, filter));
+  }, [categories, filter, applyFilter]);
 
   return filteredCategories;
 };

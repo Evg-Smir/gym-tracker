@@ -11,6 +11,8 @@ export interface ExerciseType {
   category_icon: string,
   exercise_id: number,
   exercise_name: string,
+  doubleWeight?: boolean,
+  ownWeight?: boolean,
   sets: ExerciseRepsType[]
 }
 

@@ -37,6 +37,8 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
       category_icon: category.icon,
       exercise_id: exercise.id,
       exercise_name: exercise.name,
+      doubleWeight: exercise.doubleWeight,
+      ownWeight: exercise.ownWeight,
       sets: [],
     });
 
