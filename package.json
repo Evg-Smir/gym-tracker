@@ -7,7 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "emulators": "firebase emulators:start --only auth,firestore --project gym-tracker-demo",
+    "e2e:serve": "bash scripts/e2e-serve.sh"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -25,11 +30,13 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.0",
     "@types/node": "^20.19.43",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
+    "firebase-tools": "^15.24.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
