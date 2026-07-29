@@ -5,25 +5,19 @@ import { DayOfExercisesType } from '@/@types/exerciseTypes';
 export const setToFirebase = async (
   name: 'exercises' | 'categories',
   list: CategoryType[] | DayOfExercisesType[],
-  uid: string
-) => {
+  uid: string,
+): Promise<void> => {
   if (!uid) {
-    console.error('Ошибка: отсутствует UID пользователя');
-    return;
+    throw new Error('User id is required');
   }
 
   if (!list.length) return;
 
-  try {
-    await Promise.all(
-      list.map((item) =>
-        name === 'categories'
-          ? addCategory(uid, item as CategoryType)
-          : addWorkout(uid, item as DayOfExercisesType)
-      )
-    );
-    console.log(`Все ${name} успешно записаны в Firebase.`);
-  } catch (error) {
-    console.error(`Ошибка при записи ${name} в Firebase:`, error);
-  }
+  await Promise.all(
+    list.map((item) =>
+      name === 'categories'
+        ? addCategory(uid, item as CategoryType)
+        : addWorkout(uid, item as DayOfExercisesType),
+    ),
+  );
 };

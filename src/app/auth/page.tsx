@@ -2,17 +2,15 @@
 
 import { Authentication } from '@/components/Authentication/Authentication';
 import { useAuth } from '@/context/AuthContext';
-import { useEffect } from 'react';
 import { redirect } from 'next/navigation';
 
 export default function AuthenticationPage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    user && redirect(`/`);
-  }, [user]);
+  if (loading) return null;
+  if (user) {
+    redirect('/');
+  }
 
-  return (
-    <Authentication />
-  );
+  return <Authentication />;
 }

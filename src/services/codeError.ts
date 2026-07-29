@@ -17,6 +17,8 @@ export const errorCode = (code: string) => {
       return 'Слишком много попыток. Попробуйте позже';
     case 'password-not-match':
       return 'Пароли не совпадают';
+    case 'auth/email-verification-sent':
+      return 'Письмо для подтверждения нового email отправлено';
     default:
       return 'Произошла ошибка. Попробуйте снова.';
   }

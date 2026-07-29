@@ -1,16 +1,23 @@
 import styles from './input.module.scss';
 
-import { ChangeEvent, HTMLInputTypeAttribute, useState } from 'react';
+import { ChangeEvent, HTMLInputTypeAttribute } from 'react';
 
-export const Input = ({ type, placeholder, value, onChange }: {
-  type: HTMLInputTypeAttribute,
-  placeholder: string,
-  value?: string,
-  onChange: (value: string) => void,
+export const Input = ({
+  type,
+  placeholder,
+  value = '',
+  onChange,
+  required = true,
+  minLength,
+}: {
+  type: HTMLInputTypeAttribute;
+  placeholder: string;
+  value?: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+  minLength?: number;
 }) => {
-  const [inputValue, setInputValue] = useState('');
   const inputOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
     onChange(e.target.value);
   };
 
@@ -20,10 +27,11 @@ export const Input = ({ type, placeholder, value, onChange }: {
         className={styles.input__native}
         type={type}
         placeholder={placeholder}
-        value={inputValue || value}
+        aria-label={placeholder}
+        value={value}
         onChange={inputOnChange}
-        required={true}
-        minLength={5}
+        required={required}
+        minLength={minLength}
       />
     </div>
   );

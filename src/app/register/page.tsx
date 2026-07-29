@@ -2,17 +2,15 @@
 
 import { Registration } from '@/components/Registration/Registration';
 import { useAuth } from '@/context/AuthContext';
-import { useEffect } from 'react';
 import { redirect } from 'next/navigation';
 
 export default function RegistrationPage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    user && redirect(`/`);
-  }, [user]);
+  if (loading) return null;
+  if (user) {
+    redirect('/');
+  }
 
-  return (
-    <Registration />
-  );
+  return <Registration />;
 }

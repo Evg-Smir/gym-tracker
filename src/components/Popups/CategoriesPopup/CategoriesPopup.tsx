@@ -24,7 +24,7 @@ export const CategoriesPopup = (
     closeAllPopups,
   }: CategoriesPopupProps) => {
   const [selectedExercises, setSelectedExercises] = useState<SelectedExerciseType[]>([]);
-  const setCurrentExercise = useExercisesStore(state => state.setExercise);
+  const setCurrentExercise = useExercisesStore((state) => state.addExercises);
   const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
   const { user } = useAuth();
 
@@ -51,15 +51,16 @@ export const CategoriesPopup = (
       (selected) =>
         selected.exerciseId === exercise.id &&
         selected.categoryId === category.id,
-    ) ? <img src="/ui/check-mark.svg" alt="icon" /> : null;
+    ) ? <img src="/ui/check-mark.svg" alt="" /> : null;
   }, [selectedExercises]);
 
   const setExercise = useCallback(() => {
     if (!user || selectedExercises.length === 0) return;
 
-    selectedExercises.forEach(({ categoryId, exerciseId }) => {
-      setCurrentExercise(categoryId, exerciseId, user.uid);
-    });
+    setCurrentExercise(
+      selectedExercises.map(({ categoryId, exerciseId }) => ({ categoryId, exerciseId })),
+      user.uid,
+    );
     closeAllPopups();
   }, [selectedExercises, setCurrentExercise, closeAllPopups, user]);
 

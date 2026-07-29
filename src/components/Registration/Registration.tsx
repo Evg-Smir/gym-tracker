@@ -8,7 +8,6 @@ import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { InputError } from '@/components/Inputs/InputError/InputError';
-import { UserDataType } from '@/@types/userStoreTypes';
 
 export const Registration = () => {
   const setUser = useUserStore((state) => state.setUserData);
@@ -20,11 +19,6 @@ export const Registration = () => {
   const [passwordSecond, setPasswordSecond] = useState('');
   const [error, setError] = useState('');
 
-  const setUserData = async (uid: string) => {
-    const data = await getUserData(uid);
-    setUser({ ...data, uid } as UserDataType);
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -35,11 +29,16 @@ export const Registration = () => {
 
     try {
       const user = await registerUser(email, password, firstName, lastName);
-      await setUserData(user.uid);
+      const data = await getUserData(user.uid);
+      if (data) {
+        setUser(data);
+      }
       router.push('/');
-    } catch (err: any) {
-      console.log(err);
-      setError(err.code || 'unknown_error');
+    } catch (err: unknown) {
+      const code = typeof err === 'object' && err && 'code' in err
+        ? String((err as { code: string }).code)
+        : 'unknown_error';
+      setError(code);
     }
   };
 
@@ -52,17 +51,22 @@ export const Registration = () => {
 
         <div className={styles.registrationBottom}>
           <form onSubmit={handleSubmit}>
-            <Input type={'text'} placeholder={'Имя'} value={firstName} onChange={setFirstName} />
-            <Input type={'text'} placeholder={'Фамилия'} value={lastName} onChange={setLastName} />
-            <Input type={'email'} placeholder={'Почта'} value={email} onChange={setEmail} />
-            <Input type={'password'} placeholder={'Пароль'} value={password} onChange={setPassword} />
-            <Input type={'password'} placeholder={'Повторите пароль'} value={passwordSecond}
-                   onChange={setPasswordSecond} />
+            <Input type="text" placeholder="Имя" value={firstName} onChange={setFirstName} minLength={1} />
+            <Input type="text" placeholder="Фамилия" value={lastName} onChange={setLastName} minLength={1} />
+            <Input type="email" placeholder="Почта" value={email} onChange={setEmail} />
+            <Input type="password" placeholder="Пароль" value={password} onChange={setPassword} minLength={6} />
+            <Input
+              type="password"
+              placeholder="Повторите пароль"
+              value={passwordSecond}
+              onChange={setPasswordSecond}
+              minLength={6}
+            />
             <InputError error={error} />
-            <Button label={'Зарегистрироваться'} type={'submit'} />
+            <Button label="Зарегистрироваться" type="submit" />
           </form>
           <div className={styles.registrationLink}>
-            <Link className={styles.registrationLink} href={'/auth'}>Или войдите</Link>
+            <Link className={styles.registrationLink} href="/auth">Или войдите</Link>
           </div>
         </div>
       </div>

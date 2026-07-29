@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useRef } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 
 import { auth } from '@/lib/firebase';
@@ -18,6 +18,10 @@ import { getStorage, setStorage } from '@/services/IndexedDB';
 import { filteredExercises } from '@/services/filteredExercises';
 import { getLocalStorage } from '@/services/localStorage';
 import { setToFirebase } from '@/services/setToFirebase';
+import { DEFAULT_CATEGORIES } from '@/services/defaultCategories';
+import { CategoryType } from '@/@types/categoryTypes';
+import { DayOfExercisesType } from '@/@types/exerciseTypes';
+import { UserDataType } from '@/@types/userStoreTypes';
 
 interface AuthContextType {
   user: User | null;
@@ -29,105 +33,125 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
 });
 
+const resetClientState = () => {
+  useExercisesStore.getState().resetExercises();
+  useCategoryStore.getState().resetCategories();
+  useUserStore.getState().resetUserData();
+};
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const {
-    setExercisesOfCurrentDay,
-    setExercisesList,
-    exercises,
-  } = useExercisesStore((state) => ({
-    setExercisesOfCurrentDay: state.setExercisesOfCurrentDay,
-    setExercisesList: state.setExercisesList,
-    exercises: state.exercises,
-  }));
-
-  const {
-    setCategories,
-    categories,
-  } = useCategoryStore((state) => ({
-    setCategories: state.setCategories,
-    categories: state.categories,
-  }));
-
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const { userData, setUserData } = useUserStore((state) => ({
-    userData: state.userData,
-    setUserData: state.setUserData,
-  }));
-
-  const fetchUserData = useCallback(async () => {
-    if (!user || userData?.uid === user.uid) return;
-    const data = await getUserData(user.uid);
-    if (data) { // @ts-ignore
-      setUserData({ ...data, uid: user.uid });
-    }
-  }, [user, userData?.uid, setUserData]);
-
-  const fetchData = useCallback(async () => {
-    if (!user) return;
-
-    await fetchUserData();
-
-    const isFirebaseSupported = !!(await getStorage('isFirebaseSupported'))?.length;
-    if (isFirebaseSupported || (userData?.exercisesIsUpload && userData?.categoriesIsUpload)) return;
-
-    const isStorageSupported = !!(await getStorage('isStorageSupported'))?.length;
-    let localCategories = isStorageSupported ? await getStorage('categories') : getLocalStorage('categories');
-    let localExercises = isStorageSupported ? await getStorage('exercises') : getLocalStorage('exercises');
-
-    localExercises = filteredExercises(localExercises);
-
-    await setStorage('categories', localCategories);
-    await setStorage('exercises', localExercises);
-    if (!isStorageSupported) await setStorage('isStorageSupported', [{ isStorageSupported: '1' }]);
-
-    if (localCategories?.length) setCategories(localCategories);
-    if (localExercises?.length) setExercisesList(localExercises);
-  }, [fetchUserData, setCategories, setExercisesList, user, userData]);
+  const syncGeneration = useRef(0);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    const unsubscribe = onAuthStateChanged(auth, async (nextUser) => {
+      const generation = ++syncGeneration.current;
 
-  useEffect(() => {
-    if (!userData?.uid) return;
-
-    const uploadDataIfNeeded = async (key: 'categories' | 'exercises', list: any[], field: 'categoriesIsUpload' | 'exercisesIsUpload') => {
-      if (userData[field] || list.length === 0) return;
-
-      await setToFirebase(key, list, userData.uid);
-      await updateUserData(userData.uid, { [field]: true });
-      setUserData({ ...userData, [field]: true });
-
-      await setStorage('isFirebaseSupported', [{ isFirebaseSupported: '1' }]);
-    };
-
-    uploadDataIfNeeded('categories', categories, 'categoriesIsUpload');
-    uploadDataIfNeeded('exercises', exercises, 'exercisesIsUpload');
-  }, [userData, categories, exercises, setUserData]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
       setLoading(true);
+      setUser(nextUser);
 
-      if (user?.uid) {
-        const [fetchedWorkouts, fetchedCategories] = await Promise.all([
-          getAllWorkouts(user.uid),
-          getAllCategories(user.uid),
-        ]);
-
-        if (fetchedCategories?.length) setCategories(fetchedCategories);
-        if (fetchedWorkouts?.length) setExercisesList(fetchedWorkouts);
+      if (!nextUser?.uid) {
+        resetClientState();
+        if (generation === syncGeneration.current) {
+          setLoading(false);
+        }
+        return;
       }
 
-      setExercisesOfCurrentDay(new Date());
-      setLoading(false);
+      try {
+        const profile = await getUserData(nextUser.uid);
+        if (generation !== syncGeneration.current) return;
+
+        const userData: UserDataType = profile ?? {
+          uid: nextUser.uid,
+          firstName: '',
+          lastName: '',
+          email: nextUser.email ?? '',
+          createdAt: '',
+          categoriesIsUpload: false,
+          exercisesIsUpload: false,
+        };
+
+        useUserStore.getState().setUserData(userData);
+
+        const [cloudWorkouts, cloudCategories] = await Promise.all([
+          getAllWorkouts(nextUser.uid),
+          getAllCategories(nextUser.uid),
+        ]);
+        if (generation !== syncGeneration.current) return;
+
+        let nextCategories: CategoryType[] = cloudCategories;
+        let nextWorkouts: DayOfExercisesType[] = cloudWorkouts;
+
+        // Cloud wins when present. Otherwise migrate local/legacy data once.
+        if (!cloudCategories.length && !userData.categoriesIsUpload) {
+          const localCategories = await getStorage<CategoryType[]>(nextUser.uid, 'categories');
+          const legacyCategories = localCategories.length
+            ? localCategories
+            : (getLocalStorage('categories') as CategoryType[]);
+
+          nextCategories = legacyCategories.length ? legacyCategories : DEFAULT_CATEGORIES;
+
+          try {
+            await setToFirebase('categories', nextCategories, nextUser.uid);
+            await updateUserData(nextUser.uid, { categoriesIsUpload: true });
+            userData.categoriesIsUpload = true;
+            useUserStore.getState().setUserData({ ...userData });
+          } catch (error) {
+            console.error('Failed to upload categories:', error);
+          }
+        }
+
+        if (!cloudWorkouts.length && !userData.exercisesIsUpload) {
+          const localExercises = await getStorage<DayOfExercisesType[]>(nextUser.uid, 'exercises');
+          const legacyExercises = localExercises.length
+            ? localExercises
+            : (getLocalStorage('exercises') as DayOfExercisesType[]);
+
+          nextWorkouts = filteredExercises(legacyExercises);
+
+          if (nextWorkouts.length) {
+            try {
+              await setToFirebase('exercises', nextWorkouts, nextUser.uid);
+              await updateUserData(nextUser.uid, { exercisesIsUpload: true });
+              userData.exercisesIsUpload = true;
+              useUserStore.getState().setUserData({ ...userData });
+            } catch (error) {
+              console.error('Failed to upload exercises:', error);
+            }
+          } else {
+            try {
+              await updateUserData(nextUser.uid, { exercisesIsUpload: true });
+              userData.exercisesIsUpload = true;
+              useUserStore.getState().setUserData({ ...userData });
+            } catch (error) {
+              console.error('Failed to mark exercises as uploaded:', error);
+            }
+          }
+        }
+
+        if (generation !== syncGeneration.current) return;
+
+        if (nextCategories.length) {
+          useCategoryStore.getState().setCategories(nextCategories);
+          await setStorage(nextUser.uid, 'categories', nextCategories);
+        }
+
+        useExercisesStore.getState().setExercisesList(nextWorkouts);
+        await setStorage(nextUser.uid, 'exercises', nextWorkouts);
+        useExercisesStore.getState().setExercisesOfCurrentDay(new Date());
+      } catch (error) {
+        console.error('Auth bootstrap failed:', error);
+      } finally {
+        if (generation === syncGeneration.current) {
+          setLoading(false);
+        }
+      }
     });
 
     return () => unsubscribe();
-  }, [setCategories, setExercisesList, setExercisesOfCurrentDay]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
@@ -141,4 +165,3 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-
