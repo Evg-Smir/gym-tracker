@@ -1,9 +1,21 @@
-const CACHE_NAME = 'gym-tracker-v1';
-const PRECACHE_URLS = ['/', '/auth', '/register', '/manifest.webmanifest'];
+const CACHE_NAME = 'gym-tracker-v2';
+
+const getBasePath = () => {
+  try {
+    const pathname = new URL(self.registration.scope).pathname.replace(/\/$/, '');
+    return pathname || '';
+  } catch {
+    return '';
+  }
+};
+
+const withBase = (path) => `${getBasePath()}${path}`;
 
 self.addEventListener('install', (event) => {
+  const precacheUrls = ['/', '/auth/', '/register/', '/manifest.webmanifest'].map(withBase);
+
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS)).then(() => self.skipWaiting()),
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(precacheUrls)).then(() => self.skipWaiting()),
   );
 });
 
@@ -22,10 +34,14 @@ const isFirebaseRequest = (url) =>
   url.hostname.includes('identitytoolkit.googleapis.com') ||
   url.hostname.includes('securetoken.googleapis.com');
 
-const isStaticAsset = (url) =>
-  url.pathname.startsWith('/_next/static/') ||
-  url.pathname.startsWith('/ui/') ||
-  url.pathname.startsWith('/categories/');
+const isStaticAsset = (url) => {
+  const base = getBasePath();
+  return (
+    url.pathname.startsWith(`${base}/_next/static/`) ||
+    url.pathname.startsWith(`${base}/ui/`) ||
+    url.pathname.startsWith(`${base}/categories/`)
+  );
+};
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
@@ -56,7 +72,9 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           return response;
         })
-        .catch(() => caches.match(request).then((cached) => cached || caches.match('/'))),
+        .catch(() =>
+          caches.match(request).then((cached) => cached || caches.match(withBase('/'))),
+        ),
     );
   }
 });

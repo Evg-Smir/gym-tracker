@@ -75,6 +75,15 @@ users/{uid}
 - Профиль: имя, email, пароль (с reauth)
 - PWA manifest + service worker
 
-## Deploy
+## Deploy (GitHub Pages)
 
-После `npm run build` раздайте содержимое `out/` как статику (Firebase Hosting, S3, Nginx и т.п.). Для service worker нужен HTTPS (или localhost).
+Продакшен-сборка идёт на GitHub Pages из ветки `main` (workflow `.github/workflows/deploy.yml`).
+URL: `https://<user>.github.io/gym-tracker/`.
+
+1. В репозитории: **Settings → Pages → Source → GitHub Actions**.
+2. Добавьте Repository secrets (**Settings → Secrets and variables → Actions**) с теми же `NEXT_PUBLIC_FIREBASE_*`, что в `.env.local`.
+3. В Firebase Console → Authentication → Settings → Authorized domains добавьте `evg-smir.github.io` (или ваш GitHub Pages домен).
+4. Запушьте в `main` (или запустите workflow вручную: **Actions → Deploy to GitHub Pages → Run workflow**).
+
+Локально: `npm run build` → раздайте `out/` как статику. Для service worker нужен HTTPS (или localhost).
+В production используется `basePath=/gym-tracker`; в `npm run dev` basePath пустой.
