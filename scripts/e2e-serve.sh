@@ -4,6 +4,20 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT_DIR"
 
+if [[ -z "${JAVA_HOME:-}" ]]; then
+  for candidate in \
+    /opt/homebrew/opt/openjdk@21 \
+    /opt/homebrew/opt/openjdk \
+    /usr/local/opt/openjdk@21 \
+    /usr/local/opt/openjdk; do
+    if [[ -x "$candidate/bin/java" ]]; then
+      export JAVA_HOME="$candidate"
+      export PATH="$JAVA_HOME/bin:$PATH"
+      break
+    fi
+  done
+fi
+
 export NEXT_PUBLIC_USE_FIREBASE_EMULATOR=true
 export NEXT_PUBLIC_FIREBASE_API_KEY=demo-api-key
 export NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=127.0.0.1

@@ -1,1 +1,1 @@
-export { errorCode } from '@/domain/errorMessages';
+export { errorCode, normalizeAuthErrorCode } from '@/domain/errorMessages';

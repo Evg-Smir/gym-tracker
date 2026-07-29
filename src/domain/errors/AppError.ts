@@ -1,3 +1,5 @@
+import { normalizeAuthErrorCode } from '@/domain/errorMessages';
+
 export class AppError extends Error {
   readonly code: string;
 
@@ -11,9 +13,11 @@ export class AppError extends Error {
 export const toAppError = (err: unknown, fallback = 'unknown_error'): AppError => {
   if (err instanceof AppError) return err;
 
-  if (typeof err === 'object' && err !== null && 'code' in err) {
-    const code = String((err as { code: unknown }).code || fallback);
-    return new AppError(code);
+  if (typeof err === 'object' && err !== null) {
+    const normalized = normalizeAuthErrorCode(
+      err as { code?: string; message?: string; customData?: { message?: string } },
+    );
+    return new AppError(normalized || fallback);
   }
 
   if (err instanceof Error) {
