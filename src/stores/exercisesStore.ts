@@ -81,7 +81,7 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
     };
   }),
 
-  updateExercise: (exercise) => set((state) => {
+  updateExercise: (exercise, uid) => set((state) => {
     const currentDayTime = state.exercisesOfCurrentDay.time;
     const dayIndex = state.exercises.findIndex(item => item.time === currentDayTime);
 
@@ -113,6 +113,7 @@ export const useExercisesStore = create<ExercisesStateType>((set) => ({
     };
 
     setStorage('exercises', newExercisesArray);
+    updateWorkout(uid, newExercisesOfCurrentDay);
 
     return {
       exercises: newExercisesArray,

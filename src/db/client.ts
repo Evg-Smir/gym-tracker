@@ -1,6 +1,6 @@
 import { getDocs, doc, setDoc, getDoc, collection, updateDoc, deleteDoc } from 'firebase/firestore';
 
-import { DayOfExercisesType, ExerciseType } from '@/@types/exerciseTypes';
+import { DayOfExercisesType } from '@/@types/exerciseTypes';
 import { CategoryType } from '@/@types/categoryTypes';
 import { UserDataType, UserID } from '@/@types/userStoreTypes';
 import { db } from '@/lib/firebase';
@@ -116,17 +116,17 @@ export const getAllCategories = async (userId: UserID): Promise<CategoryType[]> 
   }
 };
 
-export const getAllExercises = async (userId: UserID): Promise<ExerciseType[]> => {
+export const getAllWorkouts = async (userId: UserID): Promise<DayOfExercisesType[]> => {
   try {
-    const exercisesRef = collection(db, `users/${userId}/workouts`);
-    const querySnapshot = await getDocs(exercisesRef);
+    const workoutsRef = collection(db, `users/${userId}/workouts`);
+    const querySnapshot = await getDocs(workoutsRef);
 
-    const exercises = querySnapshot.docs.map(doc => (doc.data()));
+    const workouts = querySnapshot.docs.map(doc => (doc.data()));
 
-    console.log(`Загружены упражнения пользователя ${userId}:`, exercises);
-    return exercises as ExerciseType[];
+    console.log(`Загружены тренировки пользователя ${userId}:`, workouts);
+    return workouts as DayOfExercisesType[];
   } catch (error) {
-    console.error('Ошибка при загрузке упражнений:', error);
+    console.error('Ошибка при загрузке тренировок:', error);
     return [];
   }
 };
