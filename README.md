@@ -127,7 +127,7 @@ src/
 ├── context/              # AuthContext (Firebase onAuthStateChanged)
 ├── stores/               # Zustand: exercisesStore, categoriesStore, userStore
 ├── db/                   # Firestore CRUD (users, workouts, categories)
-├── lib/                  # Firebase initialization
+├── lib/                  # Firebase initialization, basePath helpers
 ├── services/             # IndexedDB, statistics, filters, defaultCategories
 ├── hooks/                # useFilteredCategories, useClickOutside, …
 └── @types/               # TypeScript types
@@ -152,15 +152,20 @@ Popups (catalog menu, statistics, profile, set editing) open over the home scree
 
 ---
 
-## Deploy
+## Deploy (GitHub Pages)
 
-```bash
-npm run build
-```
+Production builds deploy to GitHub Pages from `main` via `.github/workflows/deploy.yml`.
 
-Serve the contents of `out/` as static files (Firebase Hosting, S3, Nginx, GitHub Pages, etc.).
+URL: `https://<user>.github.io/gym-tracker/`
 
-The service worker requires **HTTPS** (or `localhost`). After deploying Firestore rules, confirm Email/Password Auth is enabled in the Firebase Console.
+1. In the repository: **Settings → Pages → Source → GitHub Actions**.
+2. Add repository secrets (**Settings → Secrets and variables → Actions**) for the same `NEXT_PUBLIC_FIREBASE_*` values as in `.env.local`.
+3. In Firebase Console → Authentication → Settings → Authorized domains, add `evg-smir.github.io` (or your GitHub Pages domain).
+4. Push to `main` (or run the workflow manually: **Actions → Deploy to GitHub Pages → Run workflow**).
+
+Locally: `npm run build`, then serve the `out/` folder as static files. The service worker requires **HTTPS** (or `localhost`).
+
+In production the app uses `basePath=/gym-tracker`; with `npm run dev` the base path is empty.
 
 ---
 

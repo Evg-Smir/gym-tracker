@@ -62,7 +62,8 @@ export const loginUser = async (email: string, password: string) => {
 
 export const logoutUser = async () => {
   await signOut(auth);
-  window.location.href = '/auth';
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+  window.location.href = `${basePath}/auth/`;
 };
 
 export const reauthenticate = async (password: string) => {
