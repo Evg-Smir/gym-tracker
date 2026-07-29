@@ -3,6 +3,7 @@ import { CategoryType } from '@/@types/categoryTypes';
 import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 import { useActionExerciseForm } from '@/hooks/useActionExerciseForm';
 import { useT } from '@/hooks/useT';
+import { translateCategoryName } from '@/i18n/catalog';
 
 interface ActionExercisePopupProps {
   category: CategoryType;
@@ -31,7 +32,7 @@ export const ActionExercisePopup = ({
     <div className={`${styles.actionExercisePopup} ${isVisible ? styles.visible : ''}`}>
       <BackButton clickButton={closePopup} />
       <div className={styles.actionExercisePopupWrapper}>
-        <h1 className={styles.actionExercisePopupName}>{category.name}</h1>
+        <h1 className={styles.actionExercisePopupName}>{translateCategoryName(category, t)}</h1>
         <div className={styles.actionExercisePopupInput}>
           <input
             type="text"

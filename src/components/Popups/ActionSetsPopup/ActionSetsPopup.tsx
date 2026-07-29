@@ -3,6 +3,7 @@ import { BackButton } from '@/components/Buttons/BackButton/BackButton';
 import { SetItem } from '@/components/Sets/SetItem/SetItem';
 import { useActionSetsForm } from '@/hooks/useActionSetsForm';
 import { useT } from '@/hooks/useT';
+import { translateExerciseName } from '@/i18n/catalog';
 
 interface ActionSetsPopupProps {
   setId: number;
@@ -34,7 +35,7 @@ export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => 
       />
       {currentSet && (
         <>
-          <div className={styles.name}>{currentSet.exercise_name}</div>
+          <div className={styles.name}>{translateExerciseName(currentSet.exercise_name, t)}</div>
           {currentSet.sets.map((set, index) => (
             <SetItem
               key={index}

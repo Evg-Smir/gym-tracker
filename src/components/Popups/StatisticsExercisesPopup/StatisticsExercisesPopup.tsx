@@ -9,6 +9,7 @@ import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useExerciseStatistics } from '@/hooks/useExerciseStatistics';
 import { withBasePath } from '@/lib/basePath';
 import { useT } from '@/hooks/useT';
+import { translateExerciseName } from '@/i18n/catalog';
 
 interface StatisticsExercisesPopupProps {
   category: CategoryType | null;
@@ -48,7 +49,7 @@ export const StatisticsExercisesPopup = ({
         >
           {category.exercises.map((ex) => (
             <MenuItem key={ex.id} value={ex.id}>
-              {ex.name}
+              {translateExerciseName(ex.name, t)}
             </MenuItem>
           ))}
         </Select>

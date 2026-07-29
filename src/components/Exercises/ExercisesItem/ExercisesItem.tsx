@@ -11,6 +11,7 @@ import { useExercisesStore } from '@/stores/exercisesStore';
 import { useAuth } from '@/context/AuthContext';
 import { withBasePath } from '@/lib/basePath';
 import { useT } from '@/hooks/useT';
+import { translateExerciseName } from '@/i18n/catalog';
 
 interface ExercisesItemProps {
   exercise: ExerciseType;
@@ -59,7 +60,7 @@ export const ExercisesItem = ({ exercise, setActionSetId }: ExercisesItemProps) 
         <div className={styles.exercisesItemTopContent} onClick={toggleContentVisibility}>
           <img className={styles.icon} src={withBasePath(category_icon)} alt={t('exercises.iconAlt')} />
           <div className={styles.nameWrapper}>
-            <p className={styles.exercisesItemName}>{exercise_name}</p>
+            <p className={styles.exercisesItemName}>{translateExerciseName(exercise_name, t)}</p>
             <img
               className={`${styles.arrowIcon} ${contentIsVisible ? styles.arrowIconActive : ''}`}
               src={withBasePath('/ui/arrow.svg')}
