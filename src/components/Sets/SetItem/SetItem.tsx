@@ -63,7 +63,7 @@ export const SetItem = ({
     }
 
     updateValue(valueSets);
-  }, [valueSets, ownWeight, doubleWeight]);
+  }, [valueSets, ownWeight, doubleWeight, updateValue]);
 
   return (
     <div className={styles.inputsWrapper}>

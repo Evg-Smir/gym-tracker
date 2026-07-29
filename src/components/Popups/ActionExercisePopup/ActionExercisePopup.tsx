@@ -1,10 +1,7 @@
 import styles from './ActionExercisePopup.module.scss';
-import { CategoryType } from "@/@types/categoryTypes";
-import { useCategoryStore } from "@/stores/categoriesStore";
-import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
-import { BackButton } from "@/components/Buttons/BackButton/BackButton";
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { useAuth } from '@/context/AuthContext';
+import { CategoryType } from '@/@types/categoryTypes';
+import { BackButton } from '@/components/Buttons/BackButton/BackButton';
+import { useActionExerciseForm } from '@/hooks/useActionExerciseForm';
 
 interface ActionExercisePopupProps {
   category: CategoryType;
@@ -12,62 +9,25 @@ interface ActionExercisePopupProps {
   changeExerciseId: number | null;
 }
 
-interface ParamExerciseType {
-  id?: number;
-  name: string;
-  doubleWeight: boolean;
-  ownWeight: boolean;
-}
-
-export const ActionExercisePopup = ({ category, unsetCreateCategory, changeExerciseId }: ActionExercisePopupProps) => {
-  const actionExerciseOfCategory = useCategoryStore(state => state.actionExerciseOfCategory);
-  const [state, setState] = useState<ParamExerciseType>({
-    name: '',
-    doubleWeight: false,
-    ownWeight: false,
-  });
-  const { user } = useAuth();
-  const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
-
-  useEffect(() => {
-    if (changeExerciseId) {
-      const exercise = category.exercises.find(ex => ex.id === changeExerciseId);
-      if (exercise) {
-        const { name, doubleWeight, ownWeight } = exercise;
-        setState({ name, doubleWeight, ownWeight });
-      }
-    }
-    show();
-  }, [changeExerciseId, category.exercises, show]);
-
-  const memoizedParamExercise = useMemo(() => state, [state]);
-
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked, type } = e.target;
-    setState(prevState => ({
-      ...prevState,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
-  }, []);
-
-  const closePopup = useCallback(() => {
-    hide();
-    setTimeout(unsetCreateCategory, 300)
-  }, [hide, unsetCreateCategory]);
-
-  const handleActionExercise = useCallback((action: 'create' | 'update' | 'remove') => {
-    user && actionExerciseOfCategory(category.id, {
-      ...memoizedParamExercise,
-      id: action === 'create' ? -1 : Number(changeExerciseId),
-    }, action, user.uid);
-    closePopup();
-  }, [actionExerciseOfCategory, category.id, changeExerciseId, memoizedParamExercise, closePopup]);
+export const ActionExercisePopup = ({
+  category,
+  unsetCreateCategory,
+  changeExerciseId,
+}: ActionExercisePopupProps) => {
+  const {
+    state,
+    isVisible,
+    shouldRender,
+    handleInputChange,
+    closePopup,
+    handleActionExercise,
+  } = useActionExerciseForm(category, changeExerciseId, unsetCreateCategory);
 
   if (!shouldRender) return null;
 
   return (
     <div className={`${styles.actionExercisePopup} ${isVisible ? styles.visible : ''}`}>
-      <BackButton clickButton={closePopup}/>
+      <BackButton clickButton={closePopup} />
       <div className={styles.actionExercisePopupWrapper}>
         <h1 className={styles.actionExercisePopupName}>{category.name}</h1>
         <div className={styles.actionExercisePopupInput}>

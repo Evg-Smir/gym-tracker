@@ -1,11 +1,7 @@
 import styles from './ActionSetsPopup.module.scss';
-import useAnimatedVisibility from "@/hooks/useAnimatedVisibility";
-import React, { useEffect, useState, useMemo } from "react";
-import { BackButton } from "@/components/Buttons/BackButton/BackButton";
-import { useExercisesStore } from "@/stores/exercisesStore";
-import { ExerciseRepsType, ExerciseType } from "@/@types/exerciseTypes";
-import { SetItem } from "@/components/Sets/SetItem/SetItem";
-import { useAuth } from '@/context/AuthContext';
+import { BackButton } from '@/components/Buttons/BackButton/BackButton';
+import { SetItem } from '@/components/Sets/SetItem/SetItem';
+import { useActionSetsForm } from '@/hooks/useActionSetsForm';
 
 interface ActionSetsPopupProps {
   setId: number;
@@ -13,92 +9,48 @@ interface ActionSetsPopupProps {
 }
 
 export const ActionSetsPopup = ({ setId, unsetValue }: ActionSetsPopupProps) => {
-  const { isVisible, shouldRender, show, hide } = useAnimatedVisibility();
-  const exercisesOfCurrentDay = useExercisesStore((state) => state.exercisesOfCurrentDay);
-  const updateExercise = useExercisesStore((state) => state.updateExercise);
-  const { user } = useAuth();
-  const [currentSet, setCurrentSet] = useState<ExerciseType | undefined>();
-
-  useEffect(() => {
-    const currentSet = exercisesOfCurrentDay.exercises.find(ex => ex.id === setId);
-    setCurrentSet(currentSet);
-    show();
-  }, [setId, show, exercisesOfCurrentDay]);
-
-  const closePopup = () => {
-    hide();
-    setTimeout(unsetValue, 300)
-  };
-
-  const updateValue = (value: ExerciseRepsType, index: number) => {
-    if (!currentSet) return;
-    setCurrentSet(prevState => ({
-      ...prevState!,
-      sets: prevState!.sets.map((set, idx) => (idx === index ? value : set))
-    }));
-  };
-
-  const addSet = () => {
-    if (!currentSet) return;
-    setCurrentSet(prevState => ({
-      ...prevState!,
-      sets: [...prevState!.sets, { weight: prevState!.ownWeight ? '0' : '', reps: '' }]
-    }));
-  };
-
-  const removeSet = (index: number) => {
-    if (!currentSet) return;
-    setCurrentSet(prevState => ({
-      ...prevState!,
-      sets: prevState!.sets.filter((_, i) => i !== index)
-    }));
-  };
-
-  const saveChanges = () => {
-    if (!currentSet || !user) return;
-    const updatedSet = currentSet.sets.filter((set) =>
-      currentSet.ownWeight
-        ? !!set.reps.trim().length
-        : !!set.weight.trim().length || !!set.reps.trim().length
-    );
-    const normalizedSets = updatedSet.map((set) =>
-      currentSet.ownWeight ? { ...set, weight: '0' } : set
-    );
-    const updatedExercise = { ...currentSet, sets: [...normalizedSets] };
-    updateExercise(updatedExercise, user.uid);
-
-    setTimeout(() => {
-      closePopup();
-    }, 0);
-  };
-
-  const memoizedCurrentSet = useMemo(() => currentSet, [currentSet]);
+  const {
+    isVisible,
+    shouldRender,
+    currentSet,
+    closePopup,
+    updateValue,
+    addSet,
+    removeSet,
+    saveChanges,
+  } = useActionSetsForm(setId, unsetValue);
 
   if (!shouldRender) return null;
 
   return (
     <div className={`${styles.actionSetsPopup} ${isVisible ? styles.visible : ''}`}>
-      <BackButton clickButton={() => {
-        closePopup();
-        saveChanges();
-      }}/>
-      {memoizedCurrentSet && (
+      <BackButton
+        clickButton={() => {
+          closePopup();
+          saveChanges();
+        }}
+      />
+      {currentSet && (
         <>
-          <div className={styles.name}>{memoizedCurrentSet.exercise_name}</div>
-          {memoizedCurrentSet.sets.map((set, index) => (
+          <div className={styles.name}>{currentSet.exercise_name}</div>
+          {currentSet.sets.map((set, index) => (
             <SetItem
               key={index}
               index={index}
               {...set}
-              doubleWeight={memoizedCurrentSet.doubleWeight}
-              ownWeight={memoizedCurrentSet.ownWeight}
+              doubleWeight={currentSet.doubleWeight}
+              ownWeight={currentSet.ownWeight}
               removeSet={() => removeSet(index)}
               updateValue={(value) => updateValue(value, index)}
             />
           ))}
-          <button className={styles.addSets} onClick={addSet}>Добавить подход</button>
+          <button className={styles.addSets} onClick={addSet}>
+            Добавить подход
+          </button>
           <div className={styles.actionSetsPopupButtons}>
-            <button className={styles.addButton} onClick={saveChanges}>Готово</button>
+            <button className={styles.addButton} onClick={saveChanges}>
+              Готово
+            </button>
           </div>
         </>
       )}

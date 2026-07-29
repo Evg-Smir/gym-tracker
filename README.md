@@ -145,26 +145,36 @@ Starts Auth on `9199` and Firestore on `8185` (project `gym-tracker-demo`). Emul
 
 ## Architecture
 
+Layered client architecture (no DI container):
+
 ```
 src/
 ├── app/                  # Next.js App Router (/, /auth, /register, manifest)
-├── components/           # UI: Calendar, Exercises, Sets, Popups, Profile, Auth
-├── context/              # AuthContext (Firebase onAuthStateChanged)
-├── stores/               # Zustand: exercisesStore, categoriesStore, userStore
-├── db/                   # Firestore CRUD (users, workouts, categories)
-├── lib/                  # Firebase initialization, basePath helpers
-├── services/             # IndexedDB, statistics, filters, defaultCategories
-├── hooks/                # useFilteredCategories, useClickOutside, …
-└── @types/               # TypeScript types
+├── components/           # Presentation-only UI
+├── context/              # Thin AuthProvider (Firebase session + loading)
+├── hooks/                # Feature hooks (forms, bootstrap, popups, …)
+├── stores/               # Zustand: synchronous state + reducers
+├── application/          # Use-cases: bootstrap, migrate, persist, profile/auth
+├── repositories/         # Firestore, IndexedDB, Auth adapters
+├── domain/               # Pure helpers, seed catalog, AppError
+├── lib/                  # Firebase app init, basePath
+└── @types/               # Shared TypeScript types
 e2e/                      # Playwright specs + helpers
 ```
 
+### Layering conventions
+
+- Side effects (Firestore / IndexedDB) run **after** Zustand `set()`, never inside the updater.
+- UI imports hooks / stores / application — not `@/repositories` or Firebase SDK.
+- Zustand selectors are atomic fields or use `useShallow`.
+- Domain code is pure (no I/O). Errors use typed `AppError` with a `code`.
+
 ### Data flow
 
-1. After sign-in, `AuthContext` provides the `uid`.
-2. Stores load categories and workouts from Firestore and also read/write IndexedDB.
-3. Day changes (add exercise, set, delete) update Zustand → IndexedDB → Firestore.
-4. Statistics are computed on the client from workout history (`services/statistics.ts`).
+1. After sign-in, `AuthProvider` exposes the Firebase `User`; `useSessionBootstrap` hydrates stores.
+2. Application use-cases load categories/workouts from Firestore and mirror IndexedDB.
+3. Day changes update Zustand → application persist → IndexedDB + Firestore.
+4. Statistics are computed on the client from workout history (`domain/statistics`).
 
 ### Main screens
 
@@ -197,7 +207,7 @@ In production the app uses `basePath=/gym-tracker`; with `npm run dev` the base 
 
 ## Tests
 
-**Unit (Vitest)** — services and Zustand stores (mocked IndexedDB / Firestore):
+**Unit (Vitest)** — domain helpers and Zustand stores (mocked persistence):
 
 ```bash
 npm test

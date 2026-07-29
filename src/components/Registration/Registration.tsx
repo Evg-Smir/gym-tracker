@@ -1,47 +1,12 @@
 import styles from './Registration.module.scss';
 import { Input } from '@/components/Inputs/Input/Input';
-import { FormEvent, useState } from 'react';
 import { Button } from '@/components/Buttons/Button/Button';
-import { registerUser } from '@/lib/firebase';
-import { getUserData } from '@/db/client';
-import { useUserStore } from '@/stores/userStore';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { InputError } from '@/components/Inputs/InputError/InputError';
-import { UserDataType } from '@/@types/userStoreTypes';
+import { useRegisterForm } from '@/hooks/useRegisterForm';
+import Link from 'next/link';
 
 export const Registration = () => {
-  const setUser = useUserStore((state) => state.setUserData);
-  const router = useRouter();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordSecond, setPasswordSecond] = useState('');
-  const [error, setError] = useState('');
-
-  const setUserData = async (uid: string) => {
-    const data = await getUserData(uid);
-    setUser({ ...data, uid } as UserDataType);
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    if (passwordSecond !== password) {
-      setError('password-not-match');
-      return;
-    }
-
-    try {
-      const user = await registerUser(email, password, firstName, lastName);
-      await setUserData(user.uid);
-      router.push('/');
-    } catch (err: any) {
-      console.log(err);
-      setError(err.code || 'unknown_error');
-    }
-  };
+  const { form, error, setField, handleSubmit } = useRegisterForm();
 
   return (
     <div className={styles.registration}>
@@ -52,17 +17,43 @@ export const Registration = () => {
 
         <div className={styles.registrationBottom}>
           <form onSubmit={handleSubmit}>
-            <Input type={'text'} placeholder={'Имя'} value={firstName} onChange={setFirstName} />
-            <Input type={'text'} placeholder={'Фамилия'} value={lastName} onChange={setLastName} />
-            <Input type={'email'} placeholder={'Почта'} value={email} onChange={setEmail} />
-            <Input type={'password'} placeholder={'Пароль'} value={password} onChange={setPassword} />
-            <Input type={'password'} placeholder={'Повторите пароль'} value={passwordSecond}
-                   onChange={setPasswordSecond} />
+            <Input
+              type="text"
+              placeholder="Имя"
+              value={form.firstName}
+              onChange={(value) => setField('firstName', value)}
+            />
+            <Input
+              type="text"
+              placeholder="Фамилия"
+              value={form.lastName}
+              onChange={(value) => setField('lastName', value)}
+            />
+            <Input
+              type="email"
+              placeholder="Почта"
+              value={form.email}
+              onChange={(value) => setField('email', value)}
+            />
+            <Input
+              type="password"
+              placeholder="Пароль"
+              value={form.password}
+              onChange={(value) => setField('password', value)}
+            />
+            <Input
+              type="password"
+              placeholder="Повторите пароль"
+              value={form.passwordSecond}
+              onChange={(value) => setField('passwordSecond', value)}
+            />
             <InputError error={error} />
-            <Button label={'Зарегистрироваться'} type={'submit'} />
+            <Button label="Зарегистрироваться" type="submit" />
           </form>
           <div className={styles.registrationLink}>
-            <Link className={styles.registrationLink} href={'/auth'}>Или войдите</Link>
+            <Link className={styles.registrationLink} href="/auth">
+              Или войдите
+            </Link>
           </div>
         </div>
       </div>

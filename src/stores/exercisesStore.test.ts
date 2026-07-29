@@ -1,13 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/services/IndexedDB', () => ({
-  setStorage: vi.fn(),
-}));
-
-vi.mock('@/db/client', () => ({
-  addWorkout: vi.fn(),
-  updateWorkout: vi.fn(),
-  deleteWorkout: vi.fn(),
+vi.mock('@/application/persist', () => ({
+  persistExercisesLocal: vi.fn(),
+  persistWorkoutDay: vi.fn(),
 }));
 
 vi.mock('@/stores/categoriesStore', () => ({
@@ -28,8 +23,7 @@ vi.mock('@/stores/categoriesStore', () => ({
   },
 }));
 
-import { addWorkout, deleteWorkout, updateWorkout } from '@/db/client';
-import { setStorage } from '@/services/IndexedDB';
+import { persistExercisesLocal, persistWorkoutDay } from '@/application/persist';
 import { useExercisesStore } from '@/stores/exercisesStore';
 
 const sampleExercise = {
@@ -79,8 +73,7 @@ describe('exercisesStore', () => {
 
       useExercisesStore.getState().updateExercise(updated, 'user-1');
 
-      expect(setStorage).toHaveBeenCalledWith(
-        'exercises',
+      expect(persistExercisesLocal).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({
             time: 1000,
@@ -88,12 +81,13 @@ describe('exercisesStore', () => {
           }),
         ]),
       );
-      expect(updateWorkout).toHaveBeenCalledWith(
+      expect(persistWorkoutDay).toHaveBeenCalledWith(
         'user-1',
         expect.objectContaining({
           time: 1000,
           exercises: [expect.objectContaining({ sets: updated.sets })],
         }),
+        'update',
       );
     });
   });
@@ -110,15 +104,15 @@ describe('exercisesStore', () => {
         category_id: 1,
         sets: [],
       });
-      expect(addWorkout).toHaveBeenCalledWith(
+      expect(persistWorkoutDay).toHaveBeenCalledWith(
         'user-1',
         expect.objectContaining({
           time: 1000,
           exercises: [expect.objectContaining({ exercise_id: 5 })],
         }),
+        'add',
       );
-      expect(setStorage).toHaveBeenCalledWith('exercises', expect.any(Array));
-      expect(updateWorkout).not.toHaveBeenCalled();
+      expect(persistExercisesLocal).toHaveBeenCalledWith(expect.any(Array));
     });
 
     it('appends to an existing day with updateWorkout', () => {
@@ -140,7 +134,7 @@ describe('exercisesStore', () => {
       const state = useExercisesStore.getState();
       expect(state.exercisesOfCurrentDay.exercises).toHaveLength(2);
       expect(state.exercisesOfCurrentDay.exercises[1].id).toBe(2);
-      expect(updateWorkout).toHaveBeenCalledWith(
+      expect(persistWorkoutDay).toHaveBeenCalledWith(
         'user-1',
         expect.objectContaining({
           exercises: expect.arrayContaining([
@@ -148,8 +142,8 @@ describe('exercisesStore', () => {
             expect.objectContaining({ id: 2 }),
           ]),
         }),
+        'update',
       );
-      expect(addWorkout).not.toHaveBeenCalled();
     });
   });
 
@@ -172,14 +166,14 @@ describe('exercisesStore', () => {
       useExercisesStore.getState().removeExercise(sampleExercise, 'user-1');
 
       expect(useExercisesStore.getState().exercisesOfCurrentDay.exercises).toHaveLength(1);
-      expect(updateWorkout).toHaveBeenCalledWith(
+      expect(persistWorkoutDay).toHaveBeenCalledWith(
         'user-1',
         expect.objectContaining({
           exercises: [expect.objectContaining({ id: 2 })],
         }),
+        'update',
       );
-      expect(deleteWorkout).not.toHaveBeenCalled();
-      expect(setStorage).toHaveBeenCalled();
+      expect(persistExercisesLocal).toHaveBeenCalled();
     });
 
     it('calls deleteWorkout when the day becomes empty', () => {
@@ -200,9 +194,12 @@ describe('exercisesStore', () => {
 
       expect(useExercisesStore.getState().exercisesOfCurrentDay.exercises).toHaveLength(0);
       expect(useExercisesStore.getState().exercises).toHaveLength(0);
-      expect(deleteWorkout).toHaveBeenCalledWith('user-1', 1000);
-      expect(updateWorkout).not.toHaveBeenCalled();
-      expect(setStorage).toHaveBeenCalledWith('exercises', []);
+      expect(persistWorkoutDay).toHaveBeenCalledWith(
+        'user-1',
+        expect.objectContaining({ time: 1000, exercises: [] }),
+        'delete',
+      );
+      expect(persistExercisesLocal).toHaveBeenCalledWith([]);
     });
   });
 
